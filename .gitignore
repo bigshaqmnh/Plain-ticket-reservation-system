@@ -1,0 +1,8 @@
+#Ignore node modules
+/node_modules
+
+#Ignore dist
+/dist
+
+#Ignore
+package-lock.json
