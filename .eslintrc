@@ -10,8 +10,7 @@
       }
     ],
     "prettier/prettier": "error",
-    "linebreak-style": ["error", "windows"],
-    "max-len": ["error", 80]
+    "linebreak-style": ["error", "windows"]
   },
   "env": {
     "browser": true
