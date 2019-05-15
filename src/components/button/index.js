@@ -2,15 +2,10 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 
 function Button(props) {
-  const { variant, type, text, isDisabled, onClick } = props;
+  const { variant, type, text, onClick } = props;
 
   return (
-    <Button
-      variant={variant}
-      type={type}
-      disabled={isDisabled}
-      onClick={onClick}
-    >
+    <Button variant={variant} type={type} onClick={onClick}>
       {text}
     </Button>
   );
