@@ -1,8 +1,9 @@
-import React from "react";
+import React from 'react';
+import AuthContainer from './containers/auth';
 
 class App extends React.PureComponent {
   render() {
-    return <h1>The page has rendered!</h1>;
+    return <AuthContainer />;
   }
 }
 
