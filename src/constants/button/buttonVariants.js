@@ -1,7 +1,8 @@
-export const buttonVariant = {
-  primary: 'primary',
-  secondary: 'secondary',
+const buttonVariant = {
+  default: 'primary',
   success: 'success',
   warning: 'warning',
   error: 'danger'
 };
+
+export default buttonVariant;
