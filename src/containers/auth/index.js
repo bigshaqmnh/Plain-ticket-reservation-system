@@ -1,12 +1,13 @@
 import React from 'react';
-import { Formik, Form, Field } from 'formik';
+import { Formik } from 'formik';
+import { Form } from 'react-bootstrap';
 
 import CustomButton from '../../components/customButton';
 import buttonVariants from '../../constants/button/buttonVariants';
 import authSchema from '../../constants/auth/authSchema';
 
 class AuthContainer extends React.PureComponent {
-  onLogInFormSubmit = formData => {
+  handleSubmit = formData => {
     console.log('form data', formData);
   };
 
@@ -20,14 +21,31 @@ class AuthContainer extends React.PureComponent {
         onSubmit={this.onLogInFormSubmit}
         validationSchema={authSchema}
       >
-        {({ errors, touched }) => (
-          <Form>
-            <Field name="email" />
-            {errors.email && touched.email ? <div>{errors.email}</div> : null}
-            <Field name="password" />
-            {errors.password && touched.password ? (
-              <div>{errors.password}</div>
-            ) : null}
+        {({ handleChange, handleSubmit, values, errors, touched }) => (
+          <Form noValidate onSubmit={handleSubmit}>
+            <Form.Group md="4" controlId="validationFormik01">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="text"
+                name="email"
+                value={values.email}
+                onChange={handleChange}
+                isValid={touched.email && !errors.email}
+              />
+              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group md="4" controlId="validationFormik02">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                name="password"
+                value={values.password}
+                onChange={handleChange}
+                isValid={touched.password && !errors.password}
+              />
+
+              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            </Form.Group>
             <CustomButton
               variant={buttonVariants.default}
               type="submit"
