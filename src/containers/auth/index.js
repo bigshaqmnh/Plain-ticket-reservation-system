@@ -1,62 +1,78 @@
-import React from 'react';
-import { Formik } from 'formik';
+import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
+import 'babel-polyfill';
 
 import CustomButton from '../../components/customButton';
+import CustomInput from '../../components/customInput';
 import buttonVariants from '../../constants/button/buttonVariants';
+import placeholders from '../../constants/placeholders';
 import authSchema from '../../constants/auth/authSchema';
 
-class AuthContainer extends React.PureComponent {
-  handleSubmit = formData => {
-    console.log('form data', formData);
+function AuthContainer() {
+  const [userData, setUserData] = useState({
+    email: { value: '', isValid: true, invalidFeedback: '' },
+    password: { value: '', isValid: true, invalidFeedback: '' }
+  });
+
+  const handleSubmit = async event => {
+    event.preventDefault();
+    await authSchema
+      .validate(userData)
+      .then(() => console.log('form data', userData))
+      .catch(error => {
+        const { path: propName, message: errorMsg } = error;
+
+        setUserData({
+          ...userData,
+          [propName]: {
+            ...userData[propName],
+            isValid: false,
+            invalidFeedback: errorMsg
+          }
+        });
+
+        console.log('after error', userData);
+      });
   };
 
-  render() {
-    return (
-      <Formik
-        initialValues={{
-          email: '',
-          password: ''
-        }}
-        onSubmit={this.onLogInFormSubmit}
-        validationSchema={authSchema}
-      >
-        {({ handleChange, handleSubmit, values, errors, touched }) => (
-          <Form noValidate onSubmit={handleSubmit}>
-            <Form.Group md="4" controlId="validationFormik01">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="text"
-                name="email"
-                value={values.email}
-                onChange={handleChange}
-                isValid={touched.email && !errors.email}
-              />
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group md="4" controlId="validationFormik02">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="password"
-                value={values.password}
-                onChange={handleChange}
-                isValid={touched.password && !errors.password}
-              />
+  const handleChange = async event => {
+    const { name: propName, value: propValue } = event.target;
 
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            </Form.Group>
-            <CustomButton
-              variant={buttonVariants.default}
-              type="submit"
-              text="Log in"
-              onClick={this.onLogInFormSubmit}
-            />
-          </Form>
-        )}
-      </Formik>
-    );
-  }
+    await setUserData({
+      ...userData,
+      [propName]: { ...userData[propName], value: propValue }
+    });
+  };
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <CustomInput
+        label="Email"
+        type="text"
+        name="email"
+        value={userData.email.value}
+        placeholder={placeholders.email}
+        invalidFeedback={userData.email.invalidFeedback}
+        isValid={userData.email.isValid}
+        onChange={handleChange}
+      />
+      <CustomInput
+        label="Password"
+        type="password"
+        name="password"
+        value={userData.password.value}
+        placeholder={placeholders.password}
+        invalidFeedback={userData.password.invalidFeedback}
+        isValid={userData.password.isValid}
+        onChange={handleChange}
+      />
+      <CustomButton
+        variant={buttonVariants.default}
+        type="submit"
+        text="Log in"
+      />
+    </Form>
+  );
 }
 
 export default AuthContainer;

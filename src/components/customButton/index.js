@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
 
 function CustomButton(props) {
-  const { variant, type, text, onClick } = props;
+  const { variant, type, text } = props;
 
   return (
-    <Button variant={variant} type={type} onClick={onClick}>
+    <Button variant={variant} type={type}>
       {text}
     </Button>
   );
@@ -15,8 +15,7 @@ function CustomButton(props) {
 CustomButton.propTypes = {
   variant: PropTypes.string.isRequired,
   type: PropTypes.string,
-  text: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired
+  text: PropTypes.string.isRequired
 };
 
 CustomButton.defaultProps = {
