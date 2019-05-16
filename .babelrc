@@ -1,6 +1,8 @@
 {
   "presets": ["@babel/preset-env", "@babel/preset-react"],
   "plugins": [
+    "syntax-async-functions",
+    "transform-regenerator",
     [
       "@babel/plugin-proposal-class-properties",
       {
