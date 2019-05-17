@@ -6,7 +6,7 @@ import CustomButton from '../../components/customButton';
 import CustomInput from '../../components/customInput';
 import buttonVariants from '../../constants/button/buttonVariants';
 import placeholders from '../../constants/placeholders';
-import authSchema from '../../constants/auth/authSchema';
+import validationSchema from '../../constants/auth/validationSchema';
 
 function AuthContainer() {
   const [userData, setUserData] = useState({
@@ -16,32 +16,42 @@ function AuthContainer() {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    await authSchema
-      .validate(userData)
-      .then(() => console.log('form data', userData))
-      .catch(error => {
-        const { path: propName, message: errorMsg } = error;
 
-        setUserData({
-          ...userData,
-          [propName]: {
-            ...userData[propName],
-            isValid: false,
-            invalidFeedback: errorMsg
-          }
-        });
+    console.log('user data: ', userData);
+  };
 
-        console.log('after error', userData);
-      });
+  const setDataValid = (propName, propValue) => {
+    setUserData({
+      ...userData,
+      [propName]: {
+        value: propValue,
+        isValid: true,
+        invalidFeedback: ''
+      }
+    });
+  };
+
+  const setDataInvalid = (propName, propValue, errorMsg) => {
+    setUserData({
+      ...userData,
+      [propName]: {
+        value: propValue,
+        isValid: false,
+        invalidFeedback: errorMsg
+      }
+    });
   };
 
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;
+    const formData = {
+      [propName]: propValue
+    };
 
-    await setUserData({
-      ...userData,
-      [propName]: { ...userData[propName], value: propValue }
-    });
+    await validationSchema[propName]
+      .validate(formData)
+      .then(() => setDataValid(propName, propValue))
+      .catch(error => setDataInvalid(propName, propValue, error.message));
   };
 
   return (
