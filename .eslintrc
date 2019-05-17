@@ -11,8 +11,7 @@
         "extensions": [".js", "jsx"]
       }
     ],
-    "prettier/prettier": "error",
-    "linebreak-style": ["error", "windows"]
+    "prettier/prettier": "error"
   },
   "env": {
     "browser": true
