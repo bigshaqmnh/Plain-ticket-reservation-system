@@ -1,4 +1,4 @@
-const infoText = {
+const validationText = {
   requiredEmail: 'Email is required.',
   requiredPassword: 'Password is required.',
   invalidEmail: 'Please, check your email for being correct.',
@@ -8,4 +8,4 @@ const infoText = {
   long: 'Too long!'
 };
 
-export default infoText;
+export default validationText;
