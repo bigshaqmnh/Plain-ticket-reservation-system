@@ -1,28 +1,67 @@
 import React, { useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, Container } from 'react-bootstrap';
 import 'babel-polyfill';
 
 import CustomButton from '../../components/customButton';
 import CustomInput from '../../components/customInput';
-import buttonVariants from '../../constants/button/buttonVariants';
+import CustomAlert from '../../components/customAlert';
+import componentStyle from '../../constants/componentStyles';
 import placeholders from '../../constants/placeholders';
 import validationSchema from '../../constants/auth/validationSchema';
+import defaultAlertData from '../../constants/alert/default';
+import alertText from '../../constants/alert/alertText';
 
 function AuthContainer() {
-  const [userData, setUserData] = useState({
+  const [formData, setFormData] = useState({
     email: { value: '', isValid: true, invalidFeedback: '' },
     password: { value: '', isValid: true, invalidFeedback: '' }
   });
 
-  const handleSubmit = async event => {
-    event.preventDefault();
+  const [alertData, setAlertData] = useState(defaultAlertData);
 
-    console.log('user data: ', userData);
+  const validateForm = async () => {
+    let { isShown, heading, mainText } = defaultAlertData;
+    let isValid = true;
+    const { email, password } = formData;
+    const isEmpty = !email.value || !password.value;
+    const isInvalid = !email.isValid || !password.isValid;
+
+    if (isEmpty || isInvalid) {
+      const textType = isEmpty ? 'emptyInput' : 'invalidInput';
+      const { heading: headingText, mainText: pyz } = alertText[textType];
+      isShown = true;
+      heading = headingText;
+      mainText = pyz;
+      isValid = false;
+    }
+
+    await setAlertData({
+      isShown,
+      heading,
+      mainText
+    });
+
+    return isValid;
   };
 
+  const handleSubmit = async event => {
+    event.preventDefault();
+    const isFormValid = await validateForm();
+
+    if (isFormValid) {
+      // call api log in method
+    }
+  };
+
+  const handleAlertDismiss = () =>
+    setAlertData({
+      ...alertData,
+      isShown: false
+    });
+
   const setDataValid = (propName, propValue) => {
-    setUserData({
-      ...userData,
+    setFormData({
+      ...formData,
       [propName]: {
         value: propValue,
         isValid: true,
@@ -32,8 +71,8 @@ function AuthContainer() {
   };
 
   const setDataInvalid = (propName, propValue, errorMsg) => {
-    setUserData({
-      ...userData,
+    setFormData({
+      ...formData,
       [propName]: {
         value: propValue,
         isValid: false,
@@ -44,44 +83,53 @@ function AuthContainer() {
 
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;
-    const formData = {
-      [propName]: propValue
-    };
 
     await validationSchema[propName]
-      .validate(formData)
+      .validate({
+        [propName]: propValue
+      })
       .then(() => setDataValid(propName, propValue))
       .catch(error => setDataInvalid(propName, propValue, error.message));
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <CustomInput
-        label="Email"
-        type="text"
-        name="email"
-        value={userData.email.value}
-        placeholder={placeholders.email}
-        invalidFeedback={userData.email.invalidFeedback}
-        isValid={userData.email.isValid}
-        onChange={handleChange}
-      />
-      <CustomInput
-        label="Password"
-        type="password"
-        name="password"
-        value={userData.password.value}
-        placeholder={placeholders.password}
-        invalidFeedback={userData.password.invalidFeedback}
-        isValid={userData.password.isValid}
-        onChange={handleChange}
-      />
-      <CustomButton
-        variant={buttonVariants.default}
-        type="submit"
-        text="Log in"
-      />
-    </Form>
+    <Container>
+      <Form onSubmit={handleSubmit}>
+        <CustomInput
+          label="Email"
+          type="text"
+          name="email"
+          value={formData.email.value}
+          placeholder={placeholders.email}
+          invalidFeedback={formData.email.invalidFeedback}
+          isValid={formData.email.isValid}
+          onChange={handleChange}
+        />
+        <CustomInput
+          label="Password"
+          type="password"
+          name="password"
+          value={formData.password.value}
+          placeholder={placeholders.password}
+          invalidFeedback={formData.password.invalidFeedback}
+          isValid={formData.password.isValid}
+          onChange={handleChange}
+        />
+        <CustomButton
+          variant={componentStyle.default}
+          type="submit"
+          text="Log in"
+        />
+      </Form>
+      {alertData.isShown && (
+        <CustomAlert
+          variant={componentStyle.error}
+          heading={alertData.heading}
+          mainText={alertData.mainText}
+          handleDismiss={handleAlertDismiss}
+        />
+      )}
+    </Container>
   );
 }
 
