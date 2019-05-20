@@ -1,8 +1,7 @@
 export const saveUserToken = token => {
-  const userToken = token;
-  localStorage.setItem('userToken', userToken);
+  localStorage.setItem('token', token);
 };
 
 export const deleteUserToken = () => {
-  localStorage.removeItem('userToken');
+  localStorage.removeItem('token');
 };
