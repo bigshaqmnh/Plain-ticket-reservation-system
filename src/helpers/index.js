@@ -1,11 +1,8 @@
 export const saveUserToken = token => {
-  const currentUser = {
-    token: token,
-    createDate: new Date().getTime()
-  };
-  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  const userToken = token;
+  localStorage.setItem('userToken', userToken);
 };
 
 export const deleteUserToken = () => {
-  localStorage.removeItem('currentUser');
+  localStorage.removeItem('userToken');
 };
