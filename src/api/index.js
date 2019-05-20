@@ -1,11 +1,13 @@
 import * as axios from 'axios';
+
 import { baseUrl } from '../config/';
 import { saveUserToken, deleteUserToken } from '../helpers';
+import { apiMethod } from '../constants/apiMethods';
 
 export default {
   logIn: userData => {
     axios({
-      method: 'post',
+      method: apiMethod.post,
       url: `${baseUrl}/auth/login`,
       data: {
         email: userData.email,
