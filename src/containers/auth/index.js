@@ -15,8 +15,6 @@ function AuthContainer() {
 
   const handleSubmit = async event => {
     event.preventDefault();
-
-    console.log('user data: ', userData);
   };
 
   const setDataValid = (propName, propValue) => {
