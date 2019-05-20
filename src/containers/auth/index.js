@@ -5,7 +5,6 @@ import 'babel-polyfill';
 import CustomButton from '../../components/customButton';
 import CustomInput from '../../components/customInput';
 import buttonVariants from '../../constants/button/buttonVariants';
-import placeholders from '../../constants/placeholders';
 import validationSchema from '../../constants/auth/validationSchema';
 
 function AuthContainer() {
@@ -61,7 +60,7 @@ function AuthContainer() {
         type="text"
         name="email"
         value={userData.email.value}
-        placeholder={placeholders.email}
+        placeholder="Enter your email"
         invalidFeedback={userData.email.invalidFeedback}
         isValid={userData.email.isValid}
         onChange={handleChange}
@@ -71,16 +70,12 @@ function AuthContainer() {
         type="password"
         name="password"
         value={userData.password.value}
-        placeholder={placeholders.password}
+        placeholder="Enter your password"
         invalidFeedback={userData.password.invalidFeedback}
         isValid={userData.password.isValid}
         onChange={handleChange}
       />
-      <CustomButton
-        variant={buttonVariants.default}
-        type="submit"
-        text="Log in"
-      />
+      <CustomButton variant={buttonVariants.default} type="submit" text="Log in" />
     </Form>
   );
 }
