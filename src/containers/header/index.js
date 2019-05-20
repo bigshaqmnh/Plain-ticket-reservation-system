@@ -2,8 +2,6 @@ import React from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
 
-import links from '../../constants/header/links';
-
 const links = [
   { path: '/', name: 'Home' },
   { path: '/airplanes', name: 'Airplanes' },
