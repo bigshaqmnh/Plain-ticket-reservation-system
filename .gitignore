@@ -1,7 +1,7 @@
-#Ignore node modules
+# Ignore ./node_modules directory
 /node_modules
 
-#Ignore dist
+# Ignore ./dist directory
 /dist
 
 #Ignore

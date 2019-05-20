@@ -1,8 +1,10 @@
 {
   "extends": ["airbnb", "prettier", "prettier/react"],
-  "plugins": ["react", "prettier"],
+  "plugins": ["react", "prettier", "react-hooks"],
   "parser": "babel-eslint",
   "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "react/jsx-filename-extension": [
       1,
       {
@@ -10,8 +12,7 @@
       }
     ],
     "prettier/prettier": "error",
-    "linebreak-style": ["error", "windows"],
-    "max-len": ["error", 80]
+    "linebreak-style": 0
   },
   "env": {
     "browser": true
