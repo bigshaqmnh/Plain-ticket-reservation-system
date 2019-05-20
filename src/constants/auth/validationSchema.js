@@ -2,14 +2,14 @@ import * as yup from 'yup';
 
 import validationText from '../validationText';
 import { minPasswordLength } from '../../config';
-import regex from '../regex';
+import ValidationRegexPatterns from '../validationRegexPatterns';
 
 const validateEmail = yup.object().shape({
   email: yup
     .string()
     .required(validationText.requiredEmail)
     .trim()
-    .test('isEmailValid', validationText.invalidEmail, value => regex.email.test(value))
+    .test('isEmailValid', validationText.invalidEmail, value => ValidationRegexPatterns.email.test(value))
 });
 
 const validatePassword = yup.object().shape({
