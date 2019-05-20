@@ -1,23 +1,23 @@
 import * as yup from 'yup';
 
-import infoText from '../infoText';
+import validationText from '../validationText';
 import { minPasswordLength } from '../../config';
 import regex from '../regex';
 
 const validateEmail = yup.object().shape({
   email: yup
     .string()
-    .required(infoText.requiredEmail)
+    .required(validationText.requiredEmail)
     .trim()
-    .test('isEmailValid', infoText.invalidEmail, value => regex.email.test(value))
+    .test('isEmailValid', validationText.invalidEmail, value => regex.email.test(value))
 });
 
 const validatePassword = yup.object().shape({
   password: yup
     .string()
-    .required(infoText.requiredPassword)
+    .required(validationText.requiredPassword)
     .trim()
-    .min(minPasswordLength, infoText.short)
+    .min(minPasswordLength, validationText.short)
 });
 
 const validationSchema = {
