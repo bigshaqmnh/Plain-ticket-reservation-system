@@ -10,6 +10,8 @@ import AirportsContainer from './containers/airports';
 import FlightsContainer from './containers/flights';
 import NotFound from './containers/notFound';
 
+import './styles/main.scss';
+
 class App extends React.PureComponent {
   render() {
     return (
