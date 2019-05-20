@@ -3,30 +3,13 @@ import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
 
 function CustomInput(props) {
-  const {
-    label,
-    type,
-    name,
-    value,
-    placeholder,
-    invalidFeedback,
-    isValid,
-    onChange
-  } = props;
+  const { label, type, name, value, placeholder, invalidFeedback, isValid, onChange } = props;
 
   return (
     <Form.Group className="input">
       <Form.Label>{label}</Form.Label>
-      <Form.Control
-        type={type}
-        name={name}
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-      />
-      {!isValid && (
-        <Form.Text style={{ color: 'red' }}>{invalidFeedback}</Form.Text>
-      )}
+      <Form.Control type={type} name={name} value={value} placeholder={placeholder} onChange={onChange} />
+      {!isValid && <Form.Text style={{ color: 'red' }}>{invalidFeedback}</Form.Text>}
     </Form.Group>
   );
 }
