@@ -1,5 +1,5 @@
 import * as axios from 'axios';
-import { baseUrl } from '../config/config.json';
+import { baseUrl } from '../config/';
 import { saveUserToken, deleteUserToken } from '../helpers';
 
 export default {
