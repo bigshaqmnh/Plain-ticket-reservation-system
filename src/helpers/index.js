@@ -1,4 +1,4 @@
-import { tokenKey } from '../config';
+const tokenKey = 'token';
 
 export const saveUserToken = token => {
   localStorage.setItem(tokenKey, token);
