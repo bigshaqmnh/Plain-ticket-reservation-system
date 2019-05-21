@@ -15,7 +15,7 @@ export default {
       }
     })
       .then(response => saveUserToken(response.data))
-      .catch(error => console.log('Error: unable to log in.', error));
+      .catch(error => console.error('Error: unable to log in.', error));
   },
 
   logOut: () => deleteUserToken()
