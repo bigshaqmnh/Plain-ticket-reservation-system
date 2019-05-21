@@ -8,7 +8,13 @@ function CustomInput(props) {
   return (
     <Form.Group className="input">
       <Form.Label>{label}</Form.Label>
-      <Form.Control type={type} name={name} value={value} placeholder={placeholder} onChange={onChange} />
+      {/* prettier-ignore */}
+      <Form.Control 
+        type={type} 
+        name={name} 
+        value={value} 
+        placeholder={placeholder} 
+        onChange={onChange} />
       {!isValid && <Form.Text style={{ color: 'red' }}>{invalidFeedback}</Form.Text>}
     </Form.Group>
   );
