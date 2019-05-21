@@ -1,0 +1,4 @@
+{
+  "minPasswordLength": 6,
+  "baseUrl": "http://localhost:9000"
+}

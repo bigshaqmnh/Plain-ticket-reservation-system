@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 import validationText from '../validationText';
-import { minPasswordLength } from '../../config';
+import * as config from '../../config/config.json';
 import ValidationRegexPatterns from '../validationRegexPatterns';
 
 const validateEmail = yup.object().shape({
@@ -17,7 +17,7 @@ const validatePassword = yup.object().shape({
     .string()
     .required(validationText.requiredPassword)
     .trim()
-    .min(minPasswordLength, validationText.short)
+    .min(config.minPasswordLength, validationText.short)
 });
 
 const validationSchema = {
