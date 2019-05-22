@@ -6,7 +6,6 @@ import CustomButton from '../../components/customButton';
 import CustomInput from '../../components/customInput';
 import CustomAlert from '../../components/customAlert';
 import componentStyle from '../../constants/componentStyles';
-import placeholders from '../../constants/placeholders';
 import validationSchema from '../../constants/auth/validationSchema';
 import defaultAlertData from '../../constants/alert/default';
 import alertText from '../../constants/alert/alertText';
@@ -100,7 +99,7 @@ function AuthContainer() {
           type="text"
           name="email"
           value={formData.email.value}
-          placeholder={placeholders.email}
+          placeholder="Enter your email"
           invalidFeedback={formData.email.invalidFeedback}
           isValid={formData.email.isValid}
           onChange={handleChange}
@@ -110,7 +109,7 @@ function AuthContainer() {
           type="password"
           name="password"
           value={formData.password.value}
-          placeholder={placeholders.password}
+          placeholder="Enter your password"
           invalidFeedback={formData.password.invalidFeedback}
           isValid={formData.password.isValid}
           onChange={handleChange}
