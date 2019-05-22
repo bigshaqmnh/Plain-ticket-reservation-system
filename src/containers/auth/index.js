@@ -115,11 +115,7 @@ function AuthContainer() {
           isValid={formData.password.isValid}
           onChange={handleChange}
         />
-        <CustomButton
-          variant={componentStyle.default}
-          type="submit"
-          text="Log in"
-        />
+        <CustomButton variant={componentStyle.default} type="submit" text="Log in" />
       </Form>
       {alertData.isShown && (
         <CustomAlert
