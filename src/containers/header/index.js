@@ -3,11 +3,11 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
 
 const links = [
-  { path: '/', name: 'Home' },
-  { path: '/airplanes', name: 'Airplanes' },
-  { path: '/airports', name: 'Airports' },
-  { path: '/flights', name: 'Flights' },
-  { path: '/auth', name: 'Sign in / Sign out' }
+  { id: 1, path: '/', name: 'Home' },
+  { id: 2, path: '/airplanes', name: 'Airplanes' },
+  { id: 3, path: '/airports', name: 'Airports' },
+  { id: 4, path: '/flights', name: 'Flights' },
+  { id: 5, path: '/auth', name: 'Sign in / Sign out' }
 ];
 
 function HeaderContainer() {
