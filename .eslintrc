@@ -5,6 +5,7 @@
   "rules": {
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
+    "no-plusplus": "off",
     "react/jsx-filename-extension": [
       1,
       {
