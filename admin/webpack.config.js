@@ -29,14 +29,14 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: path.join(__dirname, 'public'),
+    contentBase: path.join(__dirname, '../public'),
     historyApiFallback: true,
     compress: true,
     port: 9000
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html'
+      template: '../public/index.html'
     })
   ]
 };
