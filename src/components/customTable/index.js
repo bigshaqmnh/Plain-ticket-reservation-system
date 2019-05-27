@@ -4,15 +4,13 @@ import { Table } from 'react-bootstrap';
 
 function СustomTable(props) {
   const { headers, items, onClick } = props;
-  let headerKey = 0;
-  let itemKey = items.length;
 
   return (
     <Table striped bordered hover>
       <thead>
         <tr>
           {headers.map(header => (
-            <th key={++headerKey}>{header}</th>
+            <th key={header}>{header}</th>
           ))}
         </tr>
       </thead>
@@ -20,7 +18,7 @@ function СustomTable(props) {
         {items.map(item => (
           <tr key={item.id} id={item.id} onClick={onClick}>
             {Object.keys(item).map(key => (
-              <td key={++itemKey}>{item[key]}</td>
+              <td key={key}>{item[key]}</td>
             ))}
           </tr>
         ))}
