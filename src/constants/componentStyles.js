@@ -1,8 +1,8 @@
-const buttonVariant = {
+const componentStyles = {
   default: 'primary',
   success: 'success',
   warning: 'warning',
   error: 'danger'
 };
 
-export default buttonVariant;
+export default componentStyles;

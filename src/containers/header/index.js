@@ -16,7 +16,7 @@ function HeaderContainer() {
       <Navbar.Brand href="#home">Navbar</Navbar.Brand>
       <Nav className="mr-auto">
         {links.map(link => (
-          <LinkContainer to={link.path}>
+          <LinkContainer key={link.path} to={link.path}>
             <Nav.Link>{link.name}</Nav.Link>
           </LinkContainer>
         ))}
