@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(
   cors({
-    origin: 'http://localhost:9000'
+    origin: process.env.ORIGIN_URL
   })
 );
 
