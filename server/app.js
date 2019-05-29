@@ -29,14 +29,6 @@ app.use('/auth', authRouter);
 app.use('/get', getRouter);
 app.use('/post', passport.authenticate('jwt', { session: false }), postRouter);
 
-// for logging reqest info
-// app.use((req, res, next) => {
-//   if (req.body) console.info(req.body);
-//   if (req.headers) console.info(req.headers);
-//   console.info(`Received a ${req.method} request from ${req.ip} for ${req.url}`);
-//   next();
-// });
-
 app.use(function(req, res, next) {
   next(createError(404, 'The page you are looking for does not exist.'));
 });
