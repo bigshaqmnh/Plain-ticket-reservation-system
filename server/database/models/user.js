@@ -1,8 +1,8 @@
 'use strict';
-var validate = require('./validators/user');
+const validate = require('./validators/user');
 
 module.exports = (sequelize, DataTypes) => {
-  var user = sequelize.define('user', {
+  const user = sequelize.define('user', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     username: {
       allowNull: false,
-      unique: true,
       type: DataTypes.STRING
     },
     email: {
