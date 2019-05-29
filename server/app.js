@@ -12,7 +12,7 @@ const postRouter = require('./routes/post');
 
 const app = express();
 
-app.use(logger('dev'));
+app.use(logger(process.env.LOGGER_CONFIG));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('../public/index.html'));
