@@ -7,8 +7,7 @@ require('./passportSetup')(passport);
 const cors = require('cors');
 
 const authRouter = require('./routes/auth');
-const getRouter = require('./routes/get');
-const postRouter = require('./routes/post');
+const airplaneRouter = require('./routes/airplane');
 
 const app = express();
 
@@ -26,8 +25,7 @@ app.use(
 );
 
 app.use('/auth', authRouter);
-app.use('/get', getRouter);
-app.use('/post', passport.authenticate('jwt', { session: false }), postRouter);
+app.use('/airplanes', airplaneRouter);
 
 app.use(function(req, res, next) {
   next(createError(404, 'The page you are looking for does not exist.'));
