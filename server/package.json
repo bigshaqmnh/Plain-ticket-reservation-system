@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node ./bin/www",
-    "dev": "npm run db-migrate && nodemon",
+    "start": "SET \"NODE_ENV=production\" && npm run db-migrate && node ./bin/www",
+    "dev": "SET \"NODE_ENV=development\" && npm run db-migrate && nodemon",
     "nodemon": "nodemon ./bin/www",
     "db-migrate": "sequelize db:migrate",
     "test": "echo \"Error: no test specified\" && exit 1"
