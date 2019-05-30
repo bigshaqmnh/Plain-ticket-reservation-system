@@ -1,10 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const models = require('../database/models');
 
 const findUser = async (field, value) => {
   try {
-    const user = await models.user.findOne({
+    const user = await db.models.user.findOne({
       where: {
         [field]: value
       }
