@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       type: DataTypes.BOOLEAN,
       defaultValue: false
+    },
+    tickets: {
+      allowNull: false,
+      type: DataTypes.ARRAY(DataTypes.UUID)
     }
   });
   return user;
