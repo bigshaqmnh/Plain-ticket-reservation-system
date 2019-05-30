@@ -26,6 +26,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
+      tickets: {
+        allowNull: false,
+        type: Sequelize.ARRAY(Sequelize.UUID)
+      },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE
     });
