@@ -1,10 +1,12 @@
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const cors = require('cors');
 const passport = require('passport');
 require('./passportSetup')(passport);
-const cors = require('cors');
+require('./sequelizeSetup');
 
 const authRouter = require('./routes/auth');
 const airplaneRouter = require('./routes/airplane');
