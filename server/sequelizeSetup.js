@@ -2,19 +2,18 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 
 const { DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_HOST, DB_DIALECT } = process.env;
 const sequelize = new Sequelize(DB_DATABASE, DB_USERNAME, DB_PASSWORD, { host: DB_HOST, dialect: DB_DIALECT });
 const db = {};
-const basename = path.basename(__filename);
+const modelsPath = path.resolve(__dirname, 'database', 'models');
 
-fs.readdirSync(__dirname)
+fs.readdirSync(modelsPath)
   .filter(file => {
-    return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
+    return file.indexOf('.') !== 0 && file.slice(-3) === '.js';
   })
   .forEach(file => {
-    const model = sequelize['import'](path.join(__dirname, file));
+    const model = sequelize['import'](path.join(modelsPath, file));
     db[model.name] = model;
   });
 
@@ -27,4 +26,4 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+global.db = db;
