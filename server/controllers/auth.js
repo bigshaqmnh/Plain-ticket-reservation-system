@@ -6,9 +6,9 @@ const logIn = async (email, password) => {
   const user = await userService.findUser('email', email);
 
   if (user) {
-    const hasAccess = await userService.comparePasswords(password, user.password);
+    const passwordsMatch = await userService.comparePasswords(password, user.password);
 
-    if (hasAccess) {
+    if (passwordsMatch) {
       const { id, username } = user;
       const payload = {
         id,
