@@ -3,6 +3,3 @@
 
 # Ignore ./dist directory
 /dist
-
-#Ignore
-package-lock.json
