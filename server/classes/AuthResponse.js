@@ -1,4 +1,4 @@
-class Auth {
+class AuthResponse {
   constructor(err, data) {
     this._err = err;
     this._data = data;
@@ -13,4 +13,4 @@ class Auth {
   }
 }
 
-module.exports = Auth;
+module.exports = AuthResponse;

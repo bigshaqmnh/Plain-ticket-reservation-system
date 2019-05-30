@@ -1,5 +1,5 @@
 const userService = require('../services/user');
-const Auth = require('../classes/Auth');
+const AuthResponse = require('../classes/AuthResponse');
 const error = require('../constants/errors');
 
 const logIn = async (email, password) => {
@@ -17,11 +17,11 @@ const logIn = async (email, password) => {
 
       const token = await userService.generateToken(payload);
 
-      return new Auth(false, `Bearer ${token}`);
+      return new AuthResponse(false, `Bearer ${token}`);
     }
   }
 
-  return new Auth(true, error.logIn);
+  return new AuthResponse(true, error.logIn);
 };
 
 module.exports = { logIn };
