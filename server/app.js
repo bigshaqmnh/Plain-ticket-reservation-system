@@ -30,7 +30,7 @@ app.use('/auth', authRouter);
 app.use('/airplanes', airplaneRouter);
 
 app.use(function(req, res, next) {
-  next(createError(404, 'The page you are looking for does not exist.'));
+  next(createError(404, 'The route you are looking for does not exist.'));
 });
 
 app.use(function(err, req, res, next) {
