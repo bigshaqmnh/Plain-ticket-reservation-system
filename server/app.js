@@ -4,6 +4,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const statusCode = require('http-status-codes');
 const passport = require('passport');
 require('./passportSetup')(passport);
 require('./sequelizeSetup');
@@ -29,15 +30,9 @@ app.use(
 app.use('/auth', authRouter);
 app.use('/airplanes', airplaneRouter);
 
-app.use(function(req, res, next) {
-  next(createError(404, 'The route you are looking for does not exist.'));
-});
-
-app.use(function(err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  res.status(err.status || 500);
+app.use((req, res) => {
+  const err = createError(statusCode.NOT_FOUND, 'The route you are looking for does not exist.');
+  res.status(err.status).json(err.message);
 });
 
 const port = process.env.SERVER_PORT || '3000';
