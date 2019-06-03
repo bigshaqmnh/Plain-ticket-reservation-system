@@ -1,31 +1,44 @@
 'use strict';
 const validate = require('./validators/number');
+const validateDate = { isDate: true };
 
 module.exports = (sequelize, DataTypes) => {
   const flight = sequelize.define('flight', {
     id: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4
+      type: DataTypes.INTEGER,
+      autoIncrement: true
     },
-    departure_date: {
+    departure_time: {
       allowNull: false,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      validate: validateDate
     },
-    landing_date: {
+    arrival_time: {
       allowNull: false,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      validate: validateDate
     },
-    max_free_luggage: {
-      allowNull: true,
-      type: DataTypes.FLOAT,
-      validate: validate.float
-    },
-    overweight_cost: {
-      allowNull: true,
-      type: DataTypes.FLOAT,
+    departure_airport_id: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
       validate: validate.integer
+    },
+    arrival_airport_id: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+      validate: validate.integer
+    },
+    luggage_overweight_cost: {
+      allowNull: false,
+      type: DataTypes.DECIMAL,
+      validate: validate.decimal
+    },
+    is_cancelled: {
+      allowNull: false,
+      type: DataTypes.BOOLEAN,
+      defaultValut: false
     }
   });
 

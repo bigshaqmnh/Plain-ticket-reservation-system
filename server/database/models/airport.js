@@ -6,30 +6,31 @@ module.exports = (sequelize, DataTypes) => {
     id: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4
+      type: DataTypes.INTEGER,
+      autoIncrement: true
     },
     name: {
       allowNull: false,
+      unique: true,
       type: DataTypes.STRING
     },
-    address: {
+    country: {
+      allowNull: false,
+      type: DataTypes.STRING
+    },
+    city: {
       allowNull: false,
       type: DataTypes.STRING
     },
     latitude: {
-      allowNull: true,
+      allowNull: false,
       type: DataTypes.FLOAT,
       validate: validate.float
     },
     longitude: {
-      allowNull: true,
+      allowNull: false,
       type: DataTypes.FLOAT,
       validate: validate.float
-    },
-    description: {
-      allowNull: true,
-      type: DataTypes.TEXT
     }
   });
 

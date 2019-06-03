@@ -1,22 +1,34 @@
 'use strict';
+const validate = require('./validators/number');
+
 module.exports = (sequelize, DataTypes) => {
   const seat = sequelize.define('seat', {
     id: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4
+      type: DataTypes.INTEGER,
+      autoIncrement: true
     },
-    is_booked: {
-      allowNull: true,
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
+    row: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+      validate: validate.integer
+    },
+    seat: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      validate: validate.integer
+    },
+    floor: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+      validate: validate.integer
     }
   });
 
   seat.associate = models => {
-    seat.belongsTo(models.seatType);
     seat.belongsTo(models.airplane);
+    seat.belongsTo(models.seatType);
   };
 
   return seat;
