@@ -1,5 +1,4 @@
 'use strict';
-const validate = require('./validators/user');
 
 module.exports = (sequelize, DataTypes) => {
   const user = sequelize.define('user', {
@@ -16,16 +15,14 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       allowNull: false,
       unique: true,
-      type: DataTypes.STRING,
-      validate: validate.email
+      type: DataTypes.STRING
     },
-    password: {
+    password_hash: {
       allowNull: false,
-      type: DataTypes.STRING,
-      validate: validate.password
+      type: DataTypes.STRING
     },
     is_admin: {
-      allowNull: true,
+      allowNull: false,
       type: DataTypes.BOOLEAN,
       defaultValue: false
     }

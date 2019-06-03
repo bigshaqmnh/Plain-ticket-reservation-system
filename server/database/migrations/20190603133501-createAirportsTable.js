@@ -1,36 +1,41 @@
 'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('users', {
+    return queryInterface.createTable('airports', {
       id: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4
+        type: Sequelize.INTEGER,
+        autoIncrement: true
       },
-      username: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      email: {
+      name: {
         allowNull: false,
         unique: true,
         type: Sequelize.STRING
       },
-      password: {
+      country: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      is_admin: {
-        allowNull: true,
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
+      city: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      latitude: {
+        allowNull: false,
+        type: Sequelize.FLOAT
+      },
+      longitude: {
+        allowNull: false,
+        type: Sequelize.FLOAT
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE
     });
   },
+
   down: queryInterface => {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable('airports');
   }
 };
