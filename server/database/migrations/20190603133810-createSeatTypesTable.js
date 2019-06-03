@@ -2,16 +2,16 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('luggage', {
+    return queryInterface.createTable('seat_types', {
       id: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4
+        type: Sequelize.INTEGER,
+        autoIncrement: true
       },
-      weight: {
-        allowNull: true,
-        type: Sequelize.FLOAT
+      name: {
+        allowNull: false,
+        type: Sequelize.STRING
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE
@@ -19,6 +19,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('luggage');
+    return queryInterface.dropTable('seat_types');
   }
 };

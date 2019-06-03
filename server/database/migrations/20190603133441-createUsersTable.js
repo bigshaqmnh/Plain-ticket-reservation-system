@@ -17,18 +17,14 @@ module.exports = {
         unique: true,
         type: Sequelize.STRING
       },
-      password: {
+      password_hash: {
         allowNull: false,
         type: Sequelize.STRING
       },
       is_admin: {
-        allowNull: true,
+        allowNull: false,
         type: Sequelize.BOOLEAN,
         defaultValue: false
-      },
-      tickets: {
-        allowNull: false,
-        type: Sequelize.ARRAY(Sequelize.UUID)
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE

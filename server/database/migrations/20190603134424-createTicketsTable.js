@@ -6,17 +6,22 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
+        type: Sequelize.INTEGER,
+        autoIncrement: true
+      },
+      cost_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'costs',
+          key: 'id'
+        }
+      },
+      user_id: {
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4
-      },
-      cost: {
-        allowNull: false,
-        type: Sequelize.FLOAT
-      },
-      is_paid: {
-        allowNull: false,
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
+        references: {
+          model: 'users',
+          key: 'id'
+        }
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE

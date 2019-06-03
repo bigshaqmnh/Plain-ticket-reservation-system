@@ -2,12 +2,12 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('seatTypes', {
+    return queryInterface.createTable('luggage_types', {
       id: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4
+        type: Sequelize.INTEGER,
+        autoIncrement: true
       },
       name: {
         allowNull: false,
@@ -19,6 +19,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('seatTypes');
+    return queryInterface.dropTable('luggage_types');
   }
 };

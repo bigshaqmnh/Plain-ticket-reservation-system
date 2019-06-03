@@ -2,19 +2,23 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('luggageTypes', {
+    return queryInterface.createTable('airplanes', {
       id: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4
+        type: Sequelize.INTEGER,
+        autoIncrement: true
       },
       name: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      max_weight: {
-        allowNull: true,
+      type: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      max_luggage_carry_weight: {
+        allowNull: false,
         type: Sequelize.FLOAT
       },
       createdAt: Sequelize.DATE,
@@ -23,6 +27,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('luggageTypes');
+    return queryInterface.dropTable('airplanes');
   }
 };

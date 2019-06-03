@@ -6,29 +6,29 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4
+        type: Sequelize.INTEGER,
+        autoIncrement: true
       },
       name: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      address: {
         allowNull: false,
         unique: true,
         type: Sequelize.STRING
       },
+      country: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      city: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       latitude: {
-        allowNull: true,
+        allowNull: false,
         type: Sequelize.FLOAT
       },
       longitude: {
-        allowNull: true,
+        allowNull: false,
         type: Sequelize.FLOAT
-      },
-      description: {
-        allowNull: true,
-        type: Sequelize.TEXT
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE
