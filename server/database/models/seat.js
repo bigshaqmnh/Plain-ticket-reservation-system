@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
 
   seat.associate = models => {
     seat.belongsTo(models.airplane);
-    seat.belongsTo(models.seatType);
+    seat.belongsTo(models.seat_type);
   };
 
   return seat;

@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   cost.associate = models => {
     cost.belongsTo(models.flight);
     cost.belongsTo(models.seat);
-    cost.belongsTo(models.luggageOption);
+    cost.belongsTo(models.luggage_option);
   };
 
   return cost;

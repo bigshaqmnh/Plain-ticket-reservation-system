@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   luggageOption.associate = models => {
-    luggageOption.belongsTo(models.luggageType);
-    luggageOption.belongsTo(models.luggageSize);
+    luggageOption.belongsTo(models.luggage_type);
+    luggageOption.belongsTo(models.luggage_size);
   };
 
   return luggageOption;
