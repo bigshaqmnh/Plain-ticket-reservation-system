@@ -24,6 +24,7 @@ Object.keys(db).forEach(modelName => {
 });
 
 db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+// db.Sequelize = Sequelize;
+db.op = Sequelize.Op;
 
 global.db = db;
