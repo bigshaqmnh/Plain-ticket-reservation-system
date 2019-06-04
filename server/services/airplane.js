@@ -1,54 +1,52 @@
-const getAllFrom = async offset => {
-  const limit = offset + process.env.FIND_LIMIT;
+const getAllFrom = async pageNum => {
+  const { RESULTS_PER_PAGE: limit } = process.env;
+  const offset = pageNum * limit - limit;
+
   try {
-    const airplanes = db.models.airplane.findAll({ offset, limit });
-    // console.log('found airplanes: ', airplanes);
-    return airplanes;
+    const airplanes = await db.airplane.findAll({ offset, limit, order: [['id', 'ASC']] });
+    return airplanes.map(airplane => airplane.dataValues);
   } catch (err) {}
 };
 
-const findByField = async (field, value) => {
+const findByParams = async params => {
   try {
-    const airplane = await db.models.airplane.findOne({
-      where: {
-        [field]: value
-      }
+    const airplane = await db.airplane.findOne({
+      where: params
     });
-    // console.log('found by field', field, ':', airplane);
     return airplane.dataValues;
   } catch (err) {}
 };
 
 const findById = async id => {
   try {
-    const airplane = await db.models.airplane.findByPk(id);
-    // console.log('found by id', id, ':', airplane);
+    const airplane = await db.airplane.findByPk(id);
     return airplane.dataValues;
+  } catch (err) {}
+};
+
+const search = async inputString => {
+  try {
+    const airplanes = await db.airplane.findAll({
+      where: {
+        name: { [db.op.iLike]: `%${inputString}%` }
+      }
+    });
+    return airplanes.map(airplane => airplane.dataValues);
   } catch (err) {}
 };
 
 const add = async airplane => {
   try {
-    const newAirplane = await db.models.airplane.create(airplane);
-    // console.log('added airplane: ', newAirplane);
-    return newAirplane;
+    const newAirplane = await db.airplane.create(airplane);
+    return newAirplane.dataValues;
   } catch (err) {}
 };
 
 const update = async airplane => {
   try {
-    const updatedAirplane = await db.models.airplane.update(airplane, { where: { id: airplane.id } });
-    // console.log('updated airplane: ', updatedAirplane);
+    const updatedAirplane = await db.airplane.update(airplane, { where: { id: airplane.id } });
     return updatedAirplane;
   } catch (err) {}
 };
 
-const remove = async id => {
-  try {
-    const deletedAirplane = await db.models.airplane.destroy({ where: { id } });
-    // console.log('deleted airplane: ', deletedAirplane);
-    return deletedAirplane;
-  } catch (err) {}
-};
-
-module.exports = { getAllFrom, findByField, findById, add, update, remove };
+module.exports = { getAllFrom, findByParams, findById, search, add, update };
