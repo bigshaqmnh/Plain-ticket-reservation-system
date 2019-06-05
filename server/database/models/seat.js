@@ -23,12 +23,17 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.INTEGER,
       validate: validate.integer
+    },
+    isBooked: {
+      allowNull: false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   });
 
   seat.associate = models => {
     seat.belongsTo(models.airplane);
-    seat.belongsTo(models.seat_type);
+    seat.belongsTo(models.seatType);
   };
 
   return seat;

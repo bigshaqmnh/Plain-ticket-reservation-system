@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const seatType = sequelize.define('seat_type', {
+  const seatType = sequelize.define('seatType', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       allowNull: false,
+      unique: true,
       type: DataTypes.STRING
     }
   });

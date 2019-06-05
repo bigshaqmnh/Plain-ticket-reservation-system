@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-  const luggageOption = sequelize.define('luggage_option', {
+  const luggageOption = sequelize.define('luggageOption', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -10,13 +10,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       allowNull: false,
+      unique: true,
       type: DataTypes.STRING
     }
   });
 
   luggageOption.associate = models => {
-    luggageOption.belongsTo(models.luggage_type);
-    luggageOption.belongsTo(models.luggage_size);
+    luggageOption.belongsTo(models.luggageType);
+    luggageOption.belongsTo(models.luggageSize);
   };
 
   return luggageOption;
