@@ -17,7 +17,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      max_luggage_carry_weight: {
+      maxLuggageCarryWeight: {
         allowNull: false,
         type: Sequelize.FLOAT
       },

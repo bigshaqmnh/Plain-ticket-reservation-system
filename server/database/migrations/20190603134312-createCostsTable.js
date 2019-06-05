@@ -13,24 +13,24 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DECIMAL
       },
-      flight_id: {
+      flightId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'flights',
           key: 'id'
         }
       },
-      seat_id: {
+      seatTypeId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'seats',
+          model: 'seatTypes',
           key: 'id'
         }
       },
-      luggage_option_id: {
+      luggageOptionId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'luggage_options',
+          model: 'luggageOptions',
           key: 'id'
         }
       },

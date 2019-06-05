@@ -9,14 +9,21 @@ module.exports = {
         type: Sequelize.INTEGER,
         autoIncrement: true
       },
-      cost_id: {
+      seatId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'seats',
+          key: 'id'
+        }
+      },
+      costId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'costs',
           key: 'id'
         }
       },
-      user_id: {
+      userId: {
         type: Sequelize.UUID,
         references: {
           model: 'users',
