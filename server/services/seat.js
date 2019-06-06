@@ -9,12 +9,12 @@ const findByAirplaneId = async airplaneId => {
   } catch (err) {}
 };
 
-const getAmountOfUnbooked = async airplaneId => {
+const getNumberOfUnbooked = async airplaneId => {
   try {
-    const amountOfUnbookedSeats = await db.seat.count({
+    const numberOfUnbookedSeats = await db.seat.count({
       where: { airplaneId, isBooked: false }
     });
-    return amountOfUnbookedSeats;
+    return numberOfUnbookedSeats;
   } catch (err) {}
 };
 
@@ -40,4 +40,4 @@ const update = async seat => {
   } catch (err) {}
 };
 
-module.exports = { findByAirplaneId, getAmountOfUnbooked, findById, update };
+module.exports = { findByAirplaneId, getNumberOfUnbooked, findById, update };
