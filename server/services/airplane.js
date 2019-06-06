@@ -1,19 +1,13 @@
-const getAllFrom = async pageNum => {
+const getFromPage = async pageNum => {
   const { RESULTS_PER_PAGE: limit } = process.env;
   const offset = pageNum * limit - limit;
 
   try {
     const airplanes = await db.airplane.findAll({ offset, limit, order: [['id', 'ASC']] });
-    return airplanes.map(airplane => airplane.dataValues);
-  } catch (err) {}
-};
-
-const findByParams = async params => {
-  try {
-    const airplane = await db.airplane.findOne({
-      where: params
-    });
-    return airplane.dataValues;
+    return {
+      data: airplanes.map(airplane => airplane.dataValues),
+      nextPage: ++pageNum
+    };
   } catch (err) {}
 };
 
@@ -42,11 +36,4 @@ const add = async airplane => {
   } catch (err) {}
 };
 
-const update = async airplane => {
-  try {
-    const updatedAirplane = await db.airplane.update(airplane, { where: { id: airplane.id } });
-    return updatedAirplane;
-  } catch (err) {}
-};
-
-module.exports = { getAllFrom, findByParams, findById, search, add, update };
+module.exports = { getFromPage, findById, search, add };
