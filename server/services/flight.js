@@ -10,7 +10,7 @@ const getAll = async (limit = 20, pageNum = 1) => {
   } catch (err) {}
 };
 
-const findByParams = async params => {
+const findByParams = async (params, limit = 20) => {
   const { departureTime: from } = params;
   const to = new Date(from.getTime() + 86400000);
   try {
@@ -20,7 +20,8 @@ const findByParams = async params => {
         departureTime: {
           [db.op.between]: [from, to]
         }
-      }
+      },
+      limit
     });
     return flights.map(flight => flight.dataValues);
   } catch (err) {}
@@ -46,7 +47,7 @@ const findById = async id => {
   } catch (err) {}
 };
 
-const searchByDepAirport = async inputString => {
+const _searchByDepAirport = async inputString => {
   try {
     const flights = await db.flight.findAll({
       include: [
@@ -73,7 +74,7 @@ const searchByDepAirport = async inputString => {
   } catch (err) {}
 };
 
-const searchByArrAirport = async inputString => {
+const _searchByArrAirport = async inputString => {
   try {
     const flights = await db.flight.findAll({
       include: [
@@ -100,12 +101,12 @@ const searchByArrAirport = async inputString => {
   } catch (err) {}
 };
 
-const search = async inputString => {
+const search = async (inputString, limit = 20) => {
   try {
-    const depFlights = await searchByDepAirport(inputString);
-    const arrFlights = await searchByArrAirport(inputString);
+    const depFlights = await _searchByDepAirport(inputString);
+    const arrFlights = await _searchByArrAirport(inputString);
 
-    return Array.prototype.concat(depFlights, arrFlights);
+    return Array.prototype.concat(depFlights, arrFlights).slice(0, limit);
   } catch (err) {}
 };
 

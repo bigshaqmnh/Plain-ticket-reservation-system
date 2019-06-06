@@ -17,18 +17,19 @@ const findById = async id => {
   } catch (err) {}
 };
 
-const searchByParam = async (param, inputString) => {
+const searchByParam = async (param, inputString, limit = 20) => {
   try {
     const airports = await db.airport.findAll({
       where: {
         [param]: { [db.op.iLike]: `%${inputString}%` }
-      }
+      },
+      limit
     });
     return airports.map(airport => airport.dataValues);
   } catch (err) {}
 };
 
-const searchAll = async inputString => {
+const searchAll = async (inputString, limit = 20) => {
   try {
     const airports = await db.airport.findAll({
       where: {
@@ -43,7 +44,8 @@ const searchAll = async inputString => {
             city: { [db.op.iLike]: `%${inputString}%` }
           }
         ]
-      }
+      },
+      limit
     });
     return airports.map(airport => airport.dataValues);
   } catch (err) {}

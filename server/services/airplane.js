@@ -17,12 +17,13 @@ const findById = async id => {
   } catch (err) {}
 };
 
-const search = async inputString => {
+const search = async (inputString, limit = 20) => {
   try {
     const airplanes = await db.airplane.findAll({
       where: {
         name: { [db.op.iLike]: `%${inputString}%` }
-      }
+      },
+      limit
     });
     return airplanes.map(airplane => airplane.dataValues);
   } catch (err) {}
