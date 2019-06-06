@@ -3,7 +3,7 @@ const AuthResponse = require('../classes/AuthResponse');
 const error = require('../constants/errors');
 
 const logIn = async (email, password) => {
-  const user = await userService.findUser('email', email);
+  const user = await userService.findByEmail(email);
 
   if (user) {
     const passwordsMatch = await userService.comparePasswords(password, user.password);
