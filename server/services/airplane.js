@@ -1,8 +1,28 @@
-const getAll = async (limit = 20, pageNum = 1) => {
+const getAll = async ({ page, inputString, resLimit } = {}) => {
+  const limit = resLimit || 20;
+  const pageNum = page || 1;
   const offset = pageNum * limit - limit;
+  const searchParam = inputString
+    ? {
+        [db.op.or]: [
+          {
+            name: { [db.op.iLike]: `%${inputString}%` }
+          },
+          {
+            type: { [db.op.iLike]: `%${inputString}%` }
+          }
+        ]
+      }
+    : {};
 
   try {
-    const airplanes = await db.airplane.findAll({ offset, limit, order: [['id', 'ASC']] });
+    const airplanes = await db.airplane.findAll({
+      where: searchParam,
+      offset,
+      limit,
+      order: [['id', 'ASC']]
+    });
+
     return {
       data: airplanes.map(airplane => airplane.dataValues),
       nextPage: ++pageNum
@@ -17,18 +37,6 @@ const findById = async id => {
   } catch (err) {}
 };
 
-const search = async (inputString, limit = 20) => {
-  try {
-    const airplanes = await db.airplane.findAll({
-      where: {
-        name: { [db.op.iLike]: `%${inputString}%` }
-      },
-      limit
-    });
-    return airplanes.map(airplane => airplane.dataValues);
-  } catch (err) {}
-};
-
 const add = async airplane => {
   try {
     const newAirplane = await db.airplane.create(airplane);
@@ -36,4 +44,4 @@ const add = async airplane => {
   } catch (err) {}
 };
 
-module.exports = { getAll, findById, search, add };
+module.exports = { getAll, findById, add };
