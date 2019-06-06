@@ -1,5 +1,4 @@
-const getFromPage = async pageNum => {
-  const { RESULTS_PER_PAGE: limit } = process.env;
+const getAll = async (limit = 20, pageNum = 1) => {
   const offset = pageNum * limit - limit;
 
   try {
@@ -124,4 +123,4 @@ const update = async flight => {
   } catch (err) {}
 };
 
-module.exports = { getFromPage, findByParams, findById, search, add, update };
+module.exports = { getAll, findByParams, findById, search, add, update };
