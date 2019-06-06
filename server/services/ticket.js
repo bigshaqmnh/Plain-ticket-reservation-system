@@ -1,4 +1,4 @@
-const findByUserId = async (userId, limit = 20, pageNum = 1) => {
+const findByUserId = async (userId, pageNum = 1, limit = 20) => {
   const offset = pageNum * limit - limit;
 
   try {
