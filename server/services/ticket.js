@@ -30,4 +30,4 @@ const update = async ticket => {
   } catch (err) {}
 };
 
-module.exports = { findByUserId, getAllWithAttributes, findByParams, findById, search, add, update };
+module.exports = { findByUserId, add, update };
