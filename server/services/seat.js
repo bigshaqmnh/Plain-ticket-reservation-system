@@ -25,7 +25,11 @@ const findById = async id => {
       include: [{ model: db.seatType, attributes: ['name'] }],
       attributes: ['row', 'seat', 'floor']
     });
-    return seat.dataValues;
+    const { dataValues, seatType } = seat;
+    return {
+      seat: dataValues,
+      seatType: seatType.dataValues
+    };
   } catch (err) {}
 };
 
