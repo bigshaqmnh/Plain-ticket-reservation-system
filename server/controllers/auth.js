@@ -2,11 +2,11 @@ const userService = require('../services/user');
 const AuthResponse = require('../classes/AuthResponse');
 const error = require('../constants/errors');
 
-const logIn = async (email, password) => {
+const logIn = async ({ email, password }) => {
   const user = await userService.findByEmail(email);
 
   if (user) {
-    const passwordsMatch = await userService.comparePasswords(password, user.password);
+    const passwordsMatch = await userService.comparePasswords(password, user.passwordHash);
 
     if (passwordsMatch) {
       const { id, username } = user;
