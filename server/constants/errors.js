@@ -1,7 +1,12 @@
 const statusCode = require('http-status-codes');
 
-const error = {
+const reqError = {
   logIn: { status: statusCode.UNAUTHORIZED, message: 'Unable to log in. Check your credentials.' }
 };
 
-module.exports = error;
+const dbError = {
+  get: { status: statusCode.SERVICE_UNAVAILABLE, message: 'Unable to get data.' },
+  create: { status: statusCode.SERVICE_UNAVAILABLE, message: 'Unable to create new instance.' }
+};
+
+module.exports = { reqError, dbError };
