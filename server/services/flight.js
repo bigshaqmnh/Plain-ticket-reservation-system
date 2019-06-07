@@ -1,8 +1,55 @@
-const getAll = async (limit = 20, pageNum = 1) => {
+const _genIncludeStatement = (foreignKey, inputString) => {
+  return [
+    {
+      model: db.airport,
+      as: foreignKey,
+      where: {
+        [db.op.or]: [
+          {
+            name: { [db.op.iLike]: `%${inputString}%` }
+          },
+          {
+            country: { [db.op.iLike]: `%${inputString}%` }
+          },
+          {
+            city: { [db.op.iLike]: `%${inputString}%` }
+          }
+        ]
+      }
+    }
+  ];
+};
+
+const getAll = async ({ page, inputString, resLimit } = {}) => {
+  const limit = resLimit || 20;
+  const pageNum = page || 1;
   const offset = pageNum * limit - limit;
 
   try {
-    const flights = await db.flight.findAll({ offset, limit, order: [['id', 'ASC']] });
+    let flights = [];
+
+    if (inputString) {
+      const depFlights = await db.flight.findAll({
+        include: _genIncludeStatement('departureAirport', inputString),
+        offset,
+        order: [['id', 'ASC']]
+      });
+
+      const arrFlights = await db.flight.findAll({
+        include: _genIncludeStatement('arrivalAirport', inputString),
+        offset,
+        order: [['id', 'ASC']]
+      });
+
+      flights = Array.prototype.concat(depFlights, arrFlights).slice(0, limit);
+    } else {
+      flights = await db.flight.findAll({
+        offset,
+        limit,
+        order: [['id', 'ASC']]
+      });
+    }
+
     return {
       data: flights.map(flight => flight.dataValues),
       nextPage: ++pageNum
@@ -47,69 +94,6 @@ const findById = async id => {
   } catch (err) {}
 };
 
-const _searchByDepAirport = async inputString => {
-  try {
-    const flights = await db.flight.findAll({
-      include: [
-        {
-          model: db.airport,
-          as: 'departureAirport',
-          where: {
-            [db.op.or]: [
-              {
-                name: { [db.op.iLike]: `%${inputString}%` }
-              },
-              {
-                country: { [db.op.iLike]: `%${inputString}%` }
-              },
-              {
-                city: { [db.op.iLike]: `%${inputString}%` }
-              }
-            ]
-          }
-        }
-      ]
-    });
-    return flights.map(flight => flight.dataValues);
-  } catch (err) {}
-};
-
-const _searchByArrAirport = async inputString => {
-  try {
-    const flights = await db.flight.findAll({
-      include: [
-        {
-          model: db.airport,
-          as: 'arrivalAirport',
-          where: {
-            [db.op.or]: [
-              {
-                name: { [db.op.iLike]: `%${inputString}%` }
-              },
-              {
-                country: { [db.op.iLike]: `%${inputString}%` }
-              },
-              {
-                city: { [db.op.iLike]: `%${inputString}%` }
-              }
-            ]
-          }
-        }
-      ]
-    });
-    return flights.map(flight => flight.dataValues);
-  } catch (err) {}
-};
-
-const search = async (inputString, limit = 20) => {
-  try {
-    const depFlights = await _searchByDepAirport(inputString);
-    const arrFlights = await _searchByArrAirport(inputString);
-
-    return Array.prototype.concat(depFlights, arrFlights).slice(0, limit);
-  } catch (err) {}
-};
-
 const add = async flight => {
   try {
     const newflight = await db.flight.create(flight);
@@ -124,4 +108,4 @@ const update = async flight => {
   } catch (err) {}
 };
 
-module.exports = { getAll, findByParams, findById, search, add, update };
+module.exports = { getAll, findByParams, findById, add, update };
