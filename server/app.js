@@ -11,6 +11,8 @@ require('./sequelizeSetup');
 
 const authRouter = require('./routes/auth');
 const airplaneRouter = require('./routes/airplane');
+const airportRouter = require('./routes/airport');
+const flightRouter = require('./routes/flight');
 
 const app = express();
 
@@ -29,6 +31,8 @@ app.use(
 
 app.use('/auth', authRouter);
 app.use('/airplanes', airplaneRouter);
+app.use('/airports', airportRouter);
+app.use('/flights', flightRouter);
 
 app.use((req, res) => {
   const err = createError(statusCode.NOT_FOUND, 'The route you are looking for does not exist.');
