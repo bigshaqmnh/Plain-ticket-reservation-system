@@ -1,5 +1,5 @@
 class AuthResponse {
-  constructor(err, data) {
+  constructor(err = false, data = null) {
     this._err = err;
     this._data = data;
   }
