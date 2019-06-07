@@ -1,6 +1,6 @@
-const find = async ({ page, inputString, resLimit } = {}) => {
+const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
   const limit = resLimit || 20;
-  const pageNum = page || 1;
+  const pageNum = +page || 1;
   const offset = pageNum * limit - limit;
   const searchParam = inputString
     ? {
@@ -25,23 +25,29 @@ const find = async ({ page, inputString, resLimit } = {}) => {
 
     return {
       data: airplanes.map(airplane => airplane.dataValues),
-      nextPage: ++pageNum
+      nextPage: pageNum + 1
     };
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
 const findById = async id => {
   try {
     const airplane = await db.airplane.findByPk(id);
     return airplane.dataValues;
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
 const add = async airplane => {
   try {
     const newAirplane = await db.airplane.create(airplane);
     return newAirplane.dataValues;
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
 module.exports = { find, findById, add };

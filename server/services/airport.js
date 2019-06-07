@@ -1,12 +1,12 @@
-const find = async ({ page, inputString, param, resLimit } = {}) => {
+const find = async ({ page, query: inputString, field, limit: resLimit } = {}) => {
   const limit = resLimit || 20;
-  const pageNum = page || 1;
+  const pageNum = +page || 1;
   const offset = pageNum * limit - limit;
   let searchParam = {};
 
-  if (param && inputString) {
+  if (field && inputString) {
     searchParam = {
-      [param]: { [db.op.iLike]: `%${inputString}%` }
+      [field]: { [db.op.iLike]: `%${inputString}%` }
     };
   } else if (inputString) {
     searchParam = {
@@ -34,23 +34,29 @@ const find = async ({ page, inputString, param, resLimit } = {}) => {
 
     return {
       data: airports.map(airport => airport.dataValues),
-      nextPage: ++pageNum
+      nextPage: pageNum + 1
     };
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
 const findById = async id => {
   try {
     const airport = await db.airport.findByPk(id);
     return airport.dataValues;
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
 const add = async airport => {
   try {
     const newAirport = await db.airport.create(airport);
     return newAirport.dataValues;
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
 module.exports = { find, findById, add };

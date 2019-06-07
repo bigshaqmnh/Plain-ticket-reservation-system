@@ -20,9 +20,9 @@ const _genIncludeStatement = (foreignKey, inputString) => {
   ];
 };
 
-const find = async ({ page, inputString, resLimit } = {}) => {
+const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
   const limit = resLimit || 20;
-  const pageNum = page || 1;
+  const pageNum = +page || 1;
   const offset = pageNum * limit - limit;
 
   try {
@@ -52,26 +52,33 @@ const find = async ({ page, inputString, resLimit } = {}) => {
 
     return {
       data: flights.map(flight => flight.dataValues),
-      nextPage: ++pageNum
+      nextPage: pageNum + 1
     };
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
-const findByParams = async (params, limit = 20) => {
-  const { departureTime: from } = params;
+const findByParams = async ({ country, city, departureTime: from, limit: resLimit }) => {
+  const limit = resLimit || 20;
   const to = new Date(from.getTime() + 86400000);
+
   try {
     const flights = await db.flight.findAll({
       where: {
-        ...params,
+        country,
+        city,
         departureTime: {
           [db.op.between]: [from, to]
         }
       },
       limit
     });
+
     return flights.map(flight => flight.dataValues);
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
 const findById = async id => {
@@ -91,21 +98,27 @@ const findById = async id => {
       departureAirport: departureAirport.dataValues,
       arrivalAirport: arrivalAirport.dataValues
     };
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
 const add = async flight => {
   try {
     const newflight = await db.flight.create(flight);
     return newflight.dataValues;
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
 const update = async flight => {
   try {
     const updatedflight = await db.flight.update(flight, { where: { id: flight.id } });
     return updatedflight;
-  } catch (err) {}
+  } catch (err) {
+    return err;
+  }
 };
 
 module.exports = { find, findByParams, findById, add, update };
