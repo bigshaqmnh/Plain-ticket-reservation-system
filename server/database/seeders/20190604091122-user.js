@@ -11,7 +11,7 @@ module.exports = {
         id: 'df198ce7-14de-4c7f-bfd5-b9b96f76ace5',
         username: 'Mike',
         email: 'kmikecoder@gmail.com',
-        password_hash: genPassHash('qwerty'),
+        passwordHash: genPassHash('qwerty'),
         isAdmin: true,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -20,7 +20,7 @@ module.exports = {
         id: '4af5fd33-c752-4e10-ab24-d5f5d54c433a',
         username: 'Batman98',
         email: 'hatesuperman@gmail.com',
-        password_hash: genPassHash('j0k3r-p0k3r'),
+        passwordHash: genPassHash('j0k3r-p0k3r'),
         isAdmin: false,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -29,7 +29,7 @@ module.exports = {
         id: 'c648c063-2e51-49c7-98b7-749154a0e43e',
         username: 'User3748',
         email: 'example@mail.com',
-        password_hash: genPassHash('3hjbf84'),
+        passwordHash: genPassHash('3hjbf84'),
         isAdmin: false,
         createdAt: new Date(),
         updatedAt: new Date()
