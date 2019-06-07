@@ -1,4 +1,4 @@
-const getAll = async ({ page, inputString, resLimit } = {}) => {
+const find = async ({ page, inputString, resLimit } = {}) => {
   const limit = resLimit || 20;
   const pageNum = page || 1;
   const offset = pageNum * limit - limit;
@@ -44,4 +44,4 @@ const add = async airplane => {
   } catch (err) {}
 };
 
-module.exports = { getAll, findById, add };
+module.exports = { find, findById, add };

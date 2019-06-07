@@ -20,7 +20,7 @@ const _genIncludeStatement = (foreignKey, inputString) => {
   ];
 };
 
-const getAll = async ({ page, inputString, resLimit } = {}) => {
+const find = async ({ page, inputString, resLimit } = {}) => {
   const limit = resLimit || 20;
   const pageNum = page || 1;
   const offset = pageNum * limit - limit;
@@ -108,4 +108,4 @@ const update = async flight => {
   } catch (err) {}
 };
 
-module.exports = { getAll, findByParams, findById, add, update };
+module.exports = { find, findByParams, findById, add, update };
