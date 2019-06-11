@@ -1,63 +1,75 @@
 const flightService = require('../services/flight');
 const seatService = require('../services/seat');
 const costService = require('../services/cost');
-const airplaneService = require('../services/airplane');
 const FlightResponse = require('../classes/FlightResponse');
 const { dbError } = require('../constants/errors');
 
-const getFlights = async params => {
-  const flights = await flightService.find(params);
+const getAll = async params => {
+  try {
+    const flights = await flightService.find(params);
 
-  if (flights instanceof Error) {
+    return new FlightResponse(false, flights);
+  } catch (err) {
     return new FlightResponse(true, dbError.get);
   }
-
-  return new FlightResponse(false, flights);
 };
 
-const getFlightsByParams = async params => {
-  const flights = await flightService.findByParams(params);
-  const flightsWithEnoughSeats = flights.filter(
-    async flight => (await seatService.getNumberOfUnbooked(flight.airplaneId)) >= params.numOfPeople
-  );
+const getAllByParams = async params => {
+  try {
+    const flights = await flightService.findByParams(params);
+    const suitableFlights = [];
 
-  const suitableFlights = flightsWithEnoughSeats.map(flight => {
-    const minCost = await costService.findMinCostByFlightId(flight.id);
-    const airplane = await airplaneService.findById(flight.airplaneId);
+    for (const flight of flights) {
+      const numOfUnbookedSeats = await seatService.getNumberOfUnbooked(flight.airplaneId);
+      const numOfPeople = params.numOfPeople || 1;
 
-    return {
-      ...flight,
-      minCost,
-      airplane
+      if (numOfUnbookedSeats >= numOfPeople) {
+        const minCost = await costService.findMinCostByFlightId(flight.id);
+
+        suitableFlights.push({
+          ...flight,
+          departureAirport: flight.departureAirport.dataValues,
+          arrivalAirport: flight.arrivalAirport.dataValues,
+          airplane: flight.airplane.dataValues,
+          minCost
+        });
+      }
     }
-  });
-  
 
-  if (flights instanceof Error) {
+    return new FlightResponse(false, suitableFlights);
+  } catch (err) {
     return new FlightResponse(true, dbError.get);
   }
-
-  return new FlightResponse(false, suitableFlights);
 };
 
-const getFlightById = async ({ flightId }) => {
-  const flight = await flightService.findById(flightId);
+const getById = async ({ flightId }) => {
+  try {
+    const flight = await flightService.findById(flightId);
 
-  if (flight instanceof Error) {
+    return new FlightResponse(false, flight);
+  } catch (err) {
     return new FlightResponse(true, dbError.get);
   }
-
-  return new FlightResponse(false, flight);
 };
 
-const addFlight = async flight => {
-  const isCreated = await flightService.add(flight);
+const add = async flight => {
+  try {
+    await flightService.add(flight);
 
-  if (isCreated instanceof Error) {
+    return new FlightResponse();
+  } catch (err) {
     return new FlightResponse(true, dbError.create);
   }
-
-  return new FlightResponse();
 };
 
-module.exports = { getFlights, getFlightsByParams, getFlightById, addFlight };
+const update = async ({ id, flight }) => {
+  try {
+    await flightService.update(id, flight);
+
+    return new FlightResponse();
+  } catch (err) {
+    return new FlightResponse(true, dbError.update);
+  }
+};
+
+module.exports = { getAll, getAllByParams, getById, add, update };
