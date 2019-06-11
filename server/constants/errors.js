@@ -7,6 +7,7 @@ const reqError = {
 
 const dbError = {
   logIn: { status: statusCode.SERVICE_UNAVAILABLE, message: 'Unable to log in.' },
+  singUp: { status: statusCode.SERVICE_UNAVAILABLE, message: 'Unable to sign up.' },
   get: { status: statusCode.SERVICE_UNAVAILABLE, message: 'Unable to get data.' },
   create: { status: statusCode.SERVICE_UNAVAILABLE, message: 'Unable to create new instance.' },
   update: { status: statusCode.SERVICE_UNAVAILABLE, message: 'Unable to update the instance.' }
