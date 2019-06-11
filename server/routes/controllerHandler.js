@@ -12,7 +12,7 @@ const controllerHandler = (promise, params) => async (req, res, next) => {
       return res.status(statusCode.OK).json(data);
     }
 
-    return res.status(statusCode.OK);
+    return res.sendStatus(statusCode.OK);
   } catch (error) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(error);
   }
