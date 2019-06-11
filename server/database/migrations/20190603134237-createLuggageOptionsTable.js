@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('luggage_options', {
+    return queryInterface.createTable('luggageOptions', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -11,19 +11,20 @@ module.exports = {
       },
       name: {
         allowNull: false,
+        unique: true,
         type: Sequelize.STRING
       },
-      luggage_type_id: {
+      luggageTypeId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'luggage_types',
+          model: 'luggageTypes',
           key: 'id'
         }
       },
-      luggage_size_id: {
+      luggageSizeId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'luggage_sizes',
+          model: 'luggageSizes',
           key: 'id'
         }
       },
@@ -33,6 +34,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('luggage_options');
+    return queryInterface.dropTable('luggageOptions');
   }
 };

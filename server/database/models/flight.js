@@ -10,32 +10,22 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       autoIncrement: true
     },
-    departure_time: {
+    departureTime: {
       allowNull: false,
       type: DataTypes.DATE,
       validate: validateDate
     },
-    arrival_time: {
+    arrivalTime: {
       allowNull: false,
       type: DataTypes.DATE,
       validate: validateDate
     },
-    departure_airport_id: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
-      validate: validate.integer
-    },
-    arrival_airport_id: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
-      validate: validate.integer
-    },
-    luggage_overweight_cost: {
+    luggageOverweightCost: {
       allowNull: false,
       type: DataTypes.DECIMAL,
       validate: validate.decimal
     },
-    is_cancelled: {
+    isCancelled: {
       allowNull: false,
       type: DataTypes.BOOLEAN,
       defaultValut: false
@@ -43,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   flight.associate = models => {
-    flight.belongsTo(models.airport);
+    flight.belongsTo(models.airport, { as: 'departureAirport' });
+    flight.belongsTo(models.airport, { as: 'arrivalAirport' });
     flight.belongsTo(models.airplane);
   };
 

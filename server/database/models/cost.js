@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
 
   cost.associate = models => {
     cost.belongsTo(models.flight);
-    cost.belongsTo(models.seat);
+    cost.belongsTo(models.seatType);
     cost.belongsTo(models.luggageOption);
   };
 

@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('luggage_sizes', {
+    return queryInterface.createTable('luggageSizes', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      max_weight: {
+      maxWeight: {
         allowNull: false,
         type: Sequelize.FLOAT
       },
@@ -23,6 +23,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('luggage_sizes');
+    return queryInterface.dropTable('luggageSizes');
   }
 };

@@ -21,17 +21,22 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      airplane_id: {
+      isBooked: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      airplaneId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'airplanes',
           key: 'id'
         }
       },
-      seat_type_id: {
+      seatTypeId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'seat_types',
+          model: 'seatTypes',
           key: 'id'
         }
       },

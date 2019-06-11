@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-  const luggageType = sequelize.define('luggage_type', {
+  const luggageType = sequelize.define('luggageType', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       allowNull: false,
+      unique: true,
       type: DataTypes.STRING
     }
   });

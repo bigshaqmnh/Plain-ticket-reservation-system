@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 
   ticket.associate = models => {
     ticket.belongsTo(models.cost);
+    ticket.belongsTo(models.seat);
     ticket.hasOne(models.user);
   };
 

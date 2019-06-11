@@ -9,39 +9,38 @@ module.exports = {
         type: Sequelize.INTEGER,
         autoIncrement: true
       },
-      departure_time: {
+      departureTime: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      arrival_time: {
+      arrivalTime: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      departure_airport_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
-      arrival_airport_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
-      luggage_overweight_cost: {
-        allowNull: false,
-        type: Sequelize.DECIMAL
-      },
-      is_cancelled: {
-        allowNull: false,
-        type: Sequelize.BOOLEAN,
-        defaultValut: false
-      },
-      airport_id: {
+      departureAirportId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'airports',
           key: 'id'
         }
       },
-      airplane_id: {
+      arrivalAirportId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'airports',
+          key: 'id'
+        }
+      },
+      luggageOverweightCost: {
+        allowNull: false,
+        type: Sequelize.DECIMAL
+      },
+      isCancelled: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValut: false
+      },
+      airplaneId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'airplanes',

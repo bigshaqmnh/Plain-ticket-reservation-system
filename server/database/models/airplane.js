@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING
     },
-    max_luggage_carry_weight: {
+    maxLuggageCarryWeight: {
       allowNull: false,
       type: DataTypes.FLOAT,
       validate: validate.float

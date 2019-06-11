@@ -2,7 +2,7 @@
 const validate = require('./validators/number');
 
 module.exports = (sequelize, DataTypes) => {
-  const luggageSize = sequelize.define('luggage_size', {
+  const luggageSize = sequelize.define('luggageSize', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING
     },
-    max_weight: {
+    maxWeight: {
       allowNull: false,
       type: DataTypes.FLOAT,
       validate: validate.float
