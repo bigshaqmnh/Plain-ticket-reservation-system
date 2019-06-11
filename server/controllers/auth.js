@@ -10,13 +10,7 @@ const logIn = async ({ email, password }) => {
       const passwordsMatch = await userService.comparePasswords(password, user.passwordHash);
 
       if (passwordsMatch) {
-        const { id, username } = user;
-        const payload = {
-          id,
-          username
-        };
-
-        const token = await userService.generateToken(payload);
+        const token = await userService.generateToken({ email });
 
         return new AuthResponse(false, `Bearer ${token}`);
       }
@@ -45,8 +39,9 @@ const signUp = async ({ username, email, password }) => {
     };
 
     await userService.add(newUser);
+    const token = await userService.generateToken({ email });
 
-    return new AuthResponse();
+    return new AuthResponse(false, `Bearer ${token}`);
   } catch (err) {
     return new AuthResponse(true, dbError.signUp);
   }
