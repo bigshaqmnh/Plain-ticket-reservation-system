@@ -6,27 +6,32 @@ const findByUserId = async (userId, pageNum = 1, limit = 20) => {
       where: { userId },
       offset,
       limit,
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
+      attributes: ['seatId', 'costId']
     });
     return {
       data: tickets.map(ticket => ticket.dataValues),
-      nextPage: ++pageNum
+      nextPage: +pageNum + 1
     };
-  } catch (err) {}
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
 const add = async ticket => {
   try {
-    const newTicket = await db.ticket.create(ticket);
-    return newTicket.dataValues;
-  } catch (err) {}
+    await db.ticket.create(ticket);
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
-const update = async ticket => {
+const update = async (id, ticket) => {
   try {
-    const updatedTicket = await db.ticket.update(ticket, { where: { id: ticket.id } });
-    return updatedTicket;
-  } catch (err) {}
+    await db.ticket.update(ticket, { where: { id } });
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
 module.exports = { findByUserId, add, update };

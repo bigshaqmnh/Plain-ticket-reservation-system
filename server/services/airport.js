@@ -37,7 +37,7 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
       nextPage: pageNum + 1
     };
   } catch (err) {
-    return err;
+    throw new Error(err);
   }
 };
 
@@ -46,7 +46,7 @@ const findById = async id => {
     const airport = await db.airport.findByPk(id);
     return airport.dataValues;
   } catch (err) {
-    return err;
+    throw new Error(err);
   }
 };
 
@@ -55,7 +55,7 @@ const add = async airport => {
     const newAirport = await db.airport.create(airport);
     return newAirport.dataValues;
   } catch (err) {
-    return err;
+    throw new Error(err);
   }
 };
 
