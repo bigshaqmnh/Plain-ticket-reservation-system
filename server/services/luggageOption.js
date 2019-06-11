@@ -1,3 +1,18 @@
+const find = async () => {
+  try {
+    const luggageOptions = await db.luggageOption.findAll({
+      include: [
+        { model: db.luggageType, attributes: ['name'] },
+        { model: db.luggageSize, attributes: ['dimensions', 'maxWeight'] }
+      ]
+    });
+
+    return luggageOptions.map(luggageOption => luggageOption.dataValues);
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 const findById = async id => {
   try {
     const luggageOption = await db.luggageOption.findOne({
@@ -14,7 +29,9 @@ const findById = async id => {
       luggageType: luggageType.dataValues,
       luggageSize: luggageSize.dataValues
     };
-  } catch (err) {}
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
-module.exports = { findById };
+module.exports = { find, findById };
