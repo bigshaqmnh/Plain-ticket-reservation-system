@@ -5,14 +5,14 @@ const passport = require('passport');
 const controllerHandler = require('./controllerHandler');
 const airplaneController = require('../controllers/airplane');
 
-router.get('/', controllerHandler(airplaneController.getAirplanes, (req, res, next) => req.query));
+router.get('/', controllerHandler(airplaneController.getAll, (req, res, next) => req.query));
 
-router.get('/:airplaneId', controllerHandler(airplaneController.getAirplaneById, (req, res, next) => req.params));
+router.get('/:airplaneId', controllerHandler(airplaneController.getById, (req, res, next) => req.params));
 
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
-  controllerHandler(airplaneController.addAirplane, (req, res, next) => req.body)
+  controllerHandler(airplaneController.add, (req, res, next) => req.body)
 );
 
 module.exports = router;
