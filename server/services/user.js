@@ -7,7 +7,9 @@ const findByEmail = async email => {
       where: { email }
     });
     return user.dataValues;
-  } catch (err) {}
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
 const findById = async id => {
@@ -17,11 +19,21 @@ const findById = async id => {
       attributes: ['username', 'email']
     });
     return user.dataValues;
-  } catch (err) {}
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+const add = async user => {
+  try {
+    await db.user.create(user);
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
 const comparePasswords = async (reqPassword, dbPassword) => await bcrypt.compare(reqPassword, dbPassword);
 
 const generateToken = async payload => await jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 36000 });
 
-module.exports = { findByEmail, findById, comparePasswords, generateToken };
+module.exports = { findByEmail, findById, add, comparePasswords, generateToken };
