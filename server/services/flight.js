@@ -55,29 +55,43 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
       nextPage: pageNum + 1
     };
   } catch (err) {
-    return err;
+    throw new Error(err);
   }
 };
 
-const findByParams = async ({ country, city, departureTime: from, limit: resLimit }) => {
+const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departureTime, limit: resLimit }) => {
   const limit = resLimit || 20;
+  const from = new Date(departureTime);
   const to = new Date(from.getTime() + 86400000);
 
   try {
     const flights = await db.flight.findAll({
       where: {
-        country,
-        city,
         departureTime: {
           [db.op.between]: [from, to]
         }
       },
+      include: [
+        {
+          model: db.airport,
+          as: 'departureAirport',
+          attributes: ['name'],
+          where: { country: depCountry, city: depCity }
+        },
+        {
+          model: db.airport,
+          as: 'arrivalAirport',
+          attributes: ['name'],
+          where: { country: arrCountry, city: arrCity }
+        },
+        { model: db.airplane, attributes: ['name'] }
+      ],
       limit
     });
 
     return flights.map(flight => flight.dataValues);
   } catch (err) {
-    return err;
+    throw new Error(err);
   }
 };
 
@@ -90,34 +104,33 @@ const findById = async id => {
         { model: db.airport, as: 'arrivalAirport', attributes: ['name', 'country', 'city'] },
         { model: db.airplane, attributes: ['name'] }
       ],
-      attributes: ['departureTime', 'arrivalTime', 'isCancelled', 'airplaneId']
+      attributes: ['departureTime', 'arrivalTime', 'isCancelled']
     });
-    const { dataValues, departureAirport, arrivalAirport } = flight;
+    const { dataValues, departureAirport, arrivalAirport, airplane } = flight;
     return {
       flight: dataValues,
       departureAirport: departureAirport.dataValues,
-      arrivalAirport: arrivalAirport.dataValues
+      arrivalAirport: arrivalAirport.dataValues,
+      airplane: airplane.dataValues
     };
   } catch (err) {
-    return err;
+    throw new Error(err);
   }
 };
 
 const add = async flight => {
   try {
-    const newflight = await db.flight.create(flight);
-    return newflight.dataValues;
+    await db.flight.create(flight);
   } catch (err) {
-    return err;
+    throw new Error(err);
   }
 };
 
-const update = async flight => {
+const update = async (id, flight) => {
   try {
-    const updatedflight = await db.flight.update(flight, { where: { id: flight.id } });
-    return updatedflight;
+    await db.flight.update(flight, { where: { id } });
   } catch (err) {
-    return err;
+    throw new Error(err);
   }
 };
 
