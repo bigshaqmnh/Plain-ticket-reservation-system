@@ -4,7 +4,7 @@ const findByFlightId = async flightId => {
       where: { flightId },
       attributes: ['id', 'cost', 'seatTypeId', 'luggageOptionId']
     });
-    return cost.dataValues;
+    return cost && cost.dataValues;
   } catch (err) {
     throw new Error(err);
   }

@@ -44,7 +44,7 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
 const findById = async id => {
   try {
     const airport = await db.airport.findByPk(id);
-    return airport.dataValues;
+    return airport && airport.dataValues;
   } catch (err) {
     throw new Error(err);
   }
@@ -52,8 +52,7 @@ const findById = async id => {
 
 const add = async airport => {
   try {
-    const newAirport = await db.airport.create(airport);
-    return newAirport.dataValues;
+    await db.airport.create(airport);
   } catch (err) {
     throw new Error(err);
   }
