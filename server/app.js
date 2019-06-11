@@ -13,6 +13,10 @@ const authRouter = require('./routes/auth');
 const airplaneRouter = require('./routes/airplane');
 const airportRouter = require('./routes/airport');
 const flightRouter = require('./routes/flight');
+const costRouter = require('./routes/cost');
+const luggageOptionRouter = require('./routes/luggageOption');
+const seatRouter = require('./routes/seat');
+const ticketRouter = require('./routes/ticket');
 
 const app = express();
 
@@ -33,6 +37,10 @@ app.use('/auth', authRouter);
 app.use('/airplanes', airplaneRouter);
 app.use('/airports', airportRouter);
 app.use('/flights', flightRouter);
+app.use('/costs', costRouter);
+app.use('/luggageOptions', luggageOptionRouter);
+app.use('/seats', seatRouter);
+app.use('/tickets', ticketRouter);
 
 app.use((req, res) => {
   const err = createError(statusCode.NOT_FOUND, 'The route you are looking for does not exist.');
