@@ -1,5 +1,5 @@
 class AirplaneResponse {
-  constructor(err = false, data = null) {
+  constructor(err = false, data) {
     this._err = err;
     this._data = data;
   }
