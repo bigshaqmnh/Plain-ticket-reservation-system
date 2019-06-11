@@ -2,11 +2,13 @@ const findByAirplaneId = async airplaneId => {
   try {
     const seats = await db.seat.findAll({
       where: { airplaneId },
-      include: [{ model: db.seatType, attributes: ['name'] }],
+      include: [{ model: db.seatType, attributes: ['id', 'name'] }],
       attributes: ['id', 'row', 'seat', 'isBooked']
     });
     return seats.map(seat => seat.dataValues);
-  } catch (err) {}
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
 const getNumberOfUnbooked = async airplaneId => {
@@ -15,7 +17,9 @@ const getNumberOfUnbooked = async airplaneId => {
       where: { airplaneId, isBooked: false }
     });
     return numberOfUnbookedSeats;
-  } catch (err) {}
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
 const findById = async id => {
@@ -30,14 +34,25 @@ const findById = async id => {
       seat: dataValues,
       seatType: seatType.dataValues
     };
-  } catch (err) {}
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
-const update = async seat => {
+const add = async seat => {
   try {
-    const updatedSeat = await db.seat.update(seat, { where: { id: seat.id } });
-    return updatedSeat;
-  } catch (err) {}
+    await db.seat.create(seat);
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
-module.exports = { findByAirplaneId, getNumberOfUnbooked, findById, update };
+const update = async (id, seat) => {
+  try {
+    await db.seat.update(seat, { where: { id } });
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+module.exports = { findByAirplaneId, getNumberOfUnbooked, findById, add, update };
