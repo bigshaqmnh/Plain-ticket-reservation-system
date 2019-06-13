@@ -1,9 +1,55 @@
-const getFromPage = async pageNum => {
-  const { RESULTS_PER_PAGE: limit } = process.env;
+const _genIncludeStatement = (foreignKey, inputString) => {
+  return [
+    {
+      model: db.airport,
+      as: foreignKey,
+      where: {
+        [db.op.or]: [
+          {
+            name: { [db.op.iLike]: `%${inputString}%` }
+          },
+          {
+            country: { [db.op.iLike]: `%${inputString}%` }
+          },
+          {
+            city: { [db.op.iLike]: `%${inputString}%` }
+          }
+        ]
+      }
+    }
+  ];
+};
+
+const find = async ({ page, inputString, resLimit } = {}) => {
+  const limit = resLimit || 20;
+  const pageNum = page || 1;
   const offset = pageNum * limit - limit;
 
   try {
-    const flights = await db.flight.findAll({ offset, limit, order: [['id', 'ASC']] });
+    let flights = [];
+
+    if (inputString) {
+      const depFlights = await db.flight.findAll({
+        include: _genIncludeStatement('departureAirport', inputString),
+        offset,
+        order: [['id', 'ASC']]
+      });
+
+      const arrFlights = await db.flight.findAll({
+        include: _genIncludeStatement('arrivalAirport', inputString),
+        offset,
+        order: [['id', 'ASC']]
+      });
+
+      flights = Array.prototype.concat(depFlights, arrFlights).slice(0, limit);
+    } else {
+      flights = await db.flight.findAll({
+        offset,
+        limit,
+        order: [['id', 'ASC']]
+      });
+    }
+
     return {
       data: flights.map(flight => flight.dataValues),
       nextPage: ++pageNum
@@ -11,7 +57,7 @@ const getFromPage = async pageNum => {
   } catch (err) {}
 };
 
-const findByParams = async params => {
+const findByParams = async (params, limit = 20) => {
   const { departureTime: from } = params;
   const to = new Date(from.getTime() + 86400000);
   try {
@@ -21,7 +67,8 @@ const findByParams = async params => {
         departureTime: {
           [db.op.between]: [from, to]
         }
-      }
+      },
+      limit
     });
     return flights.map(flight => flight.dataValues);
   } catch (err) {}
@@ -47,69 +94,6 @@ const findById = async id => {
   } catch (err) {}
 };
 
-const searchByDepAirport = async inputString => {
-  try {
-    const flights = await db.flight.findAll({
-      include: [
-        {
-          model: db.airport,
-          as: 'departureAirport',
-          where: {
-            [db.op.or]: [
-              {
-                name: { [db.op.iLike]: `%${inputString}%` }
-              },
-              {
-                country: { [db.op.iLike]: `%${inputString}%` }
-              },
-              {
-                city: { [db.op.iLike]: `%${inputString}%` }
-              }
-            ]
-          }
-        }
-      ]
-    });
-    return flights.map(flight => flight.dataValues);
-  } catch (err) {}
-};
-
-const searchByArrAirport = async inputString => {
-  try {
-    const flights = await db.flight.findAll({
-      include: [
-        {
-          model: db.airport,
-          as: 'arrivalAirport',
-          where: {
-            [db.op.or]: [
-              {
-                name: { [db.op.iLike]: `%${inputString}%` }
-              },
-              {
-                country: { [db.op.iLike]: `%${inputString}%` }
-              },
-              {
-                city: { [db.op.iLike]: `%${inputString}%` }
-              }
-            ]
-          }
-        }
-      ]
-    });
-    return flights.map(flight => flight.dataValues);
-  } catch (err) {}
-};
-
-const search = async inputString => {
-  try {
-    const depFlights = await searchByDepAirport(inputString);
-    const arrFlights = await searchByArrAirport(inputString);
-
-    return Array.prototype.concat(depFlights, arrFlights);
-  } catch (err) {}
-};
-
 const add = async flight => {
   try {
     const newflight = await db.flight.create(flight);
@@ -124,4 +108,4 @@ const update = async flight => {
   } catch (err) {}
 };
 
-module.exports = { getFromPage, findByParams, findById, search, add, update };
+module.exports = { find, findByParams, findById, add, update };

@@ -1,17 +1,17 @@
 'use strict';
 
-const genSeatTypeId = () => Math.round(Math.random() * (2 - 1) + 1);
-const genCost = () => Math.round(Math.random() * (400 - 100) + 100);
+const getRandSeatTypeId = () => Math.round(Math.random() * (2 - 1) + 1);
+const getRandCost = () => Math.round(Math.random() * (400 - 100) + 100);
 
 const generateCosts = () => {
   const costs = [];
   for (let i = 1; i <= 6; ++i) {
-    const cost = genCost();
+    const cost = getRandCost();
     for (let j = 1; j <= 6; ++j) {
       costs.push({
         cost: cost * j,
         flightId: i,
-        seatTypeId: genSeatTypeId(),
+        seatTypeId: getRandSeatTypeId(),
         luggageOptionId: j,
         createdAt: new Date(),
         updatedAt: new Date()

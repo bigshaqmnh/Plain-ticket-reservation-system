@@ -1,5 +1,4 @@
-const findByUserId = async (userId, pageNum) => {
-  const { RESULTS_PER_PAGE: limit } = process.env;
+const findByUserId = async (userId, pageNum = 1, limit = 20) => {
   const offset = pageNum * limit - limit;
 
   try {
