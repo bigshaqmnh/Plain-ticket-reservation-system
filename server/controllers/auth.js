@@ -27,7 +27,7 @@ const signUp = async ({ username, email, password }) => {
     const user = await userService.checkIfExists(email);
 
     if (user) {
-      return new AuthResponse(true, reqError.singUp);
+      return new AuthResponse(true, reqError.signUp);
     }
 
     const passwordHash = await userService.hashPassword(password);
