@@ -17,7 +17,7 @@ router.post(
   controllerHandler(flightController.add, (req, res, next) => req.body)
 );
 
-router.post(
+router.put(
   '/:flightId',
   passport.authenticate('jwt', { session: false }),
   controllerHandler(flightController.update, (req, res, next) => ({ id: req.params.flightId, flight: req.body }))
