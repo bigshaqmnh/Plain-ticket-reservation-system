@@ -1,5 +1,6 @@
 const airplaneService = require('../services/airplane');
-const CustomError = require('../classes/CustomError');
+const ControllerError = require('../classes/ControllerError');
+const ServiceError = require('../classes/ServiceError');
 
 const getAll = async params => {
   try {
@@ -7,7 +8,7 @@ const getAll = async params => {
 
     return airplanes;
   } catch (err) {
-    return new CustomError(false, err.message);
+    throw err instanceof ServiceError ? err : new ControllerError(err.message);
   }
 };
 
@@ -17,15 +18,15 @@ const getById = async ({ airplaneId }) => {
 
     return airplane;
   } catch (err) {
-    return new CustomError(false, err.message);
+    throw err instanceof ServiceError ? err : new ControllerError(err.message);
   }
 };
 
 const add = async airplane => {
   try {
-    return await airplaneService.add(airplane);
+    await airplaneService.add(airplane);
   } catch (err) {
-    return new CustomError(false, err.message);
+    throw err instanceof ServiceError ? err : new ControllerError(err.message);
   }
 };
 
