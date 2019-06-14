@@ -1,3 +1,5 @@
+const CustomError = require('../classes/CustomError');
+
 const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
   const limit = resLimit || 20;
   const pageNum = +page || 1;
@@ -20,7 +22,8 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
       where: searchParam,
       offset,
       limit,
-      order: [['id', 'ASC']]
+      order: [['id', 'ASC']],
+      attributes: ['id', 'name', 'type', 'maxLuggageCarryWeight']
     });
 
     return {
@@ -28,7 +31,7 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
       nextPage: pageNum + 1
     };
   } catch (err) {
-    throw new Error(err);
+    return new CustomError(true, err.message);
   }
 };
 
@@ -37,7 +40,7 @@ const findById = async id => {
     const airplane = await db.airplane.findByPk(id);
     return airplane && airplane.dataValues;
   } catch (err) {
-    throw new Error(err);
+    return new CustomError(true, err.message);
   }
 };
 
@@ -45,7 +48,7 @@ const add = async airplane => {
   try {
     await db.airplane.create(airplane);
   } catch (err) {
-    throw new Error(err);
+    return new CustomError(true, err.message);
   }
 };
 
