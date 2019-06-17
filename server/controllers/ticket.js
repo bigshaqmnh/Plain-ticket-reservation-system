@@ -2,8 +2,7 @@ const ticketService = require('../services/ticket');
 const seatService = require('../services/seat');
 const costService = require('../services/cost');
 const flightService = require('../services/flight');
-const TicketResponse = require('../classes/TicketResponse');
-const { dbError } = require('../constants/errors');
+const CustomError = require('../classes/CustomError');
 
 const getByUserId = async ({ userId, page: pageNum, limit }) => {
   try {
@@ -24,29 +23,25 @@ const getByUserId = async ({ userId, page: pageNum, limit }) => {
       })
     );
 
-    return new TicketResponse(false, { ...ticketsInfo, nextPage: tickets.nextPage });
+    return { ...ticketsInfo, nextPage: tickets.nextPage };
   } catch (err) {
-    return new TicketResponse(true, dbError.get);
+    throw err instanceof CustomError ? err : new CustomError(err);
   }
 };
 
 const add = async ticket => {
   try {
     await ticketService.add(ticket);
-
-    return new TicketResponse();
   } catch (err) {
-    return new TicketResponse(true, dbError.create);
+    throw err;
   }
 };
 
-const update = async (id, ticket) => {
+const update = async ({ id, ticket }) => {
   try {
     await ticketService.update(id, ticket);
-
-    return new TicketResponse();
   } catch (err) {
-    return new TicketResponse(true, dbError.update);
+    throw err;
   }
 };
 

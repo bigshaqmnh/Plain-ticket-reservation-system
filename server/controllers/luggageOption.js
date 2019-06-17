@@ -1,24 +1,22 @@
 const luggageOptionService = require('../services/luggageOption');
-const LuggageOptionResponse = require('../classes/LuggageOptionResponse');
-const { dbError } = require('../constants/errors');
 
 const getAll = async () => {
   try {
     const luggageOptions = await luggageOptionService.find();
 
-    return new LuggageOptionResponse(false, luggageOptions);
+    return luggageOptions;
   } catch (err) {
-    return new LuggageOptionResponse(true, dbError.get);
+    throw err;
   }
 };
 
 const getById = async ({ luggageOptionId }) => {
   try {
-    await luggageOptionService.findById(luggageOptionId);
+    const luggageOption = await luggageOptionService.findById(luggageOptionId);
 
-    return new LuggageOptionResponse();
+    return luggageOption;
   } catch (err) {
-    return new LuggageOptionResponse(true, dbError.create);
+    throw err;
   }
 };
 

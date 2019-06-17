@@ -1,6 +1,6 @@
 const userService = require('../services/user');
-const AuthResponse = require('../classes/AuthResponse');
-const { reqError, dbError } = require('../constants/errors');
+const CustomError = require('../classes/CustomError');
+const error = require('../constants/errors');
 
 const logIn = async ({ email, password }) => {
   try {
@@ -12,13 +12,13 @@ const logIn = async ({ email, password }) => {
       if (passwordsMatch) {
         const token = await userService.generateToken({ email });
 
-        return new AuthResponse(false, `Bearer ${token}`);
+        return `Bearer ${token}`;
       }
     }
 
-    return new AuthResponse(true, reqError.logIn);
+    throw new CustomError({ status: error.conflict });
   } catch (err) {
-    return new AuthResponse(true, dbError.logIn);
+    throw err instanceof CustomError ? err : CustomError(err);
   }
 };
 
@@ -27,7 +27,7 @@ const signUp = async ({ username, email, password }) => {
     const user = await userService.checkIfExists(email);
 
     if (user) {
-      return new AuthResponse(true, reqError.singUp);
+      throw new CustomError({ status: error.conflict });
     }
 
     const passwordHash = await userService.hashPassword(password);
@@ -41,9 +41,9 @@ const signUp = async ({ username, email, password }) => {
     await userService.add(newUser);
     const token = await userService.generateToken({ email });
 
-    return new AuthResponse(false, `Bearer ${token}`);
+    return `Bearer ${token}`;
   } catch (err) {
-    return new AuthResponse(true, dbError.signUp);
+    throw err instanceof CustomError ? err : CustomError(err);
   }
 };
 

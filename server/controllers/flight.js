@@ -1,16 +1,15 @@
 const flightService = require('../services/flight');
 const seatService = require('../services/seat');
 const costService = require('../services/cost');
-const FlightResponse = require('../classes/FlightResponse');
-const { dbError } = require('../constants/errors');
+const CustomError = require('../classes/CustomError');
 
 const getAll = async params => {
   try {
     const flights = await flightService.find(params);
 
-    return new FlightResponse(false, flights);
+    return flights;
   } catch (err) {
-    return new FlightResponse(true, dbError.get);
+    throw err;
   }
 };
 
@@ -36,9 +35,9 @@ const getAllByParams = async params => {
       }
     }
 
-    return new FlightResponse(false, suitableFlights);
+    return suitableFlights;
   } catch (err) {
-    return new FlightResponse(true, dbError.get);
+    throw err instanceof CustomError ? err : new CustomError(err);
   }
 };
 
@@ -46,29 +45,25 @@ const getById = async ({ flightId }) => {
   try {
     const flight = await flightService.findById(flightId);
 
-    return new FlightResponse(false, flight);
+    return flight;
   } catch (err) {
-    return new FlightResponse(true, dbError.get);
+    throw err;
   }
 };
 
 const add = async flight => {
   try {
     await flightService.add(flight);
-
-    return new FlightResponse();
   } catch (err) {
-    return new FlightResponse(true, dbError.create);
+    throw err;
   }
 };
 
 const update = async ({ id, flight }) => {
   try {
     await flightService.update(id, flight);
-
-    return new FlightResponse();
   } catch (err) {
-    return new FlightResponse(true, dbError.update);
+    throw err;
   }
 };
 
