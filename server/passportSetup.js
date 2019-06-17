@@ -15,12 +15,8 @@ module.exports = passport => {
           return done(false, false);
         }
 
-        const { id, username, email } = user;
-        return done(false, {
-          id,
-          username,
-          email
-        });
+        const { id, username, email, isAdmin } = user;
+        return done(false, { id, username, email, isAdmin });
       } catch (err) {
         return done(true);
       }
