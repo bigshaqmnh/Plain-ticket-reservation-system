@@ -4,18 +4,21 @@ const passport = require('passport');
 
 const controllerHandler = require('./controllerHandler');
 const costController = require('../controllers/cost');
+const hasRights = require('../middleware/checkRights');
 
 router.get('/:flightId', controllerHandler(costController.getByFlightId, (req, res, next) => req.params));
 
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
+  (req, res, next) => hasRights(req, res, next),
   controllerHandler(costController.add, (req, res, next) => req.body)
 );
 
 router.put(
   '/:costId',
   passport.authenticate('jwt', { session: false }),
+  (req, res, next) => hasRights(req, res, next),
   controllerHandler(costController.update, (req, res, next) => ({ id: req.params.costId, cost: req.body }))
 );
 
