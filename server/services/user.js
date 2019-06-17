@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const CustomError = require('../classes/CustomError');
-const error = require('../constants/errors');
+const responseStatus = require('../constants/responseStatus');
 
 const findByEmail = async email => {
   try {
@@ -11,7 +11,7 @@ const findByEmail = async email => {
     });
 
     if (!user) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
 
     return user.dataValues;
@@ -27,7 +27,7 @@ const checkIfExists = async email => {
     });
 
     if (!userExists) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
 
     return true;
@@ -40,7 +40,7 @@ const add = async user => {
   try {
     await db.user.create(user);
   } catch (err) {
-    throw new CustomError({ status: error.conflict, message: err.message });
+    throw new CustomError({ status: responseStatus.conflict, message: err.message });
   }
 };
 
@@ -56,7 +56,7 @@ const hashPassword = async password => {
   try {
     return await bcrypt.hash(password, 10);
   } catch (err) {
-    throw new CustomError({ status: error.unavailable });
+    throw new CustomError({ status: responseStatus.unavailable });
   }
 };
 
@@ -64,7 +64,7 @@ const generateToken = async payload => {
   try {
     return await jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1d' });
   } catch (err) {
-    throw new CustomError({ status: error.unavailable });
+    throw new CustomError({ status: responseStatus.unavailable });
   }
 };
 
