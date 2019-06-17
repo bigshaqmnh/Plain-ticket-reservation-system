@@ -1,5 +1,5 @@
 const CustomError = require('../classes/CustomError');
-const error = require('../constants/errors');
+const responseStatus = require('../constants/responseStatus');
 
 const find = async () => {
   try {
@@ -28,7 +28,7 @@ const findById = async id => {
     });
 
     if (!luggageOption) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
 
     const { dataValues, luggageType, luggageSize } = luggageOption;

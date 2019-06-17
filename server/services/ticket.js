@@ -1,5 +1,5 @@
 const CustomError = require('../classes/CustomError');
-const error = require('../constants/errors');
+const responseStatus = require('../constants/responseStatus');
 
 const findByUserId = async (userId, pageNum = 1, limit = 20) => {
   const offset = pageNum * limit - limit;
@@ -14,7 +14,7 @@ const findByUserId = async (userId, pageNum = 1, limit = 20) => {
     });
 
     if (!tickets) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
 
     return {
@@ -30,7 +30,7 @@ const add = async ticket => {
   try {
     await db.ticket.create(ticket);
   } catch (err) {
-    throw new CustomError({ status: error.conflict, message: err.message });
+    throw new CustomError({ status: responseStatus.conflict, message: err.message });
   }
 };
 
@@ -39,10 +39,10 @@ const update = async (id, ticket) => {
     const updated = await db.ticket.update(ticket, { where: { id } });
 
     if (!updated[0]) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
   } catch (err) {
-    throw new CustomError({ status: error.conflict, message: err.message });
+    throw new CustomError({ status: responseStatus.conflict, message: err.message });
   }
 };
 

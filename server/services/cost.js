@@ -1,5 +1,5 @@
 const CustomError = require('../classes/CustomError');
-const error = require('../constants/errors');
+const responseStatus = require('../constants/responseStatus');
 
 const findByFlightId = async flightId => {
   try {
@@ -9,7 +9,7 @@ const findByFlightId = async flightId => {
     });
 
     if (!cost) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
     return cost.dataValues;
   } catch (err) {
@@ -24,7 +24,7 @@ const findMinCostByFlightId = async flightId => {
     });
 
     if (!minCost) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
     return minCost;
   } catch (err) {
@@ -41,7 +41,7 @@ const findById = async id => {
     });
 
     if (!cost) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
 
     const { dataValues, luggageOption } = cost;
@@ -58,7 +58,7 @@ const add = async cost => {
   try {
     await db.cost.create(cost);
   } catch (err) {
-    throw new CustomError({ status: error.conflict, message: err.message });
+    throw new CustomError({ status: responseStatus.conflict, message: err.message });
   }
 };
 
@@ -67,10 +67,10 @@ const update = async (id, cost) => {
     const updated = await db.cost.update(cost, { where: { id } });
 
     if (!updated[0]) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
   } catch (err) {
-    throw new CustomError({ status: error.conflict, message: err.message });
+    throw new CustomError({ status: responseStatus.conflict, message: err.message });
   }
 };
 

@@ -1,5 +1,5 @@
 const CustomError = require('../classes/CustomError');
-const error = require('../constants/errors');
+const responseStatus = require('../constants/responseStatus');
 
 const _genIncludeStatement = (foreignKey, inputString) => {
   return [
@@ -111,7 +111,7 @@ const findById = async id => {
     });
 
     if (!flight) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
 
     const { dataValues, departureAirport, arrivalAirport, airplane } = flight;
@@ -130,7 +130,7 @@ const add = async flight => {
   try {
     await db.flight.create(flight);
   } catch (err) {
-    throw new CustomError({ status: error.conflict, message: err.message });
+    throw new CustomError({ status: responseStatus.conflict, message: err.message });
   }
 };
 
@@ -139,10 +139,10 @@ const update = async (id, flight) => {
     const updated = await db.flight.update(flight, { where: { id } });
 
     if (!updated[0]) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
   } catch (err) {
-    throw new CustomError({ status: error.conflict, message: err.message });
+    throw new CustomError({ status: responseStatus.conflict, message: err.message });
   }
 };
 

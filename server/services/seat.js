@@ -1,5 +1,5 @@
 const CustomError = require('../classes/CustomError');
-const error = require('../constants/errors');
+const responseStatus = require('../constants/responseStatus');
 
 const findByAirplaneId = async airplaneId => {
   try {
@@ -10,7 +10,7 @@ const findByAirplaneId = async airplaneId => {
     });
 
     if (!seats) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
 
     return seats.map(seat => seat.dataValues);
@@ -26,7 +26,7 @@ const getNumberOfUnbooked = async airplaneId => {
     });
 
     if (!numberOfUnbookedSeats) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
 
     return numberOfUnbookedSeats;
@@ -44,7 +44,7 @@ const findById = async id => {
     });
 
     if (!seat) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
 
     const { dataValues, seatType } = seat;
@@ -61,7 +61,7 @@ const add = async seat => {
   try {
     await db.seat.create(seat);
   } catch (err) {
-    throw new CustomError({ status: error.conflict, message: err.message });
+    throw new CustomError({ status: responseStatus.conflict, message: err.message });
   }
 };
 
@@ -70,10 +70,10 @@ const update = async (id, seat) => {
     const updated = await db.seat.update(seat, { where: { id } });
 
     if (!updated[0]) {
-      throw new CustomError({ status: error.notFound });
+      throw new CustomError({ status: responseStatus.notFound });
     }
   } catch (err) {
-    throw new CustomError({ status: error.conflict, message: err.message });
+    throw new CustomError({ status: responseStatus.conflict, message: err.message });
   }
 };
 
