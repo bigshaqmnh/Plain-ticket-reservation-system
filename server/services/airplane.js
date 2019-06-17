@@ -1,4 +1,5 @@
-const ServiceError = require('../classes/ServiceError');
+const CustomError = require('../classes/CustomError');
+const error = require('../constants/errors');
 
 const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
   const limit = resLimit || 20;
@@ -31,16 +32,20 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
       nextPage: pageNum + 1
     };
   } catch (err) {
-    throw new ServiceError(err.message);
+    throw new CustomError(err);
   }
 };
 
 const findById = async id => {
   try {
     const airplane = await db.airplane.findByPk(id);
-    return airplane && airplane.dataValues;
+
+    if (!airplane) {
+      throw new CustomError({ status: error.notFound });
+    }
+    return airplane.dataValues;
   } catch (err) {
-    throw new ServiceError(err.message);
+    throw new CustomError(err);
   }
 };
 
@@ -48,7 +53,7 @@ const add = async airplane => {
   try {
     await db.airplane.create(airplane);
   } catch (err) {
-    throw new ServiceError(err.message);
+    throw new CustomError({ status: error.conflict, message: err.message });
   }
 };
 

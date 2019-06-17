@@ -1,3 +1,6 @@
+const CustomError = require('../classes/CustomError');
+const error = require('../constants/errors');
+
 const findByAirplaneId = async airplaneId => {
   try {
     const seats = await db.seat.findAll({
@@ -5,9 +8,14 @@ const findByAirplaneId = async airplaneId => {
       include: [{ model: db.seatType, attributes: ['id', 'name'] }],
       attributes: ['id', 'row', 'seat', 'isBooked']
     });
+
+    if (!seats) {
+      throw new CustomError({ status: error.notFound });
+    }
+
     return seats.map(seat => seat.dataValues);
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError(err);
   }
 };
 
@@ -16,9 +24,14 @@ const getNumberOfUnbooked = async airplaneId => {
     const numberOfUnbookedSeats = await db.seat.count({
       where: { airplaneId, isBooked: false }
     });
+
+    if (!numberOfUnbookedSeats) {
+      throw new CustomError({ status: error.notFound });
+    }
+
     return numberOfUnbookedSeats;
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError(err);
   }
 };
 
@@ -29,13 +42,18 @@ const findById = async id => {
       include: [{ model: db.seatType, attributes: ['name'] }],
       attributes: ['row', 'seat', 'floor']
     });
+
+    if (!seat) {
+      throw new CustomError({ status: error.notFound });
+    }
+
     const { dataValues, seatType } = seat;
     return {
       seat: dataValues,
       seatType: seatType.dataValues
     };
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError(err);
   }
 };
 
@@ -43,15 +61,19 @@ const add = async seat => {
   try {
     await db.seat.create(seat);
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError({ status: error.conflict, message: err.message });
   }
 };
 
 const update = async (id, seat) => {
   try {
-    await db.seat.update(seat, { where: { id } });
+    const updated = await db.seat.update(seat, { where: { id } });
+
+    if (!updated[0]) {
+      throw new CustomError({ status: error.notFound });
+    }
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError({ status: error.conflict, message: err.message });
   }
 };
 

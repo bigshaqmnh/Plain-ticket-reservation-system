@@ -1,3 +1,6 @@
+const CustomError = require('../classes/CustomError');
+const error = require('../constants/errors');
+
 const find = async ({ page, query: inputString, field, limit: resLimit } = {}) => {
   const limit = resLimit || 20;
   const pageNum = +page || 1;
@@ -29,7 +32,8 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
       where: searchParam,
       offset,
       limit,
-      order: [['id', 'ASC']]
+      order: [['id', 'ASC']],
+      attributes: ['id', 'name', 'country', 'city', 'latitude', 'longitude']
     });
 
     return {
@@ -37,16 +41,20 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
       nextPage: pageNum + 1
     };
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError(err);
   }
 };
 
 const findById = async id => {
   try {
     const airport = await db.airport.findByPk(id);
-    return airport && airport.dataValues;
+
+    if (!airport) {
+      throw new CustomError({ status: error.notFound });
+    }
+    return airport.dataValues;
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError(err);
   }
 };
 
@@ -54,7 +62,7 @@ const add = async airport => {
   try {
     await db.airport.create(airport);
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError({ status: error.conflict, message: err.message });
   }
 };
 

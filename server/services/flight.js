@@ -1,3 +1,6 @@
+const CustomError = require('../classes/CustomError');
+const error = require('../constants/errors');
+
 const _genIncludeStatement = (foreignKey, inputString) => {
   return [
     {
@@ -55,7 +58,7 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
       nextPage: pageNum + 1
     };
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError(err);
   }
 };
 
@@ -91,7 +94,7 @@ const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departur
 
     return flights.map(flight => flight.dataValues);
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError(err);
   }
 };
 
@@ -106,6 +109,11 @@ const findById = async id => {
       ],
       attributes: ['departureTime', 'arrivalTime', 'isCancelled']
     });
+
+    if (!flight) {
+      throw new CustomError({ status: error.notFound });
+    }
+
     const { dataValues, departureAirport, arrivalAirport, airplane } = flight;
     return {
       flight: dataValues,
@@ -114,7 +122,7 @@ const findById = async id => {
       airplane: airplane.dataValues
     };
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError(err);
   }
 };
 
@@ -122,15 +130,19 @@ const add = async flight => {
   try {
     await db.flight.create(flight);
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError({ status: error.conflict, message: err.message });
   }
 };
 
 const update = async (id, flight) => {
   try {
-    await db.flight.update(flight, { where: { id } });
+    const updated = await db.flight.update(flight, { where: { id } });
+
+    if (!updated[0]) {
+      throw new CustomError({ status: error.notFound });
+    }
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError({ status: error.conflict, message: err.message });
   }
 };
 

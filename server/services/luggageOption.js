@@ -1,3 +1,6 @@
+const CustomError = require('../classes/CustomError');
+const error = require('../constants/errors');
+
 const find = async () => {
   try {
     const luggageOptions = await db.luggageOption.findAll({
@@ -9,7 +12,7 @@ const find = async () => {
 
     return luggageOptions.map(luggageOption => luggageOption.dataValues);
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError(err);
   }
 };
 
@@ -23,6 +26,11 @@ const findById = async id => {
       ],
       attributes: ['name']
     });
+
+    if (!luggageOption) {
+      throw new CustomError({ status: error.notFound });
+    }
+
     const { dataValues, luggageType, luggageSize } = luggageOption;
     return {
       luggageOption: dataValues,
@@ -30,7 +38,7 @@ const findById = async id => {
       luggageSize: luggageSize.dataValues
     };
   } catch (err) {
-    throw new Error(err);
+    throw new CustomError(err);
   }
 };
 
