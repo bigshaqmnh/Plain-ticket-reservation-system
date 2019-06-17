@@ -13,7 +13,7 @@ router.post(
   controllerHandler(costController.add, (req, res, next) => req.body)
 );
 
-router.post(
+router.put(
   '/:costId',
   passport.authenticate('jwt', { session: false }),
   controllerHandler(costController.update, (req, res, next) => ({ id: req.params.costId, cost: req.body }))

@@ -13,7 +13,7 @@ router.post(
   controllerHandler(ticketController.add, (req, res, next) => req.body)
 );
 
-router.post(
+router.put(
   '/:ticketId',
   passport.authenticate('jwt', { session: false }),
   controllerHandler(ticketController.update, (req, res, next) => ({ id: req.params.ticketId, ticket: req.body }))
