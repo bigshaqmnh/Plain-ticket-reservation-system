@@ -1,10 +1,8 @@
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
-const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-const statusCode = require('http-status-codes');
 const passport = require('passport');
 require('./passportSetup')(passport);
 require('./sequelizeSetup');
@@ -17,6 +15,8 @@ const costRouter = require('./routes/cost');
 const luggageOptionRouter = require('./routes/luggageOption');
 const seatRouter = require('./routes/seat');
 const ticketRouter = require('./routes/ticket');
+
+const responseStatus = require('./constants/responseStatus');
 
 const app = express();
 
@@ -43,8 +43,7 @@ app.use('/seats', seatRouter);
 app.use('/tickets', ticketRouter);
 
 app.use((req, res) => {
-  const err = createError(statusCode.NOT_FOUND, 'The route you are looking for does not exist.');
-  res.status(err.status).json(err.message);
+  res.sendStatus(responseStatus.notFound);
 });
 
 const port = process.env.SERVER_PORT || '3000';
