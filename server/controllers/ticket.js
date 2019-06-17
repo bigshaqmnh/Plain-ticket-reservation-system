@@ -23,7 +23,7 @@ const getByUserId = async ({ userId, page: pageNum, limit }) => {
       })
     );
 
-    return { ...ticketsInfo, nextPage: tickets.nextPage };
+    return { data: ticketsInfo, nextPage: tickets.nextPage };
   } catch (err) {
     throw err instanceof CustomError ? err : new CustomError(err);
   }
