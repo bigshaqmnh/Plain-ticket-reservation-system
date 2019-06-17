@@ -1,5 +1,5 @@
-const status = require('../constants/status');
+const error = require('../constants/error');
 
-const hasRights = (req, res, next) => (req.user.isAdmin ? next() : res.sendStatus(status.fail.ACCESS));
+const hasRights = (req, res, next) => (req.user.isAdmin ? next() : res.sendStatus(error.forbidden));
 
 module.exports = hasRights;
