@@ -1,6 +1,6 @@
 const userService = require('../services/user');
 const CustomError = require('../classes/CustomError');
-const error = require('../constants/errors');
+const responseStatus = require('../constants/responseStatus');
 
 const logIn = async ({ email, password }) => {
   try {
@@ -16,7 +16,7 @@ const logIn = async ({ email, password }) => {
       }
     }
 
-    throw new CustomError({ status: error.conflict });
+    throw new CustomError({ status: responseStatus.conflict });
   } catch (err) {
     throw err instanceof CustomError ? err : CustomError(err);
   }
@@ -27,7 +27,7 @@ const signUp = async ({ username, email, password }) => {
     const user = await userService.checkIfExists(email);
 
     if (user) {
-      throw new CustomError({ status: error.conflict });
+      throw new CustomError({ status: responseStatus.conflict });
     }
 
     const passwordHash = await userService.hashPassword(password);
