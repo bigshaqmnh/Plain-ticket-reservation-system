@@ -5,7 +5,11 @@ const passport = require('passport');
 const controllerHandler = require('./controllerHandler');
 const ticketController = require('../controllers/ticket');
 
-router.get('/', controllerHandler(ticketController.getByUserId, (req, res, next) => req.query));
+router.get(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  controllerHandler(ticketController.getByUserId, (req, res, next) => ({ ...req.query, userId: req.user.id }))
+);
 
 router.post(
   '/',
