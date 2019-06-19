@@ -19,15 +19,24 @@ const findByAirplaneId = async airplaneId => {
   }
 };
 
-const getNumberOfUnbooked = async airplaneId => {
+const getNumberOfUnbooked = async airplaneIds => {
   try {
-    const numberOfUnbookedSeats = await db.seat.count({
-      where: { airplaneId, isBooked: false }
+    const seats = await db.seat.findAll({
+      where: { airplaneId: { [db.op.in]: airplaneIds }, isBooked: false },
+      attributes: ['airplaneId']
     });
 
-    if (!numberOfUnbookedSeats) {
+    if (!seats) {
       throw new CustomError({ status: responseStatus.notFound });
     }
+
+    const numberOfUnbookedSeats = airplaneIds.map(airplaneId => ({
+      airplaneId,
+      numberOfUnbookedSeats: seats.reduce(
+        (count, seat) => (seat.dataValues.airplaneId === airplaneId ? count + 1 : count),
+        0
+      )
+    }));
 
     return numberOfUnbookedSeats;
   } catch (err) {
@@ -35,23 +44,19 @@ const getNumberOfUnbooked = async airplaneId => {
   }
 };
 
-const findById = async id => {
+const findByIds = async ids => {
   try {
-    const seat = await db.seat.findOne({
-      where: { id },
+    const seats = await db.seat.findAll({
+      where: { id: { [db.op.in]: ids } },
       include: [{ model: db.seatType, attributes: ['name'] }],
-      attributes: ['row', 'seat', 'floor']
+      attributes: ['id', 'row', 'seat', 'floor']
     });
 
-    if (!seat) {
+    if (!seats) {
       throw new CustomError({ status: responseStatus.notFound });
     }
 
-    const { dataValues, seatType } = seat;
-    return {
-      seat: dataValues,
-      seatType: seatType.dataValues
-    };
+    return seats.map(seat => ({ ...seat.dataValues }));
   } catch (err) {
     throw new CustomError(err);
   }
@@ -77,4 +82,4 @@ const update = async (id, seat) => {
   }
 };
 
-module.exports = { findByAirplaneId, getNumberOfUnbooked, findById, add, update };
+module.exports = { findByAirplaneId, getNumberOfUnbooked, findByIds, add, update };
