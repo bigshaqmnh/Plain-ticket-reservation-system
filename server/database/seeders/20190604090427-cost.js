@@ -5,7 +5,7 @@ const getRandCost = () => Math.round(Math.random() * (400 - 100) + 100);
 
 const generateCosts = () => {
   const costs = [];
-  for (let i = 1; i <= 6; ++i) {
+  for (let i = 1; i <= 7; ++i) {
     const cost = getRandCost();
     for (let j = 1; j <= 6; ++j) {
       costs.push({
