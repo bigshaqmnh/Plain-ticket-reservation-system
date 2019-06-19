@@ -16,20 +16,22 @@ const getAll = async params => {
 const getAllByParams = async params => {
   try {
     const flights = await flightService.findByParams(params);
+    const airplaneIds = flights.map(flight => flight.airplaneId);
+
+    const airplanesWithUnbookedSeats = await seatService.getNumberOfUnbooked(airplaneIds);
+
     const suitableFlights = [];
 
-    for (const flight of flights) {
-      const numOfUnbookedSeats = await seatService.getNumberOfUnbooked(flight.airplaneId);
-      const numOfPeople = params.numOfPeople || 1;
-
-      if (numOfUnbookedSeats >= numOfPeople) {
-        const minCost = await costService.findMinCostByFlightId(flight.id);
+    for (const airplane of airplanesWithUnbookedSeats) {
+      if (airplane.numberOfUnbookedSeats >= params.numOfPeople) {
+        const suitableFlight = flights.find(flight => flight.airplaneId === airplane.airplaneId);
+        const minCost = await costService.findMinCostByFlightId(suitableFlight.id);
 
         suitableFlights.push({
-          ...flight,
-          departureAirport: flight.departureAirport.dataValues,
-          arrivalAirport: flight.arrivalAirport.dataValues,
-          airplane: flight.airplane.dataValues,
+          ...suitableFlight,
+          departureAirport: suitableFlight.departureAirport.dataValues,
+          arrivalAirport: suitableFlight.arrivalAirport.dataValues,
+          airplane: suitableFlight.airplane.dataValues,
           minCost
         });
       }
