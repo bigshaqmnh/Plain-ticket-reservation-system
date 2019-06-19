@@ -36,19 +36,6 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
   }
 };
 
-const findById = async id => {
-  try {
-    const airplane = await db.airplane.findByPk(id);
-
-    if (!airplane) {
-      throw new CustomError({ status: responseStatus.notFound });
-    }
-    return airplane.dataValues;
-  } catch (err) {
-    throw new CustomError(err);
-  }
-};
-
 const add = async airplane => {
   try {
     await db.airplane.create(airplane);
@@ -57,4 +44,4 @@ const add = async airplane => {
   }
 };
 
-module.exports = { find, findById, add };
+module.exports = { find, add };
