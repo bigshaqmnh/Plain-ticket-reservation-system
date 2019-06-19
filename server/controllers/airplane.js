@@ -10,16 +10,6 @@ const getAll = async params => {
   }
 };
 
-const getById = async ({ airplaneId }) => {
-  try {
-    const airplane = await airplaneService.findById(airplaneId);
-
-    return airplane;
-  } catch (err) {
-    throw err;
-  }
-};
-
 const add = async airplane => {
   try {
     await airplaneService.add(airplane);
@@ -28,4 +18,4 @@ const add = async airplane => {
   }
 };
 
-module.exports = { getAll, getById, add };
+module.exports = { getAll, add };
