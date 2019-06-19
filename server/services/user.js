@@ -44,6 +44,18 @@ const add = async user => {
   }
 };
 
+const update = async (id, user) => {
+  try {
+    const updated = await db.user.update(user, { where: { id } });
+
+    if (!updated[0]) {
+      throw new CustomError({ status: responseStatus.notFound });
+    }
+  } catch (err) {
+    throw new CustomError({ status: responseStatus.conflict, message: err.message });
+  }
+};
+
 const comparePasswords = async (reqPassword, dbPassword) => {
   try {
     return await bcrypt.compare(reqPassword, dbPassword);
@@ -68,4 +80,4 @@ const generateToken = async payload => {
   }
 };
 
-module.exports = { findByEmail, checkIfExists, add, comparePasswords, hashPassword, generateToken };
+module.exports = { findByEmail, checkIfExists, add, update, comparePasswords, hashPassword, generateToken };
