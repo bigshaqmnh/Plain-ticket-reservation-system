@@ -65,7 +65,7 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
 const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departureTime, limit: resLimit }) => {
   const limit = resLimit || 20;
   const from = new Date(departureTime);
-  const to = new Date(from.getTime() + 86400000);
+  const to = new Date(from).setDate(from.getDate() + 1);
 
   try {
     const flights = await db.flight.findAll({
@@ -89,7 +89,8 @@ const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departur
         },
         { model: db.airplane, attributes: ['name'] }
       ],
-      limit
+      limit,
+      attributes: ['id', 'departureTime', 'arrivalTime', 'luggageOverweightCost', 'isCancelled', 'airplaneId']
     });
 
     return flights.map(flight => flight.dataValues);
@@ -98,29 +99,28 @@ const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departur
   }
 };
 
-const findById = async id => {
+const findByIds = async ids => {
   try {
-    const flight = await db.flight.findOne({
-      where: { id },
+    const flights = await db.flight.findAll({
+      where: { id: { [db.op.in]: ids } },
       include: [
         { model: db.airport, as: 'departureAirport', attributes: ['name', 'country', 'city'] },
         { model: db.airport, as: 'arrivalAirport', attributes: ['name', 'country', 'city'] },
         { model: db.airplane, attributes: ['name'] }
       ],
-      attributes: ['departureTime', 'arrivalTime', 'isCancelled']
+      attributes: ['id', 'departureTime', 'arrivalTime', 'isCancelled']
     });
 
-    if (!flight) {
+    if (!flights) {
       throw new CustomError({ status: responseStatus.notFound });
     }
 
-    const { dataValues, departureAirport, arrivalAirport, airplane } = flight;
-    return {
-      flight: dataValues,
-      departureAirport: departureAirport.dataValues,
-      arrivalAirport: arrivalAirport.dataValues,
-      airplane: airplane.dataValues
-    };
+    return flights.map(flight => ({
+      ...flight.dataValues,
+      departureAirport: flight.departureAirport.dataValues,
+      arrivalAirport: flight.arrivalAirport.dataValues,
+      airplane: flight.airplane.dataValues
+    }));
   } catch (err) {
     throw new CustomError(err);
   }
@@ -146,4 +146,4 @@ const update = async (id, flight) => {
   }
 };
 
-module.exports = { find, findByParams, findById, add, update };
+module.exports = { find, findByParams, findByIds, add, update };
