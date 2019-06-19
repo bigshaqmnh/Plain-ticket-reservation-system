@@ -32,23 +32,18 @@ const findMinCostByFlightId = async flightId => {
   }
 };
 
-const findById = async id => {
+const findByIds = async ids => {
   try {
-    const cost = await db.cost.findOne({
-      where: { id },
+    const costs = await db.cost.findAll({
+      where: { id: { [db.op.in]: ids } },
       include: [{ model: db.luggageOption, attributes: ['id', 'name'] }],
       attributes: ['id', 'cost', 'flightId']
     });
 
-    if (!cost) {
+    if (!costs) {
       throw new CustomError({ status: responseStatus.notFound });
     }
-
-    const { dataValues, luggageOption } = cost;
-    return {
-      cost: dataValues,
-      luggageOption: luggageOption.dataValues
-    };
+    return costs.map(cost => ({ ...cost.dataValues, luggageOption: cost.luggageOption.dataValues }));
   } catch (err) {
     throw new CustomError(err);
   }
@@ -74,4 +69,4 @@ const update = async (id, cost) => {
   }
 };
 
-module.exports = { findByFlightId, findMinCostByFlightId, findById, add, update };
+module.exports = { findByFlightId, findMinCostByFlightId, findByIds, add, update };
