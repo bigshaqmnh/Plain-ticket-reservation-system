@@ -8,7 +8,9 @@ import CustomAlert from '../../components/customAlert';
 import componentStyle from '../../constants/componentStyles';
 import validationSchema from '../../constants/auth/validationSchema';
 import defaultAlertData from '../../constants/alert/default';
-import alertText from '../../constants/alert/alertText';
+import alertText from '../../constants/alert/alertType';
+
+import { authApi } from '../../api';
 
 function AuthContainer() {
   const [formData, setFormData] = useState({
@@ -48,7 +50,8 @@ function AuthContainer() {
     const isFormValid = await validateForm();
 
     if (isFormValid) {
-      // call api log in method
+      const { email, password } = formData;
+      authApi.logIn({ email: email.value, password: password.value });
     }
   };
 
@@ -83,12 +86,15 @@ function AuthContainer() {
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;
 
-    await validationSchema[propName]
-      .validate({
+    try {
+      await validationSchema[propName].validate({
         [propName]: propValue
-      })
-      .then(() => setDataValid(propName, propValue))
-      .catch(error => setDataInvalid(propName, propValue, error.message));
+      });
+
+      setDataValid(propName, propValue);
+    } catch (err) {
+      setDataInvalid(propName, propValue, err.message);
+    }
   };
 
   return (
