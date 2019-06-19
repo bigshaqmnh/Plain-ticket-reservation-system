@@ -60,7 +60,7 @@ const comparePasswords = async (reqPassword, dbPassword) => {
   try {
     return await bcrypt.compare(reqPassword, dbPassword);
   } catch (err) {
-    throw new CustomError({ status: error.unavailable });
+    throw new CustomError({ status: error.fatal });
   }
 };
 
@@ -68,7 +68,7 @@ const hashPassword = async password => {
   try {
     return await bcrypt.hash(password, 10);
   } catch (err) {
-    throw new CustomError({ status: responseStatus.unavailable });
+    throw new CustomError({ status: responseStatus.fatal });
   }
 };
 
@@ -76,7 +76,7 @@ const generateToken = async payload => {
   try {
     return await jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1d' });
   } catch (err) {
-    throw new CustomError({ status: responseStatus.unavailable });
+    throw new CustomError({ status: responseStatus.fatal });
   }
 };
 
