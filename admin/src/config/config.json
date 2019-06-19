@@ -1,4 +1,5 @@
 {
+  "baseUrl": "http://localhost:3000",
   "minPasswordLength": 6,
-  "baseUrl": "http://localhost:9000"
+  "maxAirplaneTypeLength": 4
 }
