@@ -7,8 +7,6 @@ const airportController = require('../controllers/airport');
 
 router.get('/', controllerHandler(airportController.getAll, (req, res, next) => req.query));
 
-router.get('/:airportId', controllerHandler(airportController.getById, (req, res, next) => req.params));
-
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),

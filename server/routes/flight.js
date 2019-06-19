@@ -9,8 +9,6 @@ router.get('/all', controllerHandler(flightController.getAll, (req, res, next) =
 
 router.get('/', controllerHandler(flightController.getAllByParams, (req, res, next) => req.body));
 
-router.get('/:flightId', controllerHandler(flightController.getById, (req, res, next) => req.params));
-
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
