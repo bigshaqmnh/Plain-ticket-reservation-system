@@ -16,7 +16,7 @@ const logIn = async ({ email, password }) => {
       }
     }
 
-    throw new CustomError({ status: responseStatus.conflict });
+    throw new CustomError({ status: responseStatus.unauthorized });
   } catch (err) {
     throw err instanceof CustomError ? err : CustomError(err);
   }
@@ -27,7 +27,7 @@ const signUp = async ({ username, email, password }) => {
     const user = await userService.checkIfExists(email);
 
     if (user) {
-      throw new CustomError({ status: responseStatus.conflict });
+      throw new CustomError({ status: responseStatus.badReqest });
     }
 
     const passwordHash = await userService.hashPassword(password);
@@ -47,4 +47,12 @@ const signUp = async ({ username, email, password }) => {
   }
 };
 
-module.exports = { logIn, signUp };
+const update = async ({ id, user }) => {
+  try {
+    await userService.update(id, user);
+  } catch (err) {
+    throw err;
+  }
+};
+
+module.exports = { logIn, signUp, update };
