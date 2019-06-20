@@ -1,48 +1,41 @@
-/* eslint-disable */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'react-bootstrap';
 
-import sortTypes from '../../constants/sortTypes';
+import sortAlgorithms from '../../constants/sortAlgorithms';
 import stringFormatter from '../../helpers/stringFormatter';
-
-const arrows = {
-  asc: '\u02c5',
-  desc: '\u02c4'
-};
 
 function СustomTable(props) {
   const { headers, items, onClick } = props;
   const [sortedItems, setSortedItems] = useState([...items]);
-  const [sortColumn, setSortColumn] = useState('');
-  const [sortType, setSortType] = useState(0);
+  const [sortOption, setSortOption] = useState({});
 
-  const handleSort = ({ target }) => {
-    const columnName = target.getAttribute('name');
-    const columnType = target.getAttribute('type');
+  const resetHeaders = tableHeaders => tableHeaders.forEach(header => (header.classList = ''));
 
-    const header = target.innerText.replace(/˅|˄| /g, '');
+  const handleSort = ({ target, currentTarget }) => {
+    const column = target.getAttribute('name');
+    const { column: prevColumn, alg: prevAlg } = sortOption;
+    let alg = '';
+    let sortedItems = [...items];
 
-    if (sortColumn === columnName && sortType === sortTypes[columnType].length) {
-      setSortType(0);
-      target.innerText = header;
-      setSortedItems([...items]);
-      return;
-    } else if (sortColumn !== columnName) {
-      setSortType(0);
-      target.innerText = `${header} ${arrows.asc}`;
-    } else {
-      setSortType(sortType + 1);
-      target.innerText = `${header} ${arrows.desc}`;
+    if (column !== prevColumn) {
+      alg = 'asc';
+    } else if (prevAlg !== 'desc') {
+      alg = prevAlg ? 'desc' : 'asc';
     }
 
-    setSortColumn(columnName);
+    resetHeaders(currentTarget.childNodes);
+    target.className = alg;
 
-    const sortAlg = sortTypes[columnType][sortType];
+    if (alg) {
+      const type = target.getAttribute('type');
+      const sortAlg = sortAlgorithms[type][alg];
 
-    const sorted = sortAlg(sortedItems, columnName);
+      sortedItems = sortAlg(sortedItems, column);
+    }
 
-    setSortedItems(sorted);
+    setSortedItems(sortedItems);
+    setSortOption({ column, alg });
   };
 
   return (
@@ -50,7 +43,7 @@ function СustomTable(props) {
       <thead>
         <tr onClick={handleSort}>
           {headers.map(header => (
-            <th key={header} name={header} type={typeof sortedItems[0][header]}>
+            <th key={header} name={header} className="header" type={typeof sortedItems[0][header]}>
               {stringFormatter.toRegular(header)}
             </th>
           ))}
