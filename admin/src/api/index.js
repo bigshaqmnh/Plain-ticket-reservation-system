@@ -11,6 +11,7 @@ export const authApi = {
       saveUserToken(token.data);
     } catch (err) {
       console.error('Error: unable to log in.', err);
+      throw err;
     }
   },
 
@@ -25,6 +26,7 @@ export const airplaneApi = {
       return airplanes.data;
     } catch (err) {
       console.error('Error: unable to get airplanes.', err);
+      throw err;
     }
   },
 
@@ -38,6 +40,7 @@ export const airplaneApi = {
       });
     } catch (err) {
       console.error('Error: unable to add new airplane.', err);
+      throw err;
     }
   },
 
@@ -51,6 +54,7 @@ export const airplaneApi = {
       });
     } catch (err) {
       console.error('Error: unable to update the airplane.', err);
+      throw err;
     }
   }
 };
