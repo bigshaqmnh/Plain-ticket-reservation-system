@@ -16,15 +16,17 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
     : {};
 
   try {
-    const airplanes = await db.airplane.findAll({
+    const airplanes = await db.airplane.findAndCountAll({
       where: searchParam,
       offset,
       limit,
+      attributes: ['id', 'name', 'type', 'maxLuggageCarryWeight'],
       order: [['id', 'ASC']]
     });
 
     return {
-      data: airplanes.map(airplane => airplane.dataValues),
+      data: airplanes.rows.map(airplane => airplane.dataValues),
+      count: airplanes.count,
       nextPage: pageNum + 1
     };
   } catch (err) {
