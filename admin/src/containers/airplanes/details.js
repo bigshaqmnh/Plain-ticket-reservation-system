@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import CustomInput from '../../components/customInput';
 import CustomButton from '../../components/customButton';
 import componentStyles from '../../constants/componentStyles';
+import stringFormatter from '../../helpers/stringFormatter';
 
 function AirplaneDetails(props) {
   const { name, type, maxLuggageCarryWeight, handleBack } = props;
@@ -17,7 +18,7 @@ function AirplaneDetails(props) {
   return (
     <>
       {Object.keys(formData).map(key => (
-        <CustomInput key={key} label={key} name={key} value={formData[key]} isDisabled="true" />
+        <CustomInput key={key} label={stringFormatter.toRegular(key)} name={key} value={formData[key]} disabled />
       ))}
       <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
     </>

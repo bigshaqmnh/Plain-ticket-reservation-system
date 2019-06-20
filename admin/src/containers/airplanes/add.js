@@ -7,6 +7,7 @@ import CustomAlert from '../../components/customAlert';
 import componentStyles from '../../constants/componentStyles';
 import formValidation from '../../helpers/formValidation';
 import validationSchema from '../../constants/airplane/validationSchema';
+import stringFormatter from '../../helpers/stringFormatter';
 
 function AirplaneAdd(props) {
   const { handleSave, handleBack } = props;
@@ -51,10 +52,10 @@ function AirplaneAdd(props) {
       {Object.keys(formData).map(key => (
         <CustomInput
           key={key}
-          label={key}
+          label={stringFormatter.toRegular(key)}
           name={key}
           value={formData[key].value}
-          placeholder={`input ${key}`}
+          placeholder={`Input ${stringFormatter.toRegular(key)}`}
           onChange={handleChange}
           isValid={formData[key].isValid}
           invalidFeedback={formData[key].invalidFeedback}
