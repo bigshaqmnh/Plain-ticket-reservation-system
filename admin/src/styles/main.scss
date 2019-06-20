@@ -1,4 +1,17 @@
-// @import '../../node_modules/bootstrap/dist/css/bootstrap.css';
 @import '~~bootswatch/dist/darkly/variables';
 @import '~bootstrap/scss/bootstrap';
 @import '~bootswatch/dist/darkly/bootswatch';
+
+table tr > td {
+  cursor: pointer;
+}
+
+table th.asc::after {
+  content: '\02c5';
+  float: right;
+}
+
+table th.desc::after {
+  content: '\02c4';
+  float: right;
+}
