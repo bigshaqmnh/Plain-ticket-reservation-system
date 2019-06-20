@@ -17,7 +17,6 @@ function AirplanesContainer() {
   const [page, setPage] = useState({ current: 1, next: 1 });
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaved, setIsSaved] = useState(false);
 
   const [showInfoScreen, setShowInfoScreen] = useState(false);
   const [showAddScreen, setShowAddScreen] = useState(false);
@@ -42,7 +41,7 @@ function AirplanesContainer() {
   useEffect(() => {
     setIsLoading(true);
     fetchAirplanes({ page: page.next });
-  }, [searchText, isSaved]);
+  }, [searchText]);
 
   const handleClick = event => {
     const { id } = event.currentTarget;
@@ -72,27 +71,27 @@ function AirplanesContainer() {
   };
 
   const handleSave = async data => {
-    console.log('data: ', data);
-    setShowAddScreen(false);
-    const save = await airplaneApi.addAirplane(data);
+    try {
+      setShowAddScreen(false);
+      await airplaneApi.addAirplane(data);
 
-    if (save) {
-      setIsSaved(true);
+      fetchAirplanes({ page: page.current });
       setAlert({
         variant: componentStyles.success,
         heading: 'Saved',
         mainText: 'Airplane was successfully saved.',
         isShown: setShowAlert
       });
-    } else {
+    } catch (err) {
       setAlert({
         variant: componentStyles.error,
         heading: 'Not Saved',
         mainText: 'An error occured while saving airplane data.',
         isShown: setShowAlert
       });
+    } finally {
+      setShowAlert(true);
     }
-    setShowAlert(true);
   };
 
   const handleAdd = () => setShowAddScreen(true);
@@ -101,12 +100,14 @@ function AirplanesContainer() {
     airplanes.length ? (
       <>
         <CustomTable headers={Object.keys(airplanes[0])} items={airplanes} onClick={handleClick} />
-        <CustomPagination
-          currentPage={page.current}
-          lastPage={page.total}
-          isLarge={page.total >= 10}
-          handlePagination={handlePagination}
-        />
+        {page.total > 1 && (
+          <CustomPagination
+            currentPage={page.current}
+            lastPage={page.total}
+            isLarge={page.total >= 10}
+            handlePagination={handlePagination}
+          />
+        )}
       </>
     ) : (
       <h1>No Data.</h1>
