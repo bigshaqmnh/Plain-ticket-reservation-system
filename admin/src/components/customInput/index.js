@@ -2,32 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
 
-import stringFormatter from '../../helpers/stringFormatter';
-
 function CustomInput(props) {
-  const { label, type, name, value, placeholder, invalidFeedback, isValid, onChange, isDisabled } = props;
+  const { label, type, name, value, placeholder, invalidFeedback, isValid, onChange, disabled } = props;
 
   return (
     <Form.Group className="input">
-      <Form.Label>{stringFormatter.toRegular(label)}</Form.Label>
-      {isDisabled ? (
-        <Form.Control
-          type={type}
-          name={name}
-          value={value}
-          placeholder={stringFormatter.toRegular(placeholder)}
-          onChange={onChange}
-          disabled
-        />
-      ) : (
-        <Form.Control
-          type={type}
-          name={name}
-          value={value}
-          placeholder={stringFormatter.toRegular(placeholder)}
-          onChange={onChange}
-        />
-      )}
+      <Form.Label>{label}</Form.Label>
+
+      <Form.Control
+        type={type}
+        name={name}
+        value={value}
+        placeholder={placeholder}
+        onChange={onChange}
+        disabled={disabled}
+      />
+
       {!isValid && <Form.Text style={{ color: 'red' }}>{invalidFeedback}</Form.Text>}
     </Form.Group>
   );
@@ -42,7 +32,7 @@ CustomInput.propTypes = {
   invalidFeedback: PropTypes.string,
   isValid: PropTypes.bool,
   onChange: PropTypes.func,
-  isDisabled: PropTypes.bool
+  disabled: PropTypes.bool
 };
 
 CustomInput.defaultProps = {
@@ -52,7 +42,7 @@ CustomInput.defaultProps = {
   invalidFeedback: 'Invalid input.',
   isValid: true,
   onChange: null,
-  isDisabled: false
+  disabled: false
 };
 
 export default CustomInput;
