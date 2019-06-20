@@ -6,6 +6,10 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "no-plusplus": "off",
+    "no-return-assign": "off",
+    "no-param-reassign": "off",
+    "no-shadow": "off",
+    "consistent-return": "off",
     "react/jsx-filename-extension": [
       1,
       {
