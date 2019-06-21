@@ -1,5 +1,5 @@
 const CustomError = require('../classes/CustomError');
-const responseStatus = require('../constants/responseStatus');
+const error = require('../constants/error');
 
 const _genIncludeStatement = (foreignKey, inputString) => {
   return [
@@ -58,7 +58,7 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
       nextPage: pageNum + 1
     };
   } catch (err) {
-    throw new CustomError(err);
+    throw new CustomError({ ...err, type: error.FAILED_TO_FIND_DATA });
   }
 };
 
@@ -95,7 +95,7 @@ const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departur
 
     return flights.map(flight => flight.dataValues);
   } catch (err) {
-    throw new CustomError(err);
+    throw new CustomError({ ...err, type: error.FAILED_TO_FIND_DATA });
   }
 };
 
@@ -112,7 +112,7 @@ const findByIds = async ids => {
     });
 
     if (!flights) {
-      throw new CustomError({ status: responseStatus.notFound });
+      throw new CustomError({ ...err, type: error.NO_DATA_WAS_FOUND });
     }
 
     return flights.map(flight => ({
@@ -122,7 +122,7 @@ const findByIds = async ids => {
       airplane: flight.airplane.dataValues
     }));
   } catch (err) {
-    throw new CustomError(err);
+    throw new CustomError({ ...err, type: error.FAILED_TO_FIND_DATA });
   }
 };
 
@@ -130,7 +130,7 @@ const add = async flight => {
   try {
     await db.flight.create(flight);
   } catch (err) {
-    throw new CustomError({ status: responseStatus.conflict, message: err.message });
+    throw new CustomError({ ...err, type: error.FAILED_TO_ADD_DATA });
   }
 };
 
@@ -139,10 +139,10 @@ const update = async (id, flight) => {
     const updated = await db.flight.update(flight, { where: { id } });
 
     if (!updated[0]) {
-      throw new CustomError({ status: responseStatus.notFound });
+      throw new CustomError({ ...err, type: error.NO_DATA_WAS_FOUND });
     }
   } catch (err) {
-    throw new CustomError({ status: responseStatus.conflict, message: err.message });
+    throw new CustomError({ ...err, type: error.FAILED_TO_UPDATE_DATA });
   }
 };
 

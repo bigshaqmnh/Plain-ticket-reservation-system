@@ -1,5 +1,5 @@
 const CustomError = require('../classes/CustomError');
-const responseStatus = require('../constants/responseStatus');
+const error = require('../constants/error');
 
 const findByAirplaneId = async airplaneId => {
   try {
@@ -10,12 +10,12 @@ const findByAirplaneId = async airplaneId => {
     });
 
     if (!seats) {
-      throw new CustomError({ status: responseStatus.notFound });
+      throw new CustomError({ ...err, type: error.NO_DATA_WAS_FOUND });
     }
 
     return seats.map(seat => seat.dataValues);
   } catch (err) {
-    throw new CustomError(err);
+    throw new CustomError({ ...err, type: error.FAILED_TO_FIND_DATA });
   }
 };
 
@@ -27,7 +27,7 @@ const getNumberOfUnbooked = async airplaneIds => {
     });
 
     if (!seats) {
-      throw new CustomError({ status: responseStatus.notFound });
+      throw new CustomError({ ...err, type: error.NO_DATA_WAS_FOUND });
     }
 
     const numberOfUnbookedSeats = airplaneIds.map(airplaneId => ({
@@ -40,7 +40,7 @@ const getNumberOfUnbooked = async airplaneIds => {
 
     return numberOfUnbookedSeats;
   } catch (err) {
-    throw new CustomError(err);
+    throw new CustomError({ ...err, type: error.FAILED_TO_GET_NUMBER_OF_UNBOOKED_SEATS });
   }
 };
 
@@ -53,12 +53,12 @@ const findByIds = async ids => {
     });
 
     if (!seats) {
-      throw new CustomError({ status: responseStatus.notFound });
+      throw new CustomError({ ...err, type: error.NO_DATA_WAS_FOUND });
     }
 
     return seats.map(seat => ({ ...seat.dataValues }));
   } catch (err) {
-    throw new CustomError(err);
+    throw new CustomError({ ...err, type: error.FAILED_TO_FIND_DATA });
   }
 };
 
@@ -66,7 +66,7 @@ const add = async seat => {
   try {
     await db.seat.create(seat);
   } catch (err) {
-    throw new CustomError({ status: responseStatus.conflict, message: err.message });
+    throw new CustomError({ ...err, type: error.FAILED_TO_ADD_DATA });
   }
 };
 
@@ -75,10 +75,10 @@ const update = async (id, seat) => {
     const updated = await db.seat.update(seat, { where: { id } });
 
     if (!updated[0]) {
-      throw new CustomError({ status: responseStatus.notFound });
+      throw new CustomError({ ...err, type: error.NO_DATA_WAS_FOUND });
     }
   } catch (err) {
-    throw new CustomError({ status: responseStatus.conflict, message: err.message });
+    throw new CustomError({ ...err, type: error.FAILED_TO_UPDATE_DATA });
   }
 };
 

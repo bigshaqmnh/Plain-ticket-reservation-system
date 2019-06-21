@@ -1,5 +1,5 @@
 const CustomError = require('../classes/CustomError');
-const responseStatus = require('../constants/responseStatus');
+const error = require('../constants/error');
 
 const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
   const limit = resLimit || 20;
@@ -32,7 +32,7 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
       nextPage: pageNum + 1
     };
   } catch (err) {
-    throw new CustomError(err);
+    throw new CustomError({ ...err, type: error.FAILED_TO_FIND_DATA });
   }
 };
 
@@ -40,7 +40,7 @@ const add = async airplane => {
   try {
     await db.airplane.create(airplane);
   } catch (err) {
-    throw new CustomError({ status: responseStatus.conflict, message: err.message });
+    throw new CustomError({ ...err, type: error.FAILED_TO_ADD_DATA });
   }
 };
 
