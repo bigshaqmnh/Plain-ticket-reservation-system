@@ -47,12 +47,4 @@ const signUp = async ({ username, email, password }) => {
   }
 };
 
-const update = async ({ id, user }) => {
-  try {
-    await userService.update(id, user);
-  } catch (err) {
-    throw err;
-  }
-};
-
-module.exports = { logIn, signUp, update };
+module.exports = { logIn, signUp };
