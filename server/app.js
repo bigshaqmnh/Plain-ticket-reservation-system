@@ -15,6 +15,7 @@ const costRouter = require('./routes/cost');
 const luggageOptionRouter = require('./routes/luggageOption');
 const seatRouter = require('./routes/seat');
 const ticketRouter = require('./routes/ticket');
+const userRouter = require('./routes/user');
 
 const responseStatus = require('./constants/responseStatus');
 
@@ -41,6 +42,7 @@ app.use('/costs', costRouter);
 app.use('/luggageOptions', luggageOptionRouter);
 app.use('/seats', seatRouter);
 app.use('/tickets', ticketRouter);
+app.use('/users', userRouter);
 
 app.use((req, res) => {
   res.sendStatus(responseStatus.notFound);
