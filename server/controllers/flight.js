@@ -5,16 +5,10 @@ const CustomError = require('../classes/CustomError');
 
 const getAll = async params => {
   try {
-    const flights = await flightService.find(params);
+    if (Object.keys(params).length <= 3) {
+      return await flightService.find(params);
+    }
 
-    return flights;
-  } catch (err) {
-    throw err;
-  }
-};
-
-const getAllByParams = async params => {
-  try {
     const flights = await flightService.findByParams(params);
     const airplaneIds = flights.map(flight => flight.airplaneId);
 
@@ -23,7 +17,9 @@ const getAllByParams = async params => {
     const suitableFlights = [];
 
     for (const airplane of airplanesWithUnbookedSeats) {
-      if (airplane.numberOfUnbookedSeats >= params.numOfPeople) {
+      const numOfPeople = params.numOfPeople || 1;
+
+      if (airplane.numberOfUnbookedSeats >= numOfPeople) {
         const suitableFlight = flights.find(flight => flight.airplaneId === airplane.airplaneId);
         const minCost = await costService.findMinCostByFlightId(suitableFlight.id);
 
@@ -59,4 +55,4 @@ const update = async ({ id, flight }) => {
   }
 };
 
-module.exports = { getAll, getAllByParams, add, update };
+module.exports = { getAll, add, update };
