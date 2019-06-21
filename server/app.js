@@ -3,6 +3,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const statusCode = require('http-status-codes');
 const passport = require('passport');
 require('./passportSetup')(passport);
 require('./sequelizeSetup');
@@ -16,8 +17,6 @@ const luggageOptionRouter = require('./routes/luggageOption');
 const seatRouter = require('./routes/seat');
 const ticketRouter = require('./routes/ticket');
 const userRouter = require('./routes/user');
-
-const responseStatus = require('./constants/responseStatus');
 
 const app = express();
 
@@ -45,7 +44,7 @@ app.use('/tickets', ticketRouter);
 app.use('/users', userRouter);
 
 app.use((req, res) => {
-  res.sendStatus(responseStatus.notFound);
+  res.sendStatus(statusCode.NOT_FOUND);
 });
 
 const port = process.env.SERVER_PORT || '3000';
