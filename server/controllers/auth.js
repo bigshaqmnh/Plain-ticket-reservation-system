@@ -1,6 +1,6 @@
 const userService = require('../services/user');
 const CustomError = require('../classes/CustomError');
-const responseStatus = require('../constants/responseStatus');
+const error = require('../constants/error');
 
 const logIn = async ({ email, password }) => {
   try {
@@ -16,9 +16,9 @@ const logIn = async ({ email, password }) => {
       }
     }
 
-    throw new CustomError({ status: responseStatus.unauthorized });
+    throw new CustomError({ type: error.USER_NOT_FOUND });
   } catch (err) {
-    throw err instanceof CustomError ? err : CustomError(err);
+    throw err instanceof CustomError ? err : new CustomError({ ...err, type: error.FAILED_TO_LOG_IN });
   }
 };
 
@@ -27,7 +27,7 @@ const signUp = async ({ username, email, password }) => {
     const user = await userService.checkIfExists(email);
 
     if (user) {
-      throw new CustomError({ status: responseStatus.badReqest });
+      throw new CustomError({ type: error.USER_ALREADY_EXISTS });
     }
 
     const passwordHash = await userService.hashPassword(password);
@@ -43,7 +43,7 @@ const signUp = async ({ username, email, password }) => {
 
     return `Bearer ${token}`;
   } catch (err) {
-    throw err instanceof CustomError ? err : CustomError(err);
+    throw err instanceof CustomError ? err : new CustomError({ ...err, type: error.FAILED_TO_SIGN_UP });
   }
 };
 

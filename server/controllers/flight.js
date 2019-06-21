@@ -2,6 +2,7 @@ const flightService = require('../services/flight');
 const seatService = require('../services/seat');
 const costService = require('../services/cost');
 const CustomError = require('../classes/CustomError');
+const error = require('../constants/error');
 
 const getAll = async params => {
   try {
@@ -35,7 +36,7 @@ const getAll = async params => {
 
     return suitableFlights;
   } catch (err) {
-    throw err instanceof CustomError ? err : new CustomError(err);
+    throw err instanceof CustomError ? err : new CustomError({ ...err, type: error.FAILED_TO_GET_DATA });
   }
 };
 

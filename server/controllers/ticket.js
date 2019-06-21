@@ -3,6 +3,7 @@ const seatService = require('../services/seat');
 const costService = require('../services/cost');
 const flightService = require('../services/flight');
 const CustomError = require('../classes/CustomError');
+const error = require('../constants/error');
 
 const getByUserId = async ({ userId, page: pageNum, limit }) => {
   try {
@@ -32,7 +33,7 @@ const getByUserId = async ({ userId, page: pageNum, limit }) => {
 
     return { data: ticketsInfo, nextPage: tickets.nextPage };
   } catch (err) {
-    throw err instanceof CustomError ? err : new CustomError(err);
+    throw err instanceof CustomError ? err : new CustomError({ ...err, type: error.FAILED_TO_GET_DATA });
   }
 };
 
