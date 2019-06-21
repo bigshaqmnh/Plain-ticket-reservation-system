@@ -4,9 +4,7 @@ const passport = require('passport');
 const controllerHandler = require('./controllerHandler');
 const flightController = require('../controllers/flight');
 
-router.get('/all', controllerHandler(flightController.getAll, (req, res, next) => req.query));
-
-router.get('/', controllerHandler(flightController.getAllByParams, (req, res, next) => req.body));
+router.get('/', controllerHandler(flightController.getAll, (req, res, next) => req.query));
 
 router.post(
   '/',
