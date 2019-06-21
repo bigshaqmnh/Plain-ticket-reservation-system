@@ -1,9 +1,9 @@
-const responseStatus = require('../constants/responseStatus');
+const statusCode = require('http-status-codes');
 
 class CustomError extends Error {
-  constructor({ status, message }) {
+  constructor({ type, message }) {
     super(message);
-    this.status = status || responseStatus.fatal;
+    this.status = type || statusCode.INTERNAL_SERVER_ERROR;
   }
 }
 
