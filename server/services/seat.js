@@ -1,85 +1,54 @@
-const CustomError = require('../classes/CustomError');
-const error = require('../constants/error');
-
 const findByAirplaneId = async airplaneId => {
-  try {
-    const seats = await db.seat.findAll({
-      where: { airplaneId },
-      include: [{ model: db.seatType, attributes: ['id', 'name'] }],
-      attributes: ['id', 'row', 'seat', 'isBooked']
-    });
+  const seats = await db.seat.findAll({
+    where: { airplaneId },
+    include: [{ model: db.seatType, attributes: ['id', 'name'] }],
+    attributes: ['id', 'row', 'seat', 'isBooked']
+  });
 
-    if (!seats) {
-      throw new CustomError({ ...err, type: error.NO_DATA_WAS_FOUND });
-    }
+  if (!seats.length) return;
 
-    return seats.map(seat => seat.dataValues);
-  } catch (err) {
-    throw new CustomError({ ...err, type: error.FAILED_TO_FIND_DATA });
-  }
+  return seats.map(seat => ({ ...seat.dataValues, seatType: seat.seatType.dataValues }));
 };
 
 const getNumberOfUnbooked = async airplaneIds => {
-  try {
-    const seats = await db.seat.findAll({
-      where: { airplaneId: { [db.op.in]: airplaneIds }, isBooked: false },
-      attributes: ['airplaneId']
-    });
+  const seats = await db.seat.findAll({
+    where: { airplaneId: { [db.op.in]: airplaneIds }, isBooked: false },
+    attributes: ['airplaneId']
+  });
 
-    if (!seats) {
-      throw new CustomError({ ...err, type: error.NO_DATA_WAS_FOUND });
-    }
+  if (!seats.length) return;
 
-    const numberOfUnbookedSeats = airplaneIds.map(airplaneId => ({
-      airplaneId,
-      numberOfUnbookedSeats: seats.reduce(
-        (count, seat) => (seat.dataValues.airplaneId === airplaneId ? count + 1 : count),
-        0
-      )
-    }));
+  const numberOfUnbookedSeats = airplaneIds.map(airplaneId => ({
+    airplaneId,
+    numberOfUnbookedSeats: seats.reduce(
+      (count, seat) => (seat.dataValues.airplaneId === airplaneId ? count + 1 : count),
+      0
+    )
+  }));
 
-    return numberOfUnbookedSeats;
-  } catch (err) {
-    throw new CustomError({ ...err, type: error.FAILED_TO_GET_NUMBER_OF_UNBOOKED_SEATS });
-  }
+  return numberOfUnbookedSeats;
 };
 
 const findByIds = async ids => {
-  try {
-    const seats = await db.seat.findAll({
-      where: { id: { [db.op.in]: ids } },
-      include: [{ model: db.seatType, attributes: ['name'] }],
-      attributes: ['id', 'row', 'seat', 'floor']
-    });
+  const seats = await db.seat.findAll({
+    where: { id: { [db.op.in]: ids } },
+    include: [{ model: db.seatType, attributes: ['name'] }],
+    attributes: ['id', 'row', 'seat', 'floor']
+  });
 
-    if (!seats) {
-      throw new CustomError({ ...err, type: error.NO_DATA_WAS_FOUND });
-    }
+  if (!seats.length) return;
 
-    return seats.map(seat => ({ ...seat.dataValues }));
-  } catch (err) {
-    throw new CustomError({ ...err, type: error.FAILED_TO_FIND_DATA });
-  }
+  return seats.map(seat => ({ ...seat.dataValues }));
 };
 
-const add = async seat => {
-  try {
-    await db.seat.create(seat);
-  } catch (err) {
-    throw new CustomError({ ...err, type: error.FAILED_TO_ADD_DATA });
-  }
-};
+const add = async seat => await db.seat.create(seat);
 
 const update = async (id, seat) => {
-  try {
-    const updated = await db.seat.update(seat, { where: { id } });
+  const updated = await db.seat.update(seat, { where: { id } });
 
-    if (!updated[0]) {
-      throw new CustomError({ ...err, type: error.NO_DATA_WAS_FOUND });
-    }
-  } catch (err) {
-    throw new CustomError({ ...err, type: error.FAILED_TO_UPDATE_DATA });
-  }
+  const wasUpdated = updated[0] > 0;
+
+  return wasUpdated;
 };
 
 module.exports = { findByAirplaneId, getNumberOfUnbooked, findByIds, add, update };
