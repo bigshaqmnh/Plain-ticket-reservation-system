@@ -1,29 +1,9 @@
 const costService = require('../services/cost');
 
-const getByFlightId = async ({ flightId }) => {
-  try {
-    const costs = await costService.findByAirplaneId(flightId);
+const getByFlightId = async flightId => await costService.findByFlightId(flightId);
 
-    return costs;
-  } catch (err) {
-    throw err;
-  }
-};
+const add = async cost => await costService.add(cost);
 
-const add = async cost => {
-  try {
-    await costService.add(cost);
-  } catch (err) {
-    throw err;
-  }
-};
-
-const update = async ({ id, cost }) => {
-  try {
-    await costService.update(id, cost);
-  } catch (err) {
-    throw err;
-  }
-};
+const update = async (id, cost) => await costService.update(id, cost);
 
 module.exports = { getByFlightId, add, update };

@@ -1,21 +1,7 @@
 const airplaneService = require('../services/airplane');
 
-const getAll = async params => {
-  try {
-    const airplanes = await airplaneService.find(params);
+const getAll = async params => await airplaneService.find(params);
 
-    return airplanes;
-  } catch (err) {
-    throw err;
-  }
-};
-
-const add = async airplane => {
-  try {
-    await airplaneService.add(airplane);
-  } catch (err) {
-    throw err;
-  }
-};
+const add = async airplane => await airplaneService.add(airplane);
 
 module.exports = { getAll, add };

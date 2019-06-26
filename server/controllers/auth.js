@@ -1,50 +1,36 @@
 const userService = require('../services/user');
-const CustomError = require('../classes/CustomError');
-const error = require('../constants/error');
 
 const logIn = async ({ email, password }) => {
-  try {
-    const user = await userService.findByEmail(email);
+  const user = await userService.findByEmail(email);
 
-    if (user) {
-      const passwordsMatch = await userService.comparePasswords(password, user.passwordHash);
+  if (!user) return;
 
-      if (passwordsMatch) {
-        const token = await userService.generateToken({ email });
+  const passwordsMatch = await userService.comparePasswords(password, user.passwordHash);
 
-        return `Bearer ${token}`;
-      }
-    }
+  if (passwordsMatch) {
+    const token = await userService.generateToken({ email });
 
-    throw new CustomError({ type: error.USER_NOT_FOUND });
-  } catch (err) {
-    throw err instanceof CustomError ? err : new CustomError({ ...err, type: error.FAILED_TO_LOG_IN });
+    return token;
   }
 };
 
 const signUp = async ({ username, email, password }) => {
-  try {
-    const user = await userService.checkIfExists(email);
+  const userExists = await userService.checkIfExists(email);
 
-    if (user) {
-      throw new CustomError({ type: error.USER_ALREADY_EXISTS });
-    }
+  if (userExists) return;
 
-    const passwordHash = await userService.hashPassword(password);
+  const passwordHash = await userService.hashPassword(password);
 
-    const newUser = {
-      username,
-      email,
-      passwordHash
-    };
+  const newUser = {
+    username,
+    email,
+    passwordHash
+  };
 
-    await userService.add(newUser);
-    const token = await userService.generateToken({ email });
+  await userService.add(newUser);
+  const token = await userService.generateToken({ email });
 
-    return `Bearer ${token}`;
-  } catch (err) {
-    throw err instanceof CustomError ? err : new CustomError({ ...err, type: error.FAILED_TO_SIGN_UP });
-  }
+  return token;
 };
 
 module.exports = { logIn, signUp };
