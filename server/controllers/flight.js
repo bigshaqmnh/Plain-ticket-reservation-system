@@ -1,59 +1,39 @@
 const flightService = require('../services/flight');
 const seatService = require('../services/seat');
 const costService = require('../services/cost');
-const CustomError = require('../classes/CustomError');
-const error = require('../constants/error');
 
-const getAll = async params => {
-  try {
-    if (Object.keys(params).length <= 3) {
-      return await flightService.find(params);
+const getAll = async params => await flightService.find(params);
+
+const getByParams = async params => {
+  const { data: flights, nextPage } = await flightService.findByParams(params);
+
+  if (!flights) return;
+
+  const airplaneIds = flights.map(flight => flight.airplaneId);
+
+  const airplanesWithUnbookedSeats = await seatService.getNumberOfUnbooked(airplaneIds);
+
+  const suitableFlights = [];
+
+  for (const airplane of airplanesWithUnbookedSeats) {
+    const numOfPeople = params.numOfPeople || 1;
+
+    if (airplane.numberOfUnbookedSeats >= numOfPeople) {
+      const suitableFlight = flights.find(flight => flight.airplaneId === airplane.airplaneId);
+      const minCost = await costService.findMinCostByFlightId(suitableFlight.id);
+
+      suitableFlights.push({
+        ...suitableFlight,
+        minCost
+      });
     }
-
-    const flights = await flightService.findByParams(params);
-    const airplaneIds = flights.map(flight => flight.airplaneId);
-
-    const airplanesWithUnbookedSeats = await seatService.getNumberOfUnbooked(airplaneIds);
-
-    const suitableFlights = [];
-
-    for (const airplane of airplanesWithUnbookedSeats) {
-      const numOfPeople = params.numOfPeople || 1;
-
-      if (airplane.numberOfUnbookedSeats >= numOfPeople) {
-        const suitableFlight = flights.find(flight => flight.airplaneId === airplane.airplaneId);
-        const minCost = await costService.findMinCostByFlightId(suitableFlight.id);
-
-        suitableFlights.push({
-          ...suitableFlight,
-          departureAirport: suitableFlight.departureAirport.dataValues,
-          arrivalAirport: suitableFlight.arrivalAirport.dataValues,
-          airplane: suitableFlight.airplane.dataValues,
-          minCost
-        });
-      }
-    }
-
-    return suitableFlights;
-  } catch (err) {
-    throw err instanceof CustomError ? err : new CustomError({ ...err, type: error.FAILED_TO_GET_DATA });
   }
+
+  return nextPage ? { data: suitableFlights, nextPage } : { data: suitableFlights };
 };
 
-const add = async flight => {
-  try {
-    await flightService.add(flight);
-  } catch (err) {
-    throw err;
-  }
-};
+const add = async flight => await flightService.add(flight);
 
-const update = async ({ id, flight }) => {
-  try {
-    await flightService.update(id, flight);
-  } catch (err) {
-    throw err;
-  }
-};
+const update = async (id, flight) => await flightService.update(id, flight);
 
-module.exports = { getAll, add, update };
+module.exports = { getAll, getByParams, add, update };
