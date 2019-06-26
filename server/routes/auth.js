@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
-const controllerHandler = require('./controllerHandler');
-const authController = require('../controllers/auth');
+const authHandler = require('../handlers/auth');
+const handlerWrapper = require('../middleware/handlerWrapper');
 
-router.post('/login', controllerHandler(authController.logIn, (req, res, next) => req.body));
+router.post('/logIn', handlerWrapper(authHandler.logIn));
 
-router.post('/signUp', controllerHandler(authController.signUp, (req, res, next) => req.body));
+router.post('/signUp', handlerWrapper(authHandler.signUp));
 
 module.exports = router;

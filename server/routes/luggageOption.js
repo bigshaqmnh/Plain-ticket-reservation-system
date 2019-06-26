@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
-const controllerHandler = require('./controllerHandler');
-const luggageOptionController = require('../controllers/luggageOption');
+const handlerWrapper = require('../middleware/handlerWrapper');
+const luggageOptionHandler = require('../handlers/luggageOption');
 
-router.get('/', controllerHandler(luggageOptionController.getAll));
+router.get('/', handlerWrapper(luggageOptionHandler.getAll));
 
-router.get('/:luggageOptionId', controllerHandler(luggageOptionController.getById, (req, res, next) => req.params));
+router.get('/:luggageOptionId', handlerWrapper(luggageOptionHandler.getById));
 
 module.exports = router;
