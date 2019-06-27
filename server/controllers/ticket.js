@@ -6,7 +6,9 @@ const flightService = require('../services/flight');
 const getByUserId = async ({ userId, page: pageNum, limit }) => {
   const tickets = await ticketService.findByUserId(userId, pageNum, limit);
 
-  if (!tickets) return;
+  if (!tickets) {
+    return;
+  }
 
   const seatIds = tickets.data.map(ticket => ticket.seatId);
   const costIds = tickets.data.map(ticket => ticket.costId);
@@ -33,6 +35,6 @@ const getByUserId = async ({ userId, page: pageNum, limit }) => {
   return { data: ticketsInfo, nextPage: tickets.nextPage };
 };
 
-const add = async ticket => await ticketService.add(ticket);
+const add = ticket => ticketService.add(ticket);
 
 module.exports = { getByUserId, add };

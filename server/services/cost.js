@@ -4,7 +4,9 @@ const findByFlightId = async flightId => {
     attributes: ['id', 'cost', 'seatTypeId', 'luggageOptionId']
   });
 
-  if (!costs.length) return;
+  if (!costs.length) {
+    return;
+  }
 
   return costs.map(cost => cost.dataValues);
 };
@@ -21,7 +23,9 @@ const findByIds = async ids => {
     attributes: ['id', 'cost', 'flightId']
   });
 
-  if (!costs.length) return;
+  if (!costs.length) {
+    return;
+  }
 
   return costs.map(cost => ({ ...cost.dataValues, luggageOption: cost.luggageOption.dataValues }));
 };

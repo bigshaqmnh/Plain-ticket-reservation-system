@@ -52,7 +52,9 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
     });
   }
 
-  if (!flights.length) return;
+  if (!flights.length) {
+    return;
+  }
 
   const data = flights.map(flight => flight.dataValues);
 
@@ -87,7 +89,9 @@ const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departur
     attributes: ['id', 'departureTime', 'arrivalTime', 'luggageOverweightCost', 'isCancelled', 'airplaneId']
   });
 
-  if (!flights.length) return;
+  if (!flights.length) {
+    return;
+  }
 
   const data = flights.map(flight => ({
     ...flight.dataValues,
@@ -115,7 +119,9 @@ const findByIds = async ids => {
     attributes: ['id', 'departureTime', 'arrivalTime', 'isCancelled']
   });
 
-  if (!flights.length) return;
+  if (!flights.length) {
+    return;
+  }
 
   return flights.map(flight => ({
     ...flight.dataValues,

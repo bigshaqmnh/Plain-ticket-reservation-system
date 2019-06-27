@@ -6,7 +6,9 @@ const findByEmail = async email => {
     where: { email }
   });
 
-  if (!user) return;
+  if (!user) {
+    return;
+  }
 
   return user.dataValues;
 };

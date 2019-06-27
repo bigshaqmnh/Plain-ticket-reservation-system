@@ -5,7 +5,9 @@ const findByAirplaneId = async airplaneId => {
     attributes: ['id', 'row', 'seat', 'isBooked']
   });
 
-  if (!seats.length) return;
+  if (!seats.length) {
+    return;
+  }
 
   return seats.map(seat => ({ ...seat.dataValues, seatType: seat.seatType.dataValues }));
 };
@@ -16,7 +18,9 @@ const getNumberOfUnbooked = async airplaneIds => {
     attributes: ['airplaneId']
   });
 
-  if (!seats.length) return;
+  if (!seats.length) {
+    return;
+  }
 
   const numberOfUnbookedSeats = airplaneIds.map(airplaneId => ({
     airplaneId,
@@ -36,7 +40,9 @@ const findByIds = async ids => {
     attributes: ['id', 'row', 'seat', 'floor']
   });
 
-  if (!seats.length) return;
+  if (!seats.length) {
+    return;
+  }
 
   return seats.map(seat => ({ ...seat.dataValues }));
 };

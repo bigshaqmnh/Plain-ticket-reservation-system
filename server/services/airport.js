@@ -32,7 +32,9 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
     attributes: ['id', 'name', 'country', 'city', 'latitude', 'longitude']
   });
 
-  if (!airports.length) return;
+  if (!airports.length) {
+    return;
+  }
 
   const data = airports.map(airport => airport.dataValues);
 

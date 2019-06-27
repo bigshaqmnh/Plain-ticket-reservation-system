@@ -2,12 +2,14 @@ const flightService = require('../services/flight');
 const seatService = require('../services/seat');
 const costService = require('../services/cost');
 
-const getAll = async params => await flightService.find(params);
+const getAll = params => flightService.find(params);
 
 const getByParams = async params => {
   const { data: flights, nextPage } = await flightService.findByParams(params);
 
-  if (!flights) return;
+  if (!flights) {
+    return;
+  }
 
   const airplaneIds = flights.map(flight => flight.airplaneId);
 
@@ -32,8 +34,8 @@ const getByParams = async params => {
   return nextPage ? { data: suitableFlights, nextPage } : { data: suitableFlights };
 };
 
-const add = async flight => await flightService.add(flight);
+const add = flight => flightService.add(flight);
 
-const update = async (id, flight) => await flightService.update(id, flight);
+const update = (id, flight) => flightService.update(id, flight);
 
 module.exports = { getAll, getByParams, add, update };

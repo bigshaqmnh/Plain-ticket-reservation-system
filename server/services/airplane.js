@@ -23,7 +23,9 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
     attributes: ['id', 'name', 'type', 'maxLuggageCarryWeight']
   });
 
-  if (!airplanes.length) return;
+  if (!airplanes.length) {
+    return;
+  }
 
   const data = airplanes.map(airplane => airplane.dataValues);
 

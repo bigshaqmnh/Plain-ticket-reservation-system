@@ -3,7 +3,9 @@ const userService = require('../services/user');
 const logIn = async ({ email, password }) => {
   const user = await userService.findByEmail(email);
 
-  if (!user) return;
+  if (!user) {
+    return;
+  }
 
   const passwordsMatch = await userService.comparePasswords(password, user.passwordHash);
 
@@ -17,7 +19,9 @@ const logIn = async ({ email, password }) => {
 const signUp = async ({ username, email, password }) => {
   const userExists = await userService.checkIfExists(email);
 
-  if (userExists) return;
+  if (userExists) {
+    return;
+  }
 
   const passwordHash = await userService.hashPassword(password);
 

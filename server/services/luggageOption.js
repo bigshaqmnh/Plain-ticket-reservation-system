@@ -6,7 +6,9 @@ const find = async () => {
     ]
   });
 
-  if (!luggageOptions.length) return;
+  if (!luggageOptions.length) {
+    return;
+  }
 
   return luggageOptions.map(luggageOption => luggageOption.dataValues);
 };
@@ -21,7 +23,9 @@ const findById = async id => {
     attributes: ['name']
   });
 
-  if (!luggageOption) return;
+  if (!luggageOption) {
+    return;
+  }
 
   return {
     ...luggageOption.dataValues,

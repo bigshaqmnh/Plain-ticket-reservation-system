@@ -9,7 +9,9 @@ const findByUserId = async (userId, pageNum = 1, limit = 20) => {
     attributes: ['seatId', 'costId']
   });
 
-  if (!tickets.length) return;
+  if (!tickets.length) {
+    return;
+  }
 
   return {
     data: tickets.map(ticket => ticket.dataValues),
