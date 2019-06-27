@@ -1,9 +1,9 @@
 const seatService = require('../services/seat');
 
-const getByAirplaneId = async airplaneId => await seatService.findByAirplaneId(airplaneId);
+const getByAirplaneId = airplaneId => seatService.findByAirplaneId(airplaneId);
 
-const add = async seat => await seatService.add(seat);
+const add = seat => seatService.add(seat);
 
-const update = async (id, seat) => await seatService.update(id, seat);
+const update = (id, seat) => seatService.update(id, seat);
 
 module.exports = { getByAirplaneId, add, update };
