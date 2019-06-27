@@ -1,75 +1,41 @@
 const flightService = require('../services/flight');
 const seatService = require('../services/seat');
 const costService = require('../services/cost');
-const FlightResponse = require('../classes/FlightResponse');
-const { dbError } = require('../constants/errors');
 
-const getAll = async params => {
-  try {
-    const flights = await flightService.find(params);
+const getAll = params => flightService.find(params);
 
-    return new FlightResponse(false, flights);
-  } catch (err) {
-    return new FlightResponse(true, dbError.get);
+const getByParams = async params => {
+  const { data: flights, nextPage } = await flightService.findByParams(params);
+
+  if (!flights) {
+    return;
   }
-};
 
-const getAllByParams = async params => {
-  try {
-    const flights = await flightService.findByParams(params);
-    const suitableFlights = [];
+  const airplaneIds = flights.map(flight => flight.airplaneId);
 
-    for (const flight of flights) {
-      const numOfUnbookedSeats = await seatService.getNumberOfUnbooked(flight.airplaneId);
-      const numOfPeople = params.numOfPeople || 1;
+  const airplanesWithUnbookedSeats = await seatService.getNumberOfUnbooked(airplaneIds);
 
-      if (numOfUnbookedSeats >= numOfPeople) {
-        const minCost = await costService.findMinCostByFlightId(flight.id);
+  const suitableFlights = [];
 
-        suitableFlights.push({
-          ...flight,
-          departureAirport: flight.departureAirport.dataValues,
-          arrivalAirport: flight.arrivalAirport.dataValues,
-          airplane: flight.airplane.dataValues,
-          minCost
-        });
-      }
+  for (const airplane of airplanesWithUnbookedSeats) {
+    const numOfPeople = params.numOfPeople || 1;
+
+    if (airplane.numberOfUnbookedSeats >= numOfPeople) {
+      const suitableFlight = flights.find(flight => flight.airplaneId === airplane.airplaneId);
+      const minCost = await costService.findMinCostByFlightId(suitableFlight.id);
+
+      suitableFlights.push({
+        ...suitableFlight,
+        minCost
+      });
     }
-
-    return new FlightResponse(false, suitableFlights);
-  } catch (err) {
-    return new FlightResponse(true, dbError.get);
   }
+
+  return nextPage ? { data: suitableFlights, nextPage } : { data: suitableFlights };
 };
 
-const getById = async ({ flightId }) => {
-  try {
-    const flight = await flightService.findById(flightId);
+const add = flight => flightService.add(flight);
 
-    return new FlightResponse(false, flight);
-  } catch (err) {
-    return new FlightResponse(true, dbError.get);
-  }
-};
+const update = (id, flight) => flightService.update(id, flight);
 
-const add = async flight => {
-  try {
-    await flightService.add(flight);
-
-    return new FlightResponse();
-  } catch (err) {
-    return new FlightResponse(true, dbError.create);
-  }
-};
-
-const update = async ({ id, flight }) => {
-  try {
-    await flightService.update(id, flight);
-
-    return new FlightResponse();
-  } catch (err) {
-    return new FlightResponse(true, dbError.update);
-  }
-};
-
-module.exports = { getAll, getAllByParams, getById, add, update };
+module.exports = { getAll, getByParams, add, update };

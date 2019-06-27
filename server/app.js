@@ -1,5 +1,4 @@
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
-const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -9,16 +8,8 @@ const passport = require('passport');
 require('./passportSetup')(passport);
 require('./sequelizeSetup');
 
-const authRouter = require('./routes/auth');
-const airplaneRouter = require('./routes/airplane');
-const airportRouter = require('./routes/airport');
-const flightRouter = require('./routes/flight');
-const costRouter = require('./routes/cost');
-const luggageOptionRouter = require('./routes/luggageOption');
-const seatRouter = require('./routes/seat');
-const ticketRouter = require('./routes/ticket');
-
 const app = express();
+const routes = require('./routes');
 
 app.use(logger(process.env.LOGGER_CONFIG));
 app.use(express.json());
@@ -33,19 +24,11 @@ app.use(
   })
 );
 
-app.use('/auth', authRouter);
-app.use('/airplanes', airplaneRouter);
-app.use('/airports', airportRouter);
-app.use('/flights', flightRouter);
-app.use('/costs', costRouter);
-app.use('/luggageOptions', luggageOptionRouter);
-app.use('/seats', seatRouter);
-app.use('/tickets', ticketRouter);
+app.use(routes);
 
-app.use((req, res) => {
-  const err = createError(statusCode.NOT_FOUND, 'The route you are looking for does not exist.');
-  res.status(err.status).json(err.message);
-});
+app.use((req, res, next) => res.sendStatus(statusCode.NOT_FOUND));
+
+app.use((err, req, res, next) => res.sendStatus(statusCode.INTERNAL_SERVER_ERROR));
 
 const port = process.env.SERVER_PORT || '3000';
 

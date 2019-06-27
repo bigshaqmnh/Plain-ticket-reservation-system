@@ -15,11 +15,12 @@ module.exports = passport => {
           return done(false, false);
         }
 
-        const { id, username, email } = user;
+        const { id, username, email, isAdmin } = user;
         return done(false, {
           id,
           username,
-          email
+          email,
+          isAdmin
         });
       } catch (err) {
         return done(true);
