@@ -1,27 +1,40 @@
 const userService = require('../services/user');
-const AuthResponse = require('../classes/AuthResponse');
-const error = require('../constants/errors');
 
-const logIn = async (email, password) => {
+const logIn = async ({ email, password }) => {
   const user = await userService.findByEmail(email);
 
-  if (user) {
-    const passwordsMatch = await userService.comparePasswords(password, user.password);
-
-    if (passwordsMatch) {
-      const { id, username } = user;
-      const payload = {
-        id,
-        username
-      };
-
-      const token = await userService.generateToken(payload);
-
-      return new AuthResponse(false, `Bearer ${token}`);
-    }
+  if (!user) {
+    return;
   }
 
-  return new AuthResponse(true, error.logIn);
+  const passwordsMatch = await userService.comparePasswords(password, user.passwordHash);
+
+  if (passwordsMatch) {
+    const token = await userService.generateToken({ email });
+
+    return token;
+  }
 };
 
-module.exports = { logIn };
+const signUp = async ({ username, email, password }) => {
+  const userExists = await userService.checkIfExists(email);
+
+  if (userExists) {
+    return;
+  }
+
+  const passwordHash = await userService.hashPassword(password);
+
+  const newUser = {
+    username,
+    email,
+    passwordHash
+  };
+
+  await userService.add(newUser);
+  const token = await userService.generateToken({ email });
+
+  return token;
+};
+
+module.exports = { logIn, signUp };

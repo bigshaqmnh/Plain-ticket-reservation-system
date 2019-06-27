@@ -1,12 +1,12 @@
-const find = async ({ page, inputString, param, resLimit } = {}) => {
+const find = async ({ page, query: inputString, field, limit: resLimit } = {}) => {
   const limit = resLimit || 20;
-  const pageNum = page || 1;
+  const pageNum = +page || 1;
   const offset = pageNum * limit - limit;
   let searchParam = {};
 
-  if (param && inputString) {
+  if (field && inputString) {
     searchParam = {
-      [param]: { [db.op.iLike]: `%${inputString}%` }
+      [field]: { [db.op.iLike]: `%${inputString}%` }
     };
   } else if (inputString) {
     searchParam = {
@@ -24,33 +24,28 @@ const find = async ({ page, inputString, param, resLimit } = {}) => {
     };
   }
 
-  try {
-    const airports = await db.airport.findAll({
-      where: searchParam,
-      offset,
-      limit,
-      order: [['id', 'ASC']]
-    });
+  const airports = await db.airport.findAll({
+    where: searchParam,
+    offset,
+    limit,
+    order: [['id', 'ASC']],
+    attributes: ['id', 'name', 'country', 'city', 'latitude', 'longitude']
+  });
 
-    return {
-      data: airports.map(airport => airport.dataValues),
-      nextPage: ++pageNum
-    };
-  } catch (err) {}
+  if (!airports.length) {
+    return;
+  }
+
+  const data = airports.map(airport => airport.dataValues);
+
+  return airports.length > resLimit
+    ? {
+        data,
+        nextPage: pageNum + 1
+      }
+    : { data };
 };
 
-const findById = async id => {
-  try {
-    const airport = await db.airport.findByPk(id);
-    return airport.dataValues;
-  } catch (err) {}
-};
+const add = async airport => await db.airport.create(airport);
 
-const add = async airport => {
-  try {
-    const newAirport = await db.airport.create(airport);
-    return newAirport.dataValues;
-  } catch (err) {}
-};
-
-module.exports = { find, findById, add };
+module.exports = { find, add };

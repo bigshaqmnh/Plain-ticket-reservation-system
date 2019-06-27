@@ -1,9 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const router = require('express').Router();
 
-const controllerHandler = require('./controllerHandler');
-const authController = require('../controllers/auth');
+const authHandler = require('../handlers/auth');
+const wrapHandlerToCatchError = require('../middleware/handlerWrapper');
 
-router.post('/login', controllerHandler(authController.logIn, (req, res, next) => [req.body.email, req.body.password]));
+router.post('/logIn', wrapHandlerToCatchError(authHandler.logIn));
+
+router.post('/signUp', wrapHandlerToCatchError(authHandler.signUp));
 
 module.exports = router;

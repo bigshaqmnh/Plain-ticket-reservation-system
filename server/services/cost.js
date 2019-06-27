@@ -1,50 +1,43 @@
 const findByFlightId = async flightId => {
-  try {
-    const cost = await db.cost.findOne({
-      where: { flightId },
-      attributes: ['id', 'cost', 'seatTypeId', 'luggageOptionId']
-    });
-    return cost.dataValues;
-  } catch (err) {}
+  const costs = await db.cost.findAll({
+    where: { flightId },
+    attributes: ['id', 'cost', 'seatTypeId', 'luggageOptionId']
+  });
+
+  if (!costs.length) {
+    return;
+  }
+
+  return costs.map(cost => cost.dataValues);
 };
 
-const findMinCostByFlightId = async flightId => {
-  try {
-    const minCost = await db.cost.min('cost', {
-      where: { flightId }
-    });
-    return minCost;
-  } catch (err) {}
+const findMinCostByFlightId = async flightId =>
+  await db.cost.min('cost', {
+    where: { flightId }
+  });
+
+const findByIds = async ids => {
+  const costs = await db.cost.findAll({
+    where: { id: { [db.op.in]: ids } },
+    include: [{ model: db.luggageOption, attributes: ['id', 'name'] }],
+    attributes: ['id', 'cost', 'flightId']
+  });
+
+  if (!costs.length) {
+    return;
+  }
+
+  return costs.map(cost => ({ ...cost.dataValues, luggageOption: cost.luggageOption.dataValues }));
 };
 
-const findById = async id => {
-  try {
-    const cost = await db.cost.findOne({
-      where: { id },
-      include: [{ model: db.seatType, attributes: ['name'] }, { model: db.luggageOption, attributes: ['id', 'name'] }],
-      attributes: ['id', 'cost', 'flightId']
-    });
-    const { dataValues, seatType, luggageOption } = cost;
-    return {
-      cost: dataValues,
-      seatType: seatType.dataValues,
-      luggageOption: luggageOption.dataValues
-    };
-  } catch (err) {}
+const add = async cost => await db.cost.create(cost);
+
+const update = async (id, cost) => {
+  const updated = await db.cost.update(cost, { where: { id } });
+
+  const wasUpdated = updated[0] > 0;
+
+  return wasUpdated;
 };
 
-const add = async cost => {
-  try {
-    const newCost = await db.cost.create(cost);
-    return newCost.dataValues;
-  } catch (err) {}
-};
-
-const update = async cost => {
-  try {
-    const updatedCost = await db.cost.update(cost, { where: { id: cost.id } });
-    return updatedCost;
-  } catch (err) {}
-};
-
-module.exports = { findByFlightId, findMinCostByFlightId, findById, add, update };
+module.exports = { findByFlightId, findMinCostByFlightId, findByIds, add, update };

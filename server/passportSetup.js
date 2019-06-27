@@ -9,17 +9,18 @@ module.exports = passport => {
   passport.use(
     new Strategy(jwtOptions, async (payload, done) => {
       try {
-        const user = await userService.findById(payload.id);
+        const user = await userService.findByEmail(payload.email);
 
         if (!user) {
           return done(false, false);
         }
 
-        const { id, username, email } = user;
+        const { id, username, email, isAdmin } = user;
         return done(false, {
           id,
           username,
-          email
+          email,
+          isAdmin
         });
       } catch (err) {
         return done(true);
