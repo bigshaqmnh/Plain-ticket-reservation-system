@@ -2,52 +2,39 @@ const ticketService = require('../services/ticket');
 const seatService = require('../services/seat');
 const costService = require('../services/cost');
 const flightService = require('../services/flight');
-const TicketResponse = require('../classes/TicketResponse');
-const { dbError } = require('../constants/errors');
 
 const getByUserId = async ({ userId, page: pageNum, limit }) => {
-  try {
-    const tickets = await ticketService.findByUserId(userId, pageNum, limit);
+  const tickets = await ticketService.findByUserId(userId, pageNum, limit);
 
-    const ticketsInfo = await Promise.all(
-      tickets.data.map(async ticket => {
-        const seat = await seatService.findById(ticket.seatId);
-        const cost = await costService.findById(ticket.costId);
-        const flightInfo = await flightService.findById(cost.cost.flightId);
-
-        return {
-          ...ticket,
-          ...seat,
-          ...cost,
-          ...flightInfo
-        };
-      })
-    );
-
-    return new TicketResponse(false, { ...ticketsInfo, nextPage: tickets.nextPage });
-  } catch (err) {
-    return new TicketResponse(true, dbError.get);
+  if (!tickets) {
+    return;
   }
+
+  const seatIds = tickets.data.map(ticket => ticket.seatId);
+  const costIds = tickets.data.map(ticket => ticket.costId);
+
+  const seats = await seatService.findByIds(seatIds);
+  const costs = await costService.findByIds(costIds);
+
+  const flightIds = costs.map(cost => cost.flightId);
+
+  const flights = await flightService.findByIds(flightIds);
+
+  const ticketsInfo = tickets.data.map(ticket => {
+    const seat = seats.find(seat => seat.id === ticket.seatId);
+    const cost = costs.find(cost => cost.id === ticket.costId);
+    const flight = flights.find(flight => flight.id === cost.flightId);
+
+    return {
+      ...flight,
+      ...cost,
+      seat
+    };
+  });
+
+  return { data: ticketsInfo, nextPage: tickets.nextPage };
 };
 
-const add = async ticket => {
-  try {
-    await ticketService.add(ticket);
+const add = ticket => ticketService.add(ticket);
 
-    return new TicketResponse();
-  } catch (err) {
-    return new TicketResponse(true, dbError.create);
-  }
-};
-
-const update = async (id, ticket) => {
-  try {
-    await ticketService.update(id, ticket);
-
-    return new TicketResponse();
-  } catch (err) {
-    return new TicketResponse(true, dbError.update);
-  }
-};
-
-module.exports = { getByUserId, add, update };
+module.exports = { getByUserId, add };

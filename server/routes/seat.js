@@ -1,22 +1,8 @@
-var express = require('express');
-var router = express.Router();
-const passport = require('passport');
+const router = require('express').Router();
 
-const controllerHandler = require('./controllerHandler');
-const seatController = require('../controllers/seat');
+const wrapHandlerToCatchError = require('../middleware/handlerWrapper');
+const seatHandler = require('../handlers/seat');
 
-router.get('/:airplaneId', controllerHandler(seatController.getByAirplaneId, (req, res, next) => req.params));
-
-router.post(
-  '/',
-  passport.authenticate('jwt', { session: false }),
-  controllerHandler(seatController.add, (req, res, next) => req.body)
-);
-
-router.put(
-  '/:seatId',
-  passport.authenticate('jwt', { session: false }),
-  controllerHandler(seatController.update, (req, res, next) => ({ id: req.params.seatId, seat: req.body }))
-);
+router.get('/:airplaneId', wrapHandlerToCatchError(seatHandler.getByAirplaneId));
 
 module.exports = router;

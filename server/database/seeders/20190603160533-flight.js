@@ -68,6 +68,17 @@ module.exports = {
         airplaneId: 3,
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        departureTime: new Date(2019, 7, 12, 9, 24),
+        arrivalTime: new Date(2019, 7, 12, 16, 8),
+        departureAirportId: 4,
+        arrivalAirportId: 1,
+        luggageOverweightCost: 34,
+        isCancelled: false,
+        airplaneId: 5,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ]);
   },

@@ -24,38 +24,28 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
     };
   }
 
-  try {
-    const airports = await db.airport.findAll({
-      where: searchParam,
-      offset,
-      limit,
-      order: [['id', 'ASC']]
-    });
+  const airports = await db.airport.findAll({
+    where: searchParam,
+    offset,
+    limit,
+    order: [['id', 'ASC']],
+    attributes: ['id', 'name', 'country', 'city', 'latitude', 'longitude']
+  });
 
-    return {
-      data: airports.map(airport => airport.dataValues),
-      nextPage: pageNum + 1
-    };
-  } catch (err) {
-    throw new Error(err);
+  if (!airports.length) {
+    return;
   }
+
+  const data = airports.map(airport => airport.dataValues);
+
+  return airports.length > resLimit
+    ? {
+        data,
+        nextPage: pageNum + 1
+      }
+    : { data };
 };
 
-const findById = async id => {
-  try {
-    const airport = await db.airport.findByPk(id);
-    return airport && airport.dataValues;
-  } catch (err) {
-    throw new Error(err);
-  }
-};
+const add = async airport => await db.airport.create(airport);
 
-const add = async airport => {
-  try {
-    await db.airport.create(airport);
-  } catch (err) {
-    throw new Error(err);
-  }
-};
-
-module.exports = { find, findById, add };
+module.exports = { find, add };

@@ -1,22 +1,10 @@
-var express = require('express');
-var router = express.Router();
-const passport = require('passport');
+const router = require('express').Router();
 
-const controllerHandler = require('./controllerHandler');
-const ticketController = require('../controllers/ticket');
+const wrapHandlerToCatchError = require('../middleware/handlerWrapper');
+const ticketHandler = require('../handlers/ticket');
 
-router.get('/', controllerHandler(ticketController.getByUserId, (req, res, next) => req.query));
+router.get('/', wrapHandlerToCatchError(ticketHandler.getByUserId));
 
-router.post(
-  '/',
-  passport.authenticate('jwt', { session: false }),
-  controllerHandler(ticketController.add, (req, res, next) => req.body)
-);
-
-router.put(
-  '/:ticketId',
-  passport.authenticate('jwt', { session: false }),
-  controllerHandler(ticketController.update, (req, res, next) => ({ id: req.params.ticketId, ticket: req.body }))
-);
+router.post('/', wrapHandlerToCatchError(ticketHandler.add));
 
 module.exports = router;
