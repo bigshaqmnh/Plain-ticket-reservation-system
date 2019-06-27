@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
 const airportHandler = require('../../handlers/airport');
-const handlerWrapper = require('../../middleware/handlerWrapper');
+const wrapHandlerToCatchError = require('../../middleware/handlerWrapper');
 
-router.get('/', handlerWrapper(airportHandler.getAll));
+router.get('/', wrapHandlerToCatchError(airportHandler.getAll));
 
-router.post('/', handlerWrapper(airportHandler.add));
+router.post('/', wrapHandlerToCatchError(airportHandler.add));
 
 module.exports = router;

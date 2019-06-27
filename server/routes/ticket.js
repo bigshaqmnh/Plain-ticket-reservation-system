@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
-const handlerWrapper = require('../middleware/handlerWrapper');
+const wrapHandlerToCatchError = require('../middleware/handlerWrapper');
 const ticketHandler = require('../handlers/ticket');
 
-router.get('/', handlerWrapper(ticketHandler.getByUserId));
+router.get('/', wrapHandlerToCatchError(ticketHandler.getByUserId));
 
-router.post('/', handlerWrapper(ticketHandler.add));
+router.post('/', wrapHandlerToCatchError(ticketHandler.add));
 
 module.exports = router;

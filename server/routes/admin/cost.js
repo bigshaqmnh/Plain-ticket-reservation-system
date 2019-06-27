@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
 const costHandler = require('../../handlers/cost');
-const handlerWrapper = require('../../middleware/handlerWrapper');
+const wrapHandlerToCatchError = require('../../middleware/handlerWrapper');
 
-router.post('/', handlerWrapper(costHandler.add));
+router.post('/', wrapHandlerToCatchError(costHandler.add));
 
-router.put('/:costId', handlerWrapper(costHandler.update));
+router.put('/:costId', wrapHandlerToCatchError(costHandler.update));
 
 module.exports = router;

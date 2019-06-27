@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
-const handlerWrapper = require('../middleware/handlerWrapper');
+const wrapHandlerToCatchError = require('../middleware/handlerWrapper');
 const luggageOptionHandler = require('../handlers/luggageOption');
 
-router.get('/', handlerWrapper(luggageOptionHandler.getAll));
+router.get('/', wrapHandlerToCatchError(luggageOptionHandler.getAll));
 
-router.get('/:luggageOptionId', handlerWrapper(luggageOptionHandler.getById));
+router.get('/:luggageOptionId', wrapHandlerToCatchError(luggageOptionHandler.getById));
 
 module.exports = router;

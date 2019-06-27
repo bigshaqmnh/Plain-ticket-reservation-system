@@ -1,12 +1,12 @@
 const router = require('express').Router();
 
-const handlerWrapper = require('../../middleware/handlerWrapper');
+const wrapHandlerToCatchError = require('../../middleware/handlerWrapper');
 const flightHandler = require('../../handlers/flight');
 
-router.get('/', handlerWrapper(flightHandler.getAll));
+router.get('/', wrapHandlerToCatchError(flightHandler.getAll));
 
-router.post('/', handlerWrapper(flightHandler.add));
+router.post('/', wrapHandlerToCatchError(flightHandler.add));
 
-router.put('/:flightId', handlerWrapper(flightHandler.update));
+router.put('/:flightId', wrapHandlerToCatchError(flightHandler.update));
 
 module.exports = router;
