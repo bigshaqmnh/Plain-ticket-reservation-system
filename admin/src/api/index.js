@@ -21,7 +21,13 @@ export const authApi = {
 export const airplaneApi = {
   getAirplanes: async params => {
     try {
-      const airplanes = await axios.get(`${config.baseUrl}/airplanes`, { params });
+      const token = getUserToken();
+      const airplanes = await axios({
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${config.adminUrl}/airplanes`,
+        params
+      });
 
       return airplanes.data;
     } catch (err) {
@@ -32,10 +38,12 @@ export const airplaneApi = {
 
   addAirplane: async airplane => {
     try {
+      const token = getUserToken();
+
       return await axios({
         method: 'POST',
-        Authorization: getUserToken(),
-        url: `${config.baseUrl}/airplanes`,
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${config.adminUrl}/airplanes`,
         data: airplane
       });
     } catch (err) {
@@ -46,10 +54,12 @@ export const airplaneApi = {
 
   updateAirplane: async airplane => {
     try {
+      const token = getUserToken();
+
       return await axios({
         method: 'PUT',
-        Authorization: getUserToken(),
-        url: `${config.baseUrl}/airplanes/${airplane.id}`,
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${config.adminUrl}/airplanes/${airplane.id}`,
         data: airplane
       });
     } catch (err) {
