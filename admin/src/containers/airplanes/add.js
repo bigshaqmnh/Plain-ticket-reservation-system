@@ -63,7 +63,7 @@ function AirplaneAdd(props) {
       ))}
       <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
       <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
-      {showAlert && <CustomAlert props={alert} />}
+      {showAlert && <CustomAlert {...alert} />}
     </>
   );
 }
