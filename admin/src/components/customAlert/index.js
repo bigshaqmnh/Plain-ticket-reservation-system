@@ -1,10 +1,9 @@
+/* eslint-disable */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Alert } from 'react-bootstrap';
 
-function CustomAlert({ props }) {
-  const { variant, heading, mainText, isShown } = props;
-
+function CustomAlert({ variant, heading, mainText, isShown }) {
   const handleDismiss = () => isShown(false);
 
   return (
@@ -16,7 +15,6 @@ function CustomAlert({ props }) {
 }
 
 CustomAlert.propTypes = {
-  props: PropTypes.shape({}).isRequired,
   variant: PropTypes.string.isRequired,
   heading: PropTypes.string.isRequired,
   mainText: PropTypes.string.isRequired,
