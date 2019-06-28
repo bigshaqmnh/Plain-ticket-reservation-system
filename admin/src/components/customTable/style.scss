@@ -1,0 +1,15 @@
+table {
+  td {
+    cursor: pointer;
+  }
+
+  th.asc::after {
+    content: '\02c5';
+    float: right;
+  }
+
+  th.desc::after {
+    content: '\02c4';
+    float: right;
+  }
+}

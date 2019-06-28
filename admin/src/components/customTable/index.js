@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'react-bootstrap';
 
+import './style.scss';
+
 import sortAlgorithms from '../../constants/sortAlgorithms';
 import stringFormatter from '../../helpers/stringFormatter';
 
