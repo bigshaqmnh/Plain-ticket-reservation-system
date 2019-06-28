@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'react-bootstrap';
 
@@ -9,6 +9,7 @@ import stringFormatter from '../../helpers/stringFormatter';
 
 function СustomTable(props) {
   const { headers, items, onClick } = props;
+
   const [sortedItems, setSortedItems] = useState([...items]);
   const [sortOption, setSortOption] = useState({});
 
@@ -33,6 +34,10 @@ function СustomTable(props) {
     setSortedItems(sortedItems);
     setSortOption({ column, alg });
   };
+
+  useEffect(() => {
+    setSortedItems([...items]);
+  }, [items]);
 
   return (
     <Table bordered hover responsive>
