@@ -28,8 +28,7 @@ function СustomTable(props) {
     target.className = alg;
 
     if (alg) {
-      const type = target.getAttribute('type');
-      const sortAlg = sortAlgorithms[type][alg];
+      const sortAlg = sortAlgorithms[alg];
 
       sortedItems = sortAlg(sortedItems, column);
     }
@@ -43,7 +42,7 @@ function СustomTable(props) {
       <thead>
         <tr onClick={handleSort}>
           {headers.map(header => (
-            <th key={header} name={header} className="header" type={typeof sortedItems[0][header]}>
+            <th key={header} name={header} className="header">
               {stringFormatter.toRegular(header)}
             </th>
           ))}
