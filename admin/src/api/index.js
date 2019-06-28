@@ -40,12 +40,14 @@ export const airplaneApi = {
     try {
       const token = getUserToken();
 
-      return await axios({
+      const newAirplane = await axios({
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         url: `${config.adminUrl}/airplanes`,
         data: airplane
       });
+
+      return newAirplane.data;
     } catch (err) {
       console.error('Error: unable to add new airplane.', err);
       throw err;
@@ -56,12 +58,14 @@ export const airplaneApi = {
     try {
       const token = getUserToken();
 
-      return await axios({
+      const updatedAirplane = await axios({
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
         url: `${config.adminUrl}/airplanes/${airplane.id}`,
         data: airplane
       });
+
+      return updatedAirplane.data;
     } catch (err) {
       console.error('Error: unable to update the airplane.', err);
       throw err;
