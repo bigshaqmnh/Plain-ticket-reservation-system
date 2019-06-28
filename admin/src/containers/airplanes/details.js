@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import CustomInput from '../../components/customInput';
@@ -6,14 +6,12 @@ import CustomButton from '../../components/customButton';
 import componentStyles from '../../constants/componentStyles';
 import stringFormatter from '../../helpers/stringFormatter';
 
-function AirplaneDetails(props) {
-  const { name, type, maxLuggageCarryWeight, handleBack } = props;
-
-  const [formData] = useState({
+function AirplaneDetails({ name, type, maxLuggageCarryWeight, handleBack }) {
+  const formData = {
     name,
     type,
     maxLuggageCarryWeight
-  });
+  };
 
   return (
     <>
