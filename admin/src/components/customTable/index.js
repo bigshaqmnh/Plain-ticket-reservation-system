@@ -10,9 +10,7 @@ function СustomTable(props) {
   const [sortedItems, setSortedItems] = useState([...items]);
   const [sortOption, setSortOption] = useState({});
 
-  const resetHeaders = tableHeaders => tableHeaders.forEach(header => (header.classList = ''));
-
-  const handleSort = ({ target, currentTarget }) => {
+  const handleSort = ({ target }) => {
     const column = target.getAttribute('name');
     const { column: prevColumn, alg: prevAlg } = sortOption;
     let alg = '';
@@ -23,9 +21,6 @@ function СustomTable(props) {
     } else if (prevAlg !== 'desc') {
       alg = prevAlg ? 'desc' : 'asc';
     }
-
-    resetHeaders(currentTarget.childNodes);
-    target.className = alg;
 
     if (alg) {
       const sortAlg = sortAlgorithms[alg];
@@ -42,7 +37,7 @@ function СustomTable(props) {
       <thead>
         <tr onClick={handleSort}>
           {headers.map(header => (
-            <th key={header} name={header} className="header">
+            <th key={header} name={header} className={sortOption.column === header ? sortOption.alg : ''}>
               {stringFormatter.toRegular(header)}
             </th>
           ))}
