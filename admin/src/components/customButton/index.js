@@ -2,15 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
 
-function CustomButton(props) {
-  const { variant, type, text, onClick, isDisabled } = props;
-
-  return isDisabled ? (
-    <Button variant={variant} type={type} onClick={onClick} disabled>
-      {text}
-    </Button>
-  ) : (
-    <Button variant={variant} type={type} onClick={onClick}>
+function CustomButton({ variant, type, text, onClick, disabled }) {
+  return (
+    <Button variant={variant} type={type} onClick={onClick} disabled={disabled}>
       {text}
     </Button>
   );
@@ -21,13 +15,13 @@ CustomButton.propTypes = {
   type: PropTypes.string,
   text: PropTypes.string.isRequired,
   onClick: PropTypes.func,
-  isDisabled: PropTypes.bool
+  disabled: PropTypes.bool
 };
 
 CustomButton.defaultProps = {
   type: 'button',
   onClick: null,
-  isDisabled: false
+  disabled: false
 };
 
 export default CustomButton;
