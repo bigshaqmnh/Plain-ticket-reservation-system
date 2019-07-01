@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import * as config from '../config/config.json';
+import { resultsPerPageLimit } from '../constants/common';
 
 function useFetchData(apiMethod) {
   const [items, setItems] = useState([]);
@@ -19,7 +19,7 @@ function useFetchData(apiMethod) {
         const { data, count } = await apiMethod(params);
 
         setItems(data);
-        setMaxPage(Math.ceil(count / config.amountOfDataPerPage));
+        setMaxPage(Math.ceil(count / resultsPerPageLimit));
         setIsLoading(false);
       } catch (err) {
         console.error(err);

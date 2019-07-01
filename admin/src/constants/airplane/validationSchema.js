@@ -1,8 +1,8 @@
 import * as yup from 'yup';
 
 import validationText from '../validationText';
-import * as config from '../../config/config.json';
 import ValidationRegexPatterns from '../validationRegexPatterns';
+import { maxAirplaneTypeLength } from '../common';
 
 const validateName = yup.object().shape({
   name: yup
@@ -16,7 +16,7 @@ const validateType = yup.object().shape({
     .string()
     .required(validationText.required)
     .trim()
-    .max(config.maxAirplaneTypeLength, validationText.long)
+    .max(maxAirplaneTypeLength, validationText.long)
 });
 
 const validateMaxLuggageCarryWeight = yup.object().shape({
