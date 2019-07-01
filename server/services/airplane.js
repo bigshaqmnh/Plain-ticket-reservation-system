@@ -31,12 +31,7 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
 
   const data = rows.map(airplane => airplane.dataValues);
 
-  return rows.length > resLimit
-    ? {
-        data,
-        nextPage: pageNum + 1
-      }
-    : { data, count };
+  return { data, count };
 };
 
 const add = async airplane => {
