@@ -1,47 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 
-import AirplaneDetails from './details';
-import AirplaneAdd from './add';
+import AirplaneDetails from './AirplaneDetails';
+import AirplaneAdd from './AirplaneAdd';
 import CustomInput from '../../components/customInput';
 import CustomTable from '../../components/customTable';
 import CustomPagination from '../../components/customPagination';
-import CustomAlert from '../../components/customAlert';
-import componentStyles from '../../constants/componentStyles';
-import { airplaneApi } from '../../api';
 import CustomButton from '../../components/customButton';
+import CustomAlert from '../../components/customAlert';
+
+import useFetchData from '../../hooks/useFetchData';
+import useAlert from '../../hooks/useAlert';
+
+import { airplaneApi } from '../../api';
+
+import componentStyles from '../../constants/componentStyles';
+import { resultsPerPageLimit } from '../../constants/common';
 
 function AirplanesContainer() {
-  const [airplanes, setAirplanes] = useState([]);
+  const {
+    items: airplanes,
+    setItems: setAirplanes,
+    isLoading,
+    searchText,
+    setSearchText,
+    currentPage,
+    setCurrentPage,
+    maxPage
+  } = useFetchData(airplaneApi.getAirplanes);
+
+  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+
   const [selectedAirplane, setSelectedAirplane] = useState(null);
-  const [page, setPage] = useState({ current: 1, next: 1 });
-
-  const [isLoading, setIsLoading] = useState(true);
-
   const [showInfoScreen, setShowInfoScreen] = useState(false);
   const [showAddScreen, setShowAddScreen] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-
-  const [searchText, setSearchText] = useState('');
-  const [alert, setAlert] = useState({});
-
-  const fetchAirplanes = async params => {
-    try {
-      const airplaneData = await airplaneApi.getAirplanes(params);
-      const { data, count, nextPage } = airplaneData;
-
-      setAirplanes(data);
-      setPage({ current: nextPage - 1, next: nextPage, total: Math.ceil(count / 10) });
-      setIsLoading(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    setIsLoading(true);
-    fetchAirplanes({ page: page.next });
-  }, [searchText]);
 
   const handleClick = event => {
     const { id } = event.currentTarget;
@@ -52,12 +44,11 @@ function AirplanesContainer() {
   };
 
   const handleBack = () => {
-    setShowInfoScreen(false);
-    setShowAddScreen(false);
+    showInfoScreen && setShowInfoScreen(false);
+    showAddScreen && setShowAddScreen(false);
   };
 
   const handleSearch = ({ target }) => {
-    setPage({ next: 1 });
     setSearchText(target.value);
   };
 
@@ -65,17 +56,22 @@ function AirplanesContainer() {
     const selectedPage = +target.name || +target.parentNode.name;
 
     if (selectedPage) {
-      setIsLoading(true);
-      fetchAirplanes({ page: selectedPage });
+      setCurrentPage(selectedPage);
     }
   };
 
   const handleSave = async data => {
     try {
-      setShowAddScreen(false);
-      await airplaneApi.addAirplane(data);
+      handleBack();
 
-      fetchAirplanes({ page: page.current });
+      const newAirplane = await airplaneApi.addAirplane(data);
+
+      setCurrentPage(airplanes.length >= resultsPerPageLimit ? maxPage + 1 : maxPage);
+
+      if (currentPage === maxPage) {
+        setAirplanes([...airplanes, newAirplane]);
+      }
+
       setAlert({
         variant: componentStyles.success,
         heading: 'Saved',
@@ -97,14 +93,14 @@ function AirplanesContainer() {
   const handleAdd = () => setShowAddScreen(true);
 
   const renderTable = () =>
-    airplanes.length ? (
+    airplanes && airplanes.length ? (
       <>
         <CustomTable headers={Object.keys(airplanes[0])} items={airplanes} onClick={handleClick} />
-        {page.total > 1 && (
+        {maxPage > 1 && (
           <CustomPagination
-            currentPage={page.current}
-            lastPage={page.total}
-            isLarge={page.total >= 10}
+            currentPage={currentPage}
+            lastPage={maxPage}
+            isLarge={maxPage >= resultsPerPageLimit}
             handlePagination={handlePagination}
           />
         )}
@@ -124,7 +120,7 @@ function AirplanesContainer() {
       />
       <CustomButton variant={componentStyles.success} text="Add airplane" onClick={handleAdd} />
       {isLoading ? <Spinner animation="border" variant={componentStyles.default} /> : renderTable()}
-      {showAlert && <CustomAlert props={alert} />}
+      {showAlert && <CustomAlert {...alert} />}
     </>
   );
 

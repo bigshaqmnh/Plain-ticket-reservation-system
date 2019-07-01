@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import CustomInput from '../../components/customInput';
-import CustomButton from '../../components/customButton';
-import CustomAlert from '../../components/customAlert';
-import componentStyles from '../../constants/componentStyles';
-import formValidation from '../../helpers/formValidation';
-import validationSchema from '../../constants/airplane/validationSchema';
-import stringFormatter from '../../helpers/stringFormatter';
+import CustomInput from '../../../components/customInput';
+import CustomButton from '../../../components/customButton';
+import CustomAlert from '../../../components/customAlert';
+import componentStyles from '../../../constants/componentStyles';
+import formValidation from '../../../helpers/formValidation';
+import validationSchema from '../../../constants/airplane/validationSchema';
+import stringFormatter from '../../../helpers/stringFormatter';
 
 function AirplaneAdd(props) {
   const { handleSave, handleBack } = props;
@@ -63,7 +63,7 @@ function AirplaneAdd(props) {
       ))}
       <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
       <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
-      {showAlert && <CustomAlert props={alert} />}
+      {showAlert && <CustomAlert {...alert} />}
     </>
   );
 }

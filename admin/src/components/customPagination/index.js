@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Pagination } from 'react-bootstrap';
 
 const FIRST_PAGE = 1;
-const offset = {
+const paginationOffset = {
   ONE: 1,
   TWO: 2,
   THREE: 3,
@@ -14,14 +14,15 @@ function CustomPagination(props) {
   const { currentPage, lastPage, handlePagination } = props;
 
   const createPages = () => {
-    const isFirst = currentPage <= offset.THREE;
-    const isLast = currentPage >= lastPage - offset.THREE;
+    const isStart = currentPage <= paginationOffset.FIVE;
+    const isEnd = currentPage >= lastPage - paginationOffset.FIVE;
+
     let pages = [];
 
-    if (!isFirst) {
+    if (!isStart) {
       pages = pages.concat([
         <Pagination.First name={FIRST_PAGE} />,
-        <Pagination.Prev name={currentPage - offset.ONE} />,
+        <Pagination.Prev name={currentPage - paginationOffset.ONE} />,
         <Pagination.Item name={FIRST_PAGE}>{FIRST_PAGE}</Pagination.Item>,
         <Pagination.Ellipsis disabled />
       ]);
@@ -30,19 +31,19 @@ function CustomPagination(props) {
     let start;
     let end;
 
-    if (isFirst && isLast) {
+    if (isStart && isEnd) {
       start = FIRST_PAGE;
       end = lastPage;
-    } else if (isFirst) {
+    } else if (isStart) {
       start = FIRST_PAGE;
-      end = offset.FIVE;
-    } else if (isLast) {
-      start = lastPage - offset.FIVE;
+      end = paginationOffset.FIVE;
+    } else if (isEnd) {
+      start = lastPage - paginationOffset.FIVE;
       end = lastPage;
     }
 
     for (
-      let page = start || currentPage - offset.TWO, maxPage = end || currentPage + offset.TWO;
+      let page = start || currentPage - paginationOffset.TWO, maxPage = end || currentPage + paginationOffset.TWO;
       page <= maxPage;
       ++page
     ) {
@@ -59,11 +60,11 @@ function CustomPagination(props) {
       );
     }
 
-    if (!isLast) {
+    if (!isEnd) {
       pages = pages.concat([
         <Pagination.Ellipsis disabled />,
         <Pagination.Item name={lastPage}>{lastPage}</Pagination.Item>,
-        <Pagination.Next name={currentPage + offset.ONE} />,
+        <Pagination.Next name={currentPage + paginationOffset.ONE} />,
         <Pagination.Last name={lastPage} />
       ]);
     }

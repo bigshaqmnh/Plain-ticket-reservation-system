@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'react-bootstrap';
+
+import './style.scss';
 
 import sortAlgorithms from '../../constants/sortAlgorithms';
 import stringFormatter from '../../helpers/stringFormatter';
 
 function СustomTable(props) {
   const { headers, items, onClick } = props;
+
   const [sortedItems, setSortedItems] = useState([...items]);
   const [sortOption, setSortOption] = useState({});
 
-  const resetHeaders = tableHeaders => tableHeaders.forEach(header => (header.classList = ''));
-
-  const handleSort = ({ target, currentTarget }) => {
+  const handleSort = ({ target }) => {
     const column = target.getAttribute('name');
     const { column: prevColumn, alg: prevAlg } = sortOption;
     let alg = '';
@@ -24,12 +25,8 @@ function СustomTable(props) {
       alg = prevAlg ? 'desc' : 'asc';
     }
 
-    resetHeaders(currentTarget.childNodes);
-    target.className = alg;
-
     if (alg) {
-      const type = target.getAttribute('type');
-      const sortAlg = sortAlgorithms[type][alg];
+      const sortAlg = sortAlgorithms[alg];
 
       sortedItems = sortAlg(sortedItems, column);
     }
@@ -38,12 +35,16 @@ function СustomTable(props) {
     setSortOption({ column, alg });
   };
 
+  useEffect(() => {
+    setSortedItems([...items]);
+  }, [items]);
+
   return (
     <Table bordered hover responsive>
       <thead>
         <tr onClick={handleSort}>
           {headers.map(header => (
-            <th key={header} name={header} className="header" type={typeof sortedItems[0][header]}>
+            <th key={header} name={header} className={sortOption.column === header ? sortOption.alg : ''}>
               {stringFormatter.toRegular(header)}
             </th>
           ))}

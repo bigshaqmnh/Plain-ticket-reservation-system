@@ -24,7 +24,7 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
     };
   }
 
-  const airports = await db.airport.findAll({
+  const airports = await db.airport.findAndCountAll({
     where: searchParam,
     offset,
     limit,
@@ -32,18 +32,15 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
     attributes: ['id', 'name', 'country', 'city', 'latitude', 'longitude']
   });
 
-  if (!airports.length) {
+  const { rows, count } = airports;
+
+  if (!rows.length) {
     return;
   }
 
-  const data = airports.map(airport => airport.dataValues);
+  const data = rows.map(airport => airport.dataValues);
 
-  return airports.length > resLimit
-    ? {
-        data,
-        nextPage: pageNum + 1
-      }
-    : { data };
+  return { data, count };
 };
 
 const add = async airport => await db.airport.create(airport);

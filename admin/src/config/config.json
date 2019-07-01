@@ -1,5 +1,4 @@
 {
   "baseUrl": "http://localhost:3000",
-  "minPasswordLength": 6,
-  "maxAirplaneTypeLength": 4
+  "adminUrl": "http://localhost:3000/admin"
 }

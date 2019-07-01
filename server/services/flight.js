@@ -24,46 +24,49 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
   const pageNum = +page || 1;
   const offset = pageNum * limit - limit;
 
-  let flights = [];
+  let flights = {};
   const attributes = ['id', 'departureTime', 'arrivalTime', 'luggageOverweightCost', 'isCancelled'];
 
   if (inputString) {
-    const depFlights = await db.flight.findAll({
+    const { rows: depFlights, count: depFlightsCount } = await db.flight.findAndCountAll({
       include: [_genIncludeStatement({ foreignKey: 'departureAirport', inputString })],
       offset,
       attributes,
       order: [['id', 'ASC']]
     });
 
-    const arrFlights = await db.flight.findAll({
+    const { rows: arrFlights, count: arrFlightsCount } = await db.flight.findAndCountAll({
       include: [_genIncludeStatement({ foreignKey: 'arrivalAirport', inputString })],
       offset,
       attributes,
       order: [['id', 'ASC']]
     });
 
-    flights = Array.prototype.concat(depFlights, arrFlights).slice(0, limit);
+    const data = Array.prototype.concat(depFlights, arrFlights).slice(0, limit);
+    flights = {
+      data,
+      count: depFlightsCount + arrFlightsCount
+    };
   } else {
-    flights = await db.flight.findAll({
+    const { rows, count } = await db.flight.findAndCountAll({
       offset,
       limit,
       attributes,
       order: [['id', 'ASC']]
     });
+
+    const data = rows.map(flight => flight.dataValues);
+    flights = {
+      data,
+      count
+    };
   }
 
-  if (!flights.length) {
+  if (!flights.count) {
     return;
   }
 
-  const data = flights.map(flight => flight.dataValues);
-
-  return data.length > limit
-    ? {
-        data,
-        nextPage: pageNum + 1
-      }
-    : { data };
+  return flights;
 };
 
 const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departureTime, page, limit: resLimit }) => {
