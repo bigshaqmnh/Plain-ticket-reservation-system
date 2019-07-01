@@ -1,47 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 
-import FlightDetails from './details';
-import FlightAdd from './add';
+import FlightDetails from './FlightDetails';
+import FlightAdd from './FlightAdd';
 import CustomInput from '../../components/customInput';
 import CustomTable from '../../components/customTable';
 import CustomPagination from '../../components/customPagination';
-import CustomAlert from '../../components/customAlert';
-import componentStyles from '../../constants/componentStyles';
-import { flightApi } from '../../api';
 import CustomButton from '../../components/customButton';
+import CustomAlert from '../../components/customAlert';
+
+import useFetchData from '../../hooks/useFetchData';
+import useAlert from '../../hooks/useAlert';
+
+import flightApi from '../../api/flight';
+
+import componentStyles from '../../constants/componentStyles';
+
+import formatFlights from '../../helpers/formatFlights';
 
 function FlightsContainer() {
-  const [flights, setFlights] = useState([]);
-  const [selectedFlight, setSelectedFlight] = useState(null);
-  const [page, setPage] = useState({ current: 1, next: 1 });
+  const {
+    items,
+    setItems: setFlights,
+    isLoading,
+    searchText,
+    setSearchText,
+    currentPage,
+    setCurrentPage,
+    maxPage
+  } = useFetchData(flightApi.getFlights);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const flights = formatFlights(items);
+
+  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+
+  const [selectedFlight, setSelectedFlight] = useState(null);
 
   const [showInfoScreen, setShowInfoScreen] = useState(false);
   const [showAddScreen, setShowAddScreen] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-
-  const [searchText, setSearchText] = useState('');
-  const [alert, setAlert] = useState({});
-
-  const fetchFlights = async params => {
-    try {
-      const flightsData = await flightApi.getFlights(params);
-      const { data, count, nextPage } = flightsData;
-
-      setFlights(data);
-      setPage({ current: nextPage - 1, next: nextPage, total: Math.ceil(count / 10) });
-      setIsLoading(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    setIsLoading(true);
-    fetchFlights({ page: page.next });
-  }, [searchText]);
 
   const handleClick = event => {
     const { id } = event.currentTarget;
@@ -52,12 +48,11 @@ function FlightsContainer() {
   };
 
   const handleBack = () => {
-    setShowInfoScreen(false);
-    setShowAddScreen(false);
+    showInfoScreen && setShowInfoScreen(false);
+    showAddScreen && setShowAddScreen(false);
   };
 
   const handleSearch = ({ target }) => {
-    setPage({ next: 1 });
     setSearchText(target.value);
   };
 
@@ -65,28 +60,33 @@ function FlightsContainer() {
     const selectedPage = +target.name || +target.parentNode.name;
 
     if (selectedPage) {
-      setIsLoading(true);
-      fetchFlights({ page: selectedPage });
+      setCurrentPage(selectedPage);
     }
   };
 
   const handleSave = async data => {
     try {
-      setShowAddScreen(false);
-      await flightApi.addFlight(data);
+      handleBack();
 
-      fetchFlights({ page: page.current });
+      const newFlight = await flightApi.addFlight(data);
+
+      setCurrentPage(flights.length >= resultsPerPageLimit ? maxPage + 1 : maxPage);
+
+      if (currentPage === maxPage) {
+        setFlights([...flights, newFlight]);
+      }
+
       setAlert({
         variant: componentStyles.success,
         heading: 'Saved',
-        mainText: 'Flight was successfully saved.',
+        mainText: 'Airplane was successfully saved.',
         isShown: setShowAlert
       });
     } catch (err) {
       setAlert({
         variant: componentStyles.error,
         heading: 'Not Saved',
-        mainText: 'An error occured while saving flight data.',
+        mainText: 'An error occured while saving airplane data.',
         isShown: setShowAlert
       });
     } finally {
@@ -100,11 +100,11 @@ function FlightsContainer() {
     flights.length ? (
       <>
         <CustomTable headers={Object.keys(flights[0])} items={flights} onClick={handleClick} />
-        {page.total > 1 && (
+        {maxPage > 1 && (
           <CustomPagination
-            currentPage={page.current}
-            lastPage={page.total}
-            isLarge={page.total >= 10}
+            currentPage={currentPage}
+            lastPage={maxPage}
+            isLarge={maxPage >= 10}
             handlePagination={handlePagination}
           />
         )}
