@@ -1,17 +1,17 @@
 import validate from './validators';
 
-const authValidationScheme = {
+export const authValidationScheme = {
   email: validate.email,
   password: validate.password
 };
 
-const airplaneValidationScheme = {
+export const airplaneValidationScheme = {
   name: validate.string,
   type: validate.airplaneType,
   maxLuggageCarryWeight: validate.number
 };
 
-const flightValidationScheme = {
+export const flightValidationScheme = {
   departureTime: validate.date,
   arrivalTime: validate.date,
   luggageOverweightCost: validate.number,
@@ -20,5 +20,3 @@ const flightValidationScheme = {
   arrivalAirport: validate.number,
   airplane: validate.number
 };
-
-export default { authValidationScheme, airplaneValidationScheme, flightValidationScheme };
