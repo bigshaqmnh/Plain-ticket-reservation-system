@@ -15,6 +15,7 @@ import useAlert from '../../hooks/useAlert';
 import flightApi from '../../api/flight';
 
 import componentStyles from '../../constants/componentStyles';
+import { resultsPerPageLimit } from '../../constants/common';
 
 import formatFlights from '../../helpers/formatFlights';
 
@@ -104,7 +105,7 @@ function FlightsContainer() {
           <CustomPagination
             currentPage={currentPage}
             lastPage={maxPage}
-            isLarge={maxPage >= 10}
+            isLarge={maxPage >= resultsPerPageLimit}
             handlePagination={handlePagination}
           />
         )}
