@@ -3,12 +3,12 @@ table {
     cursor: pointer;
   }
 
-  th.asc::after {
+  .asc::after {
     content: '\02c5';
     float: right;
   }
 
-  th.desc::after {
+  .desc::after {
     content: '\02c4';
     float: right;
   }
