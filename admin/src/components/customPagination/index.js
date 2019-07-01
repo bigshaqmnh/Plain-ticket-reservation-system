@@ -14,8 +14,9 @@ function CustomPagination(props) {
   const { currentPage, lastPage, handlePagination } = props;
 
   const createPages = () => {
-    const isStart = currentPage <= paginationOffset.THREE;
-    const isEnd = currentPage >= lastPage - paginationOffset.THREE;
+    const isStart = currentPage <= paginationOffset.FIVE;
+    const isEnd = currentPage >= lastPage - paginationOffset.FIVE;
+
     let pages = [];
 
     if (!isStart) {
