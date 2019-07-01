@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import CustomInput from '../../../components/customInput';
 import CustomButton from '../../../components/customButton';
 import CustomAlert from '../../../components/customAlert';
+
 import componentStyles from '../../../constants/componentStyles';
+import { airplaneValidationScheme } from '../../../constants/validation/schemes';
+
 import formValidation from '../../../helpers/formValidation';
-import validationSchema from '../../../constants/airplane/validationSchema';
 import stringFormatter from '../../../helpers/stringFormatter';
 
 function AirplaneAdd(props) {
@@ -23,7 +25,7 @@ function AirplaneAdd(props) {
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;
 
-    const validatedProp = await formValidation.validateOnChange(validationSchema, propName, propValue);
+    const validatedProp = await formValidation.validateOnChange(airplaneValidationScheme, propName, propValue);
 
     setFormData({
       ...formData,

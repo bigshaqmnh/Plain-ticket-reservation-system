@@ -12,7 +12,7 @@ import CustomAlert from '../../components/customAlert';
 import useFetchData from '../../hooks/useFetchData';
 import useAlert from '../../hooks/useAlert';
 
-import { airplaneApi } from '../../api';
+import airplaneApi from '../../api/airplane';
 
 import componentStyles from '../../constants/componentStyles';
 import { resultsPerPageLimit } from '../../constants/common';
