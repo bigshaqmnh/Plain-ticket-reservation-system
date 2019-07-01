@@ -6,7 +6,11 @@ import { getUserToken } from '../helpers/token';
 export default {
   getAirplanes: async params => {
     try {
-      const airplanes = await axios.get(`${config.baseUrl}/airplanes`, { params });
+      const token = getUserToken();
+      const airplanes = await axios.get(`${config.adminUrl}/airplanes`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params
+      });
 
       return airplanes.data;
     } catch (err) {
@@ -17,10 +21,9 @@ export default {
 
   addAirplane: async airplane => {
     try {
-      return await axios({
-        method: 'POST',
-        Authorization: getUserToken(),
-        url: `${config.baseUrl}/airplanes`,
+      const token = getUserToken();
+      return await axios.post(`${config.adminUrl}/airplanes`, {
+        headers: { Authorization: `Bearer ${token}` },
         data: airplane
       });
     } catch (err) {
