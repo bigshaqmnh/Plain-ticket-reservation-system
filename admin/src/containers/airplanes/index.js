@@ -12,13 +12,12 @@ import { airplaneApi } from '../../api';
 import CustomButton from '../../components/customButton';
 
 import useFetchData from '../../hooks/useFetchData';
+import useAlert from '../../hooks/useAlert';
 
 function AirplanesContainer() {
-  const [selectedAirplane, setSelectedAirplane] = useState(null);
-
   const {
-    data: airplanes,
-    setItems,
+    items: airplanes,
+    setItems: setAirplanes,
     isLoading,
     searchText,
     setSearchText,
@@ -27,11 +26,11 @@ function AirplanesContainer() {
     maxPage
   } = useFetchData(airplaneApi.getAirplanes);
 
+  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+
+  const [selectedAirplane, setSelectedAirplane] = useState(null);
   const [showInfoScreen, setShowInfoScreen] = useState(false);
   const [showAddScreen, setShowAddScreen] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-
-  const [alert, setAlert] = useState({});
 
   const handleClick = event => {
     const { id } = event.currentTarget;
@@ -42,8 +41,8 @@ function AirplanesContainer() {
   };
 
   const handleBack = () => {
-    setShowInfoScreen(false);
-    setShowAddScreen(false);
+    showInfoScreen && setShowInfoScreen(false);
+    showAddScreen && setShowAddScreen(false);
   };
 
   const handleSearch = ({ target }) => {
@@ -60,10 +59,15 @@ function AirplanesContainer() {
 
   const handleSave = async data => {
     try {
+      handleBack();
+
       const newAirplane = await airplaneApi.addAirplane(data);
 
-      setItems([...airplanes, newAirplane]);
-      setShowAddScreen(false);
+      setCurrentPage(airplanes.length >= 10 ? maxPage + 1 : maxPage);
+
+      if (currentPage === maxPage) {
+        setAirplanes([...airplanes, newAirplane]);
+      }
 
       setAlert({
         variant: componentStyles.success,
