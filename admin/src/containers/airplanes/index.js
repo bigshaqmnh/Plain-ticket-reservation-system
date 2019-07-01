@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 
-import AirplaneDetails from './details';
-import AirplaneAdd from './add';
+import AirplaneDetails from './AirplaneDetails';
+import AirplaneAdd from './AirplaneAdd';
 import CustomInput from '../../components/customInput';
 import CustomTable from '../../components/customTable';
 import CustomPagination from '../../components/customPagination';
-import CustomAlert from '../../components/customAlert';
-import componentStyles from '../../constants/componentStyles';
-import { airplaneApi } from '../../api';
 import CustomButton from '../../components/customButton';
+import CustomAlert from '../../components/customAlert';
 
 import useFetchData from '../../hooks/useFetchData';
 import useAlert from '../../hooks/useAlert';
+
+import { airplaneApi } from '../../api';
+
+import componentStyles from '../../constants/componentStyles';
+import { resultsPerPageLimit } from '../../constants/common';
 
 function AirplanesContainer() {
   const {
@@ -63,7 +66,7 @@ function AirplanesContainer() {
 
       const newAirplane = await airplaneApi.addAirplane(data);
 
-      setCurrentPage(airplanes.length >= 10 ? maxPage + 1 : maxPage);
+      setCurrentPage(airplanes.length >= resultsPerPageLimit ? maxPage + 1 : maxPage);
 
       if (currentPage === maxPage) {
         setAirplanes([...airplanes, newAirplane]);
@@ -97,7 +100,7 @@ function AirplanesContainer() {
           <CustomPagination
             currentPage={currentPage}
             lastPage={maxPage}
-            isLarge={maxPage >= 10}
+            isLarge={maxPage >= resultsPerPageLimit}
             handlePagination={handlePagination}
           />
         )}
