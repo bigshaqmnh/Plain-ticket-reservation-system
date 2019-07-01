@@ -2,5 +2,6 @@
   "baseUrl": "http://localhost:3000",
   "adminUrl": "http://localhost:3000/admin",
   "minPasswordLength": 6,
-  "maxAirplaneTypeLength": 4
+  "maxAirplaneTypeLength": 4,
+  "amountOfDataPerPage": 10
 }
