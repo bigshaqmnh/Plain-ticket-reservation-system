@@ -11,20 +11,20 @@ function useFetchData(apiMethod) {
 
   const [searchText, setSearchText] = useState('');
 
+  const fetchData = async params => {
+    try {
+      const { data, count } = await apiMethod(params);
+
+      setItems(data);
+      setMaxPage(Math.ceil(count / resultsPerPageLimit));
+      setIsLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     setIsLoading(true);
-
-    const fetchData = async params => {
-      try {
-        const { data, count } = await apiMethod(params);
-
-        setItems(data);
-        setMaxPage(Math.ceil(count / resultsPerPageLimit));
-        setIsLoading(false);
-      } catch (err) {
-        console.error(err);
-      }
-    };
 
     fetchData({ page: currentPage, query: searchText });
   }, [searchText, currentPage]);
