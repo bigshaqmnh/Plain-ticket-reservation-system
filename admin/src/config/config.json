@@ -1,4 +1,4 @@
 {
-  "minPasswordLength": 6,
-  "baseUrl": "http://localhost:9000"
+  "baseUrl": "http://localhost:3000",
+  "adminUrl": "http://localhost:3000/admin"
 }

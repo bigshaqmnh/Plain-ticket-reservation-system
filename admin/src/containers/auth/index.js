@@ -5,10 +5,11 @@ import 'babel-polyfill';
 import CustomButton from '../../components/customButton';
 import CustomInput from '../../components/customInput';
 import CustomAlert from '../../components/customAlert';
-import componentStyle from '../../constants/componentStyles';
+import componentStyles from '../../constants/componentStyles';
+import formValidation from '../../helpers/formValidation';
 import validationSchema from '../../constants/auth/validationSchema';
-import defaultAlertData from '../../constants/alert/default';
-import alertText from '../../constants/alert/alertText';
+
+import { authApi } from '../../api';
 
 function AuthContainer() {
   const [formData, setFormData] = useState({
@@ -16,79 +17,56 @@ function AuthContainer() {
     password: { value: '', isValid: true, invalidFeedback: '' }
   });
 
-  const [alertData, setAlertData] = useState(defaultAlertData);
-
-  const validateForm = async () => {
-    let { isShown, heading, mainText } = defaultAlertData;
-    let isValid = true;
-    const { email, password } = formData;
-    const isEmpty = !email.value || !password.value;
-    const isInvalid = !email.isValid || !password.isValid;
-
-    if (isEmpty || isInvalid) {
-      const textType = isEmpty ? 'emptyInput' : 'invalidInput';
-      const { heading: headingText, mainText: pyz } = alertText[textType];
-      isShown = true;
-      heading = headingText;
-      mainText = pyz;
-      isValid = false;
-    }
-
-    await setAlertData({
-      isShown,
-      heading,
-      mainText
-    });
-
-    return isValid;
-  };
-
-  const handleSubmit = async event => {
-    event.preventDefault();
-    const isFormValid = await validateForm();
-
-    if (isFormValid) {
-      // call api log in method
-    }
-  };
-
-  const handleAlertDismiss = () =>
-    setAlertData({
-      ...alertData,
-      isShown: false
-    });
-
-  const setDataValid = (propName, propValue) => {
-    setFormData({
-      ...formData,
-      [propName]: {
-        value: propValue,
-        isValid: true,
-        invalidFeedback: ''
-      }
-    });
-  };
-
-  const setDataInvalid = (propName, propValue, errorMsg) => {
-    setFormData({
-      ...formData,
-      [propName]: {
-        value: propValue,
-        isValid: false,
-        invalidFeedback: errorMsg
-      }
-    });
-  };
+  const [alert, setAlert] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;
 
-    await validationSchema[propName]
-      .validate({
-        [propName]: propValue
-      })
-      .then(() => setDataValid(propName, propValue))
-      .catch(error => setDataInvalid(propName, propValue, error.message));
+    const validatedProp = await formValidation.validateOnChange(validationSchema, propName, propValue);
+
+    setFormData({
+      ...formData,
+      ...validatedProp
+    });
+  };
+
+  const logIn = async data => {
+    try {
+      await authApi.logIn(data);
+
+      setAlert({
+        variant: componentStyles.success,
+        heading: 'Log In',
+        mainText: 'You are logged in.',
+        isShown: setShowAlert
+      });
+    } catch (err) {
+      setAlert({
+        variant: componentStyles.error,
+        heading: 'Log In',
+        mainText: 'An error occured while trying to log in.',
+        isShown: setShowAlert
+      });
+    } finally {
+      setShowAlert(true);
+    }
+  };
+
+  const handleSubmit = async event => {
+    event.preventDefault();
+    const validatedForm = formValidation.validateOnSubmit(formData);
+
+    if (!validatedForm.isValid) {
+      setAlert({ ...validatedForm.alertData, isShown: setShowAlert });
+      setShowAlert(true);
+    } else {
+      const data = {
+        email: formData.email.value,
+        password: formData.password.value
+      };
+      logIn(data);
+    }
   };
 
   return (
@@ -114,16 +92,9 @@ function AuthContainer() {
           isValid={formData.password.isValid}
           onChange={handleChange}
         />
-        <CustomButton variant={componentStyle.default} type="submit" text="Log in" />
+        <CustomButton variant={componentStyles.default} type="submit" text="Log in" />
       </Form>
-      {alertData.isShown && (
-        <CustomAlert
-          variant={componentStyle.error}
-          heading={alertData.heading}
-          mainText={alertData.mainText}
-          handleDismiss={handleAlertDismiss}
-        />
-      )}
+      {showAlert && <CustomAlert {...alert} />}
     </Container>
   );
 }

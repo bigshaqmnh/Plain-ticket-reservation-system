@@ -7,3 +7,5 @@ export const saveUserToken = token => {
 export const deleteUserToken = () => {
   localStorage.removeItem(tokenKey);
 };
+
+export const getUserToken = () => localStorage.getItem(tokenKey);

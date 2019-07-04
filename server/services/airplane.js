@@ -1,5 +1,5 @@
 const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
-  const limit = resLimit || 20;
+  const limit = resLimit || 10;
   const pageNum = +page || 1;
   const offset = pageNum * limit - limit;
   const searchParam = inputString
@@ -15,7 +15,7 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
       }
     : {};
 
-  const airplanes = await db.airplane.findAll({
+  const airplanes = await db.airplane.findAndCountAll({
     where: searchParam,
     offset,
     limit,
@@ -23,20 +23,20 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
     attributes: ['id', 'name', 'type', 'maxLuggageCarryWeight']
   });
 
-  if (!airplanes.length) {
+  const { rows, count } = airplanes;
+
+  if (!rows.length) {
     return;
   }
 
-  const data = airplanes.map(airplane => airplane.dataValues);
+  const data = rows.map(airplane => airplane.dataValues);
 
-  return airplanes.length > resLimit
-    ? {
-        data,
-        nextPage: pageNum + 1
-      }
-    : { data };
+  return { data, count };
 };
 
-const add = async airplane => await db.airplane.create(airplane);
+const add = async airplane => {
+  const added = await db.airplane.create(airplane);
+  return added.dataValues;
+};
 
 module.exports = { find, add };
