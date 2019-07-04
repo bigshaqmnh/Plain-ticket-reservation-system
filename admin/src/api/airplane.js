@@ -1,34 +1,20 @@
-import * as axios from 'axios';
-
+import fetchData from './fetchData';
 import * as config from '../config/config.json';
-import { getUserToken } from '../helpers/token';
 
 export default {
-  getAirplanes: async params => {
-    try {
-      const token = getUserToken();
-      const airplanes = await axios.get(`${config.adminUrl}/airplanes`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params
-      });
+  getAirplanes: params =>
+    fetchData({
+      method: 'GET',
+      needAuth: true,
+      url: `${config.adminUrl}/airplanes`,
+      params
+    }),
 
-      return airplanes.data;
-    } catch (err) {
-      console.error('Error: unable to get airplanes.', err);
-      throw err;
-    }
-  },
-
-  addAirplane: async airplane => {
-    try {
-      const token = getUserToken();
-      return await axios.post(`${config.adminUrl}/airplanes`, {
-        headers: { Authorization: `Bearer ${token}` },
-        data: airplane
-      });
-    } catch (err) {
-      console.error('Error: unable to add new airplane.', err);
-      throw err;
-    }
-  }
+  addAirplane: airplane =>
+    fetchData({
+      method: 'POST',
+      needAuth: true,
+      url: `${config.adminUrl}/airplanes`,
+      data: airplane
+    })
 };

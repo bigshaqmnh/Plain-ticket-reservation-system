@@ -1,18 +1,12 @@
-import * as axios from 'axios';
-
+import fetchData from './fetchData';
 import * as config from '../config/config.json';
 import { saveUserToken, deleteUserToken } from '../helpers/token';
 
 export default {
   logIn: async userData => {
-    try {
-      const token = await axios.post(`${config.baseUrl}/auth/login`, userData);
+    const token = await fetchData({ method: 'POST', url: `${config.baseUrl}/auth/login`, data: userData });
 
-      saveUserToken(token.data);
-    } catch (err) {
-      console.error('Error: unable to log in.', err);
-      throw err;
-    }
+    saveUserToken(token);
   },
 
   logOut: () => deleteUserToken()
