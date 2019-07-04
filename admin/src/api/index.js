@@ -3,72 +3,45 @@ import * as axios from 'axios';
 import * as config from '../config/config.json';
 import { getUserToken, saveUserToken, deleteUserToken } from '../helpers/token';
 
+const fetchData = async ({ needAuth, ...requestParams }) => {
+  try {
+    const response = await axios(
+      needAuth
+        ? { ...requestParams, headers: { ...requestParams.headers, Authorization: `Bearer ${getUserToken()}` } }
+        : requestParams
+    );
+
+    return response.data;
+  } catch (err) {
+    console.error('Error: unable to fetch data.', err);
+    throw err;
+  }
+};
+
 export const authApi = {
   logIn: async userData => {
-    try {
-      const token = await axios.post(`${config.baseUrl}/auth/login`, userData);
+    const token = await fetchData({ method: 'POST', url: `${config.baseUrl}/auth/login`, data: userData });
 
-      saveUserToken(token.data);
-    } catch (err) {
-      console.error('Error: unable to log in.', err);
-      throw err;
-    }
+    saveUserToken(token);
   },
 
   logOut: () => deleteUserToken()
 };
 
 export const airplaneApi = {
-  getAirplanes: async params => {
-    try {
-      const token = getUserToken();
-      const airplanes = await axios({
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token}` },
-        url: `${config.adminUrl}/airplanes`,
-        params
-      });
+  getAirplanes: params =>
+    fetchData({
+      method: 'GET',
+      needAuth: true,
+      url: `${config.adminUrl}/airplanes`,
+      params
+    }),
 
-      return airplanes.data;
-    } catch (err) {
-      console.error('Error: unable to get airplanes.', err);
-      throw err;
-    }
-  },
-
-  addAirplane: async airplane => {
-    try {
-      const token = getUserToken();
-
-      const newAirplane = await axios({
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        url: `${config.adminUrl}/airplanes`,
-        data: airplane
-      });
-
-      return newAirplane.data;
-    } catch (err) {
-      console.error('Error: unable to add new airplane.', err);
-      throw err;
-    }
-  },
-
-  updateAirplane: async airplane => {
-    try {
-      const token = getUserToken();
-
-      const updatedAirplane = await axios({
-        method: 'PUT',
-        headers: { Authorization: `Bearer ${token}` },
-        url: `${config.adminUrl}/airplanes/${airplane.id}`,
-        data: airplane
-      });
-
-      return updatedAirplane.data;
-    } catch (err) {
-      console.error('Error: unable to update the airplane.', err);
-      throw err;
-    }
-  }
+  addAirplane: airplane =>
+    fetchData({
+      method: 'POST',
+      needAuth: true,
+      url: `${config.adminUrl}/airplanes`,
+      data: airplane
+    })
 };
