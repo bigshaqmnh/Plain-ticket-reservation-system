@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Spinner } from 'react-bootstrap';
+import Pagination from 'react-js-pagination';
 
 import AirplaneDetails from './AirplaneDetails';
 import AirplaneAdd from './AirplaneAdd';
 import CustomInput from '../../components/customInput';
 import CustomTable from '../../components/customTable';
-import CustomPagination from '../../components/customPagination';
 import CustomButton from '../../components/customButton';
 import CustomAlert from '../../components/customAlert';
 
@@ -21,12 +21,12 @@ function AirplanesContainer() {
   const {
     items: airplanes,
     setItems: setAirplanes,
+    itemsCount,
     isLoading,
     searchText,
     setSearchText,
     currentPage,
-    setCurrentPage,
-    maxPage
+    setCurrentPage
   } = useFetchData(airplaneApi.getAirplanes);
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
@@ -52,19 +52,12 @@ function AirplanesContainer() {
     setSearchText(target.value);
   };
 
-  const handlePagination = ({ target }) => {
-    const selectedPage = +target.name || +target.parentNode.name;
-
-    if (selectedPage) {
-      setCurrentPage(selectedPage);
-    }
-  };
-
   const handleSave = async data => {
     try {
       handleBack();
 
       const newAirplane = await airplaneApi.addAirplane(data);
+      const maxPage = Math.ceil(itemsCount / resultsPerPageLimit);
 
       setCurrentPage(airplanes.length >= resultsPerPageLimit ? maxPage + 1 : maxPage);
 
@@ -96,12 +89,14 @@ function AirplanesContainer() {
     airplanes && airplanes.length ? (
       <>
         <CustomTable headers={Object.keys(airplanes[0])} items={airplanes} onClick={handleClick} />
-        {maxPage > 1 && (
-          <CustomPagination
-            currentPage={currentPage}
-            lastPage={maxPage}
-            isLarge={maxPage >= resultsPerPageLimit}
-            handlePagination={handlePagination}
+        {itemsCount > resultsPerPageLimit && (
+          <Pagination
+            itemClass="page-item"
+            linkClass="page-link"
+            activePage={currentPage}
+            totalItemsCount={itemsCount}
+            onChange={setCurrentPage}
+            hideDisabled
           />
         )}
       </>
