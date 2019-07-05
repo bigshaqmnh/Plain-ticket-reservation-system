@@ -23,9 +23,10 @@ function useFetchData(apiMethod) {
   };
 
   useEffect(() => {
+    const params = searchText ? { query: searchText } : { page: currentPage };
     setIsLoading(true);
 
-    fetchData({ page: currentPage, query: searchText });
+    fetchData(params);
   }, [searchText, currentPage]);
 
   return { items, setItems, itemsCount, isLoading, searchText, setSearchText, currentPage, setCurrentPage };
