@@ -30,7 +30,7 @@ FlightEdit.propTypes = {
     id: PropTypes.number,
     departureTime: PropTypes.instanceOf(Date),
     arrivalTime: PropTypes.instanceOf(Date),
-    luggageOverweightCost: PropTypes.number,
+    luggageOverweightCost: PropTypes.string,
     isCancelled: PropTypes.string,
     departureAirport: PropTypes.string,
     arrivalAirport: PropTypes.string
