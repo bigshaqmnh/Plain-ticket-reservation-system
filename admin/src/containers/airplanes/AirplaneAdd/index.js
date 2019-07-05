@@ -5,11 +5,14 @@ import CustomInput from '../../../components/customInput';
 import CustomButton from '../../../components/customButton';
 import CustomAlert from '../../../components/customAlert';
 
+import useAlert from '../../../hooks/useAlert';
+
 import componentStyles from '../../../constants/componentStyles';
 import { airplaneValidationScheme } from '../../../constants/validation/schemes';
 
 import formValidation from '../../../helpers/formValidation';
 import stringFormatter from '../../../helpers/stringFormatter';
+import extractFormData from '../../../helpers/extractFormData';
 
 function AirplaneAdd(props) {
   const { handleSave, handleBack } = props;
@@ -19,8 +22,8 @@ function AirplaneAdd(props) {
     type: { value: '', isValid: true, invalidFeedback: '' },
     maxLuggageCarryWeight: { value: '', isValid: true, invalidFeedback: '' }
   });
-  const [showAlert, setShowAlert] = useState(false);
-  const [alert, setAlert] = useState({});
+
+  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;
@@ -40,11 +43,7 @@ function AirplaneAdd(props) {
       setAlert({ ...validatedForm.alertData, isShown: setShowAlert });
       setShowAlert(true);
     } else {
-      const data = {
-        name: formData.name.value,
-        type: formData.type.value,
-        maxLuggageCarryWeight: formData.maxLuggageCarryWeight.value
-      };
+      const data = extractFormData(formData);
       handleSave(data);
     }
   };
