@@ -11,7 +11,13 @@ function FlightDetails({ flight, handleBack, handleEdit }) {
     <>
       {Object.keys(flight).map(key => {
         const label = stringFormatter.toRegular(key);
-        const value = flight[key] instanceof Date ? flight[key].toDateString() : flight[key];
+        let value = flight[key];
+
+        if (value instanceof Date) {
+          value = value.toDateString();
+        } else if (typeof value === 'boolean') {
+          value = value ? 'Yes' : 'No';
+        }
 
         return <CustomInput key={key} label={label} name={key} value={value} disabled />;
       })}
@@ -26,7 +32,7 @@ FlightDetails.propTypes = {
     id: PropTypes.number,
     departureTime: PropTypes.instanceOf(Date),
     arrivalTime: PropTypes.instanceOf(Date),
-    luggageOverweightCost: PropTypes.number,
+    luggageOverweightCost: PropTypes.string,
     isCancelled: PropTypes.string,
     departureAirport: PropTypes.string,
     arrivalAirport: PropTypes.string
