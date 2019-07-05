@@ -1,30 +1,24 @@
-function getHandlers({ items, setSelectedItem, screens, setCurrentScreen, setSearchText, setCurrentPage }) {
+import screen from '../constants/screens';
+
+function getHandlers({ items, setSelectedItem, setCurrentScreen, setSearchText }) {
   const handleClickItem = event => {
     const { id } = event.currentTarget;
     const selected = items.find(item => item.id === +id);
 
     setSelectedItem(selected);
-    setCurrentScreen({ render: screens.details });
+    setCurrentScreen(screen.DETAILS);
   };
 
   const handleSearchItem = ({ target }) => {
     setSearchText(target.value);
   };
 
-  const handleShowAddScreen = () => setCurrentScreen({ render: screens.add });
+  const handleShowAddScreen = () => setCurrentScreen(screen.ADD);
 
-  const handleShowEditScreen = () => setCurrentScreen({ render: screens.edit });
+  const handleShowEditScreen = () => setCurrentScreen(screen.EDIT);
 
   const handleBackAction = () => {
-    setCurrentScreen({ render: screens.table });
-  };
-
-  const handleChangePage = ({ target }) => {
-    const selectedPage = +target.name || +target.parentNode.name;
-
-    if (selectedPage) {
-      setCurrentPage(selectedPage);
-    }
+    setCurrentScreen(screen.TABLE);
   };
 
   return {
@@ -32,8 +26,7 @@ function getHandlers({ items, setSelectedItem, screens, setCurrentScreen, setSea
     handleSearchItem,
     handleShowAddScreen,
     handleShowEditScreen,
-    handleBackAction,
-    handleChangePage
+    handleBackAction
   };
 }
 
