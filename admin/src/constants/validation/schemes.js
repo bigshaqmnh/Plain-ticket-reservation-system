@@ -1,22 +1,26 @@
+import * as yup from 'yup';
+
 import validate from './validators';
 
+const genValidationScheme = (propName, validator) => yup.object().shape({ [propName]: validator });
+
 export const authValidationScheme = {
-  email: validate.email,
-  password: validate.password
+  email: genValidationScheme('email', validate.email),
+  password: genValidationScheme('password', validate.password)
 };
 
 export const airplaneValidationScheme = {
-  name: validate.string,
-  type: validate.airplaneType,
-  maxLuggageCarryWeight: validate.number
+  name: genValidationScheme('name', validate.string),
+  type: genValidationScheme('type', validate.airplaneType),
+  maxLuggageCarryWeight: genValidationScheme('maxLuggageCarryWeight', validate.number)
 };
 
 export const flightValidationScheme = {
-  departureTime: validate.date,
-  arrivalTime: validate.date,
-  luggageOverweightCost: validate.number,
-  isCancelled: validate.boolean,
-  departureAirport: validate.number,
-  arrivalAirport: validate.number,
-  airplane: validate.number
+  departureTime: genValidationScheme('departureTime', validate.date),
+  arrivalTime: genValidationScheme('arrivalTime', validate.date),
+  luggageOverweightCost: genValidationScheme('luggageOverweightCost', validate.number),
+  isCancelled: genValidationScheme('isCancelled', validate.boolean),
+  departureAirport: genValidationScheme('departureAirport', validate.number),
+  arrivalAirport: genValidationScheme('arrivalAirport', validate.number),
+  airplane: genValidationScheme('airplane', validate.number)
 };
