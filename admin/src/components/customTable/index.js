@@ -53,9 +53,17 @@ function СustomTable(props) {
       <tbody>
         {sortedItems.map(item => (
           <tr key={item.id} id={item.id} onClick={onClick}>
-            {Object.keys(item).map(key => (
-              <td key={key}>{item[key]}</td>
-            ))}
+            {Object.keys(item).map(key => {
+              let value = item[key];
+
+              if (value instanceof Date) {
+                value = value.toDateString();
+              } else if (typeof value === 'boolean') {
+                value = value ? '\u2714' : '\u274c';
+              }
+
+              return <td key={key}>{value}</td>;
+            })}
           </tr>
         ))}
       </tbody>
