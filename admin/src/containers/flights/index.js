@@ -93,7 +93,7 @@ function FlightsContainer() {
     }
   };
 
-  const handleEditItem = async data => {
+  const handleUpdateItem = async data => {
     try {
       handleBackAction();
 
@@ -164,7 +164,7 @@ function FlightsContainer() {
   }
 
   function renderEditScreen() {
-    return <FlightEdit flight={selectedItem} handleBack={handleBackAction} handleSave={handleEditItem} />;
+    return <FlightEdit flight={selectedItem} handleBack={handleBackAction} handleSave={handleUpdateItem} />;
   }
 
   return screens[currentScreen]();
