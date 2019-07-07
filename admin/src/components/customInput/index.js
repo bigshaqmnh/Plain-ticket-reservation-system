@@ -18,7 +18,12 @@ function CustomInput(props) {
         onChange={onChange}
         disabled={disabled}
       >
-        {options && options.map(option => <option key={option}>{option}</option>)}
+        {options &&
+          options.map(option => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
       </Form.Control>
 
       {!isValid && <Form.Text style={{ color: 'red' }}>{invalidFeedback}</Form.Text>}
