@@ -32,14 +32,6 @@ function FlightAdd(props) {
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
-  const genDateHandler = key => (date, modifiers, event) => {
-    console.log('event: ', event.target);
-    setFormData({
-      ...formData,
-      [key]: { value: date }
-    });
-  };
-
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;
 
@@ -63,6 +55,24 @@ function FlightAdd(props) {
     }
   };
 
+  const genDateHandler = key => (date, { disabled }) => {
+    if (!disabled) {
+      setFormData({
+        ...formData,
+        [key]: { value: date }
+      });
+    }
+  };
+
+  const handleSelectChange = event => {
+    const value = event.target.value === 'Yes' ? true : false;
+
+    setFormData({
+      ...formData,
+      isCancelled: { value }
+    });
+  };
+
   return (
     <>
       {Object.keys(formData).map(key => {
@@ -77,7 +87,7 @@ function FlightAdd(props) {
           const handleDateChange = genDateHandler(key);
 
           component = (
-            <div key={key} name={key}>
+            <div key={key}>
               <CustomInput label={stringFormatter.toRegular(key)} name={key} value={value.toDateString()} />
               <DayPicker modifiers={modifiers} onDayClick={handleDateChange} />
             </div>
@@ -88,8 +98,10 @@ function FlightAdd(props) {
               key={key}
               label={stringFormatter.toRegular(key)}
               name={key}
+              value={value ? 'Yes' : 'No'}
               as="select"
               options={['No', 'Yes']}
+              onChange={handleSelectChange}
             />
           );
         } else {
