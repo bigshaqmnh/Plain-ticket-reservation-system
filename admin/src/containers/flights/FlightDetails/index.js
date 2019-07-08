@@ -4,17 +4,18 @@ import PropTypes from 'prop-types';
 import CustomInput from '../../../components/customInput';
 import CustomButton from '../../../components/customButton';
 import componentStyles from '../../../constants/componentStyles';
-import stringFormatter from '../../../helpers/stringFormatter';
+import formatString from '../../../helpers/formatters/formatString';
+import formatDate from '../../../helpers/formatters/formatDate';
 
 function FlightDetails({ flight, handleBack, handleEdit }) {
   return (
     <>
       {Object.keys(flight).map(key => {
-        const label = stringFormatter.toRegular(key);
+        const label = formatString(key);
         let value = flight[key];
 
         if (value instanceof Date) {
-          value = value.toDateString();
+          value = formatDate(value);
         } else if (typeof value === 'boolean') {
           value = value ? 'Yes' : 'No';
         }

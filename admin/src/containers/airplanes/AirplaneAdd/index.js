@@ -11,7 +11,7 @@ import componentStyles from '../../../constants/componentStyles';
 import { airplaneValidationScheme } from '../../../constants/validation/schemes';
 
 import formValidation from '../../../helpers/formValidation';
-import stringFormatter from '../../../helpers/stringFormatter';
+import formatString from '../../../helpers/formatters/formatString';
 import extractFormData from '../../../helpers/extractFormData';
 
 function AirplaneAdd(props) {
@@ -53,10 +53,10 @@ function AirplaneAdd(props) {
       {Object.keys(formData).map(key => (
         <CustomInput
           key={key}
-          label={stringFormatter.toRegular(key)}
+          label={formatString(key)}
           name={key}
           value={formData[key].value}
-          placeholder={`Input ${stringFormatter.toRegular(key)}`}
+          placeholder={`Input ${formatString(key)}`}
           onChange={handleChange}
           isValid={formData[key].isValid}
           invalidFeedback={formData[key].invalidFeedback}

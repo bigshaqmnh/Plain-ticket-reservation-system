@@ -19,7 +19,7 @@ import componentStyles from '../../constants/componentStyles';
 import { resultsPerPageLimit } from '../../constants/common';
 import screen from '../../constants/screens';
 
-import formatFlights from '../../helpers/formatFlights';
+import formatFlights from '../../helpers/formatters/formatFlights';
 import getHandlers from '../../helpers/getHandlers';
 
 function FlightsContainer() {
@@ -142,6 +142,7 @@ function FlightsContainer() {
     return (
       <>
         <CustomInput
+          type="search"
           label="Search"
           name="flight-search"
           value={searchText}

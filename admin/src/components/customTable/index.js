@@ -5,7 +5,8 @@ import { Table } from 'react-bootstrap';
 import './style.scss';
 
 import sortAlgorithms from '../../constants/sortAlgorithms';
-import stringFormatter from '../../helpers/stringFormatter';
+import formatString from '../../helpers/formatters/formatString';
+import formatDate from '../../helpers/formatters/formatDate';
 
 function СustomTable(props) {
   const { headers, items, onClick } = props;
@@ -45,7 +46,7 @@ function СustomTable(props) {
         <tr onClick={handleSort}>
           {headers.map(header => (
             <th key={header} name={header} className={sortOption.column === header ? sortOption.alg : ''}>
-              {stringFormatter.toRegular(header)}
+              {formatString(header)}
             </th>
           ))}
         </tr>
@@ -57,7 +58,7 @@ function СustomTable(props) {
               let value = item[key];
 
               if (value instanceof Date) {
-                value = value.toDateString();
+                value = formatDate(value);
               } else if (typeof value === 'boolean') {
                 value = value ? '\u2714' : '\u274c';
               }
