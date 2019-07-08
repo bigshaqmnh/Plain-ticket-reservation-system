@@ -1,33 +1,66 @@
 /* eslint-disable */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import DayPicker from 'react-day-picker';
-import 'react-day-picker/lib/style.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 import CustomInput from '../../../components/customInput';
 import CustomButton from '../../../components/customButton';
 import CustomAlert from '../../../components/customAlert';
 
+import useFetchData from '../../../hooks/useFetchData';
 import useAlert from '../../../hooks/useAlert';
+
+import airportApi from '../../../api/airport';
+import airplaneApi from '../../../api/airplane';
 
 import componentStyles from '../../../constants/componentStyles';
 import { flightValidationScheme } from '../../../constants/validation/schemes';
 
 import formValidation from '../../../helpers/formValidation';
-import stringFormatter from '../../../helpers/stringFormatter';
+import formatString from '../../../helpers/formatters/formatString';
+import formatDate from '../../../helpers/formatters/formatDate';
+import compare from '../../../helpers/compare';
 import extractFormData from '../../../helpers/extractFormData';
 
 function FlightAdd(props) {
   const { handleSave, handleBack } = props;
+
+  const {
+    items: airports,
+    isLoading: areAirportsLoading,
+    searchText: airportSearchText,
+    setSearchText: setAirportSearchText
+  } = useFetchData(airportApi.getAirports, { field: 'name' });
+
+  const {
+    items: airplanes,
+    isLoading: areAirplanesLoading,
+    searchText: airplaneSearchText,
+    setSearchText: setAirplaneSearchText
+  } = useFetchData(airplaneApi.getAirplanes);
 
   const [formData, setFormData] = useState({
     departureTime: { value: new Date() },
     arrivalTime: { value: new Date() },
     luggageOverweightCost: { value: '', isValid: true, invalidFeedback: '' },
     isCancelled: { value: false },
-    departureAirport: { value: '', isValid: true, invalidFeedback: '' },
-    arrivalAirport: { value: '', isValid: true, invalidFeedback: '' },
-    airplane: { value: '', isValid: true, invalidFeedback: '' }
+    departureAirport: {
+      value: 0,
+      searchText: airportSearchText,
+      setSearchText: setAirportSearchText
+    },
+    arrivalAirport: {
+      value: 0,
+      searchText: airportSearchText,
+      setSearchText: setAirportSearchText
+    },
+    airplane: {
+      value: 0,
+      searchText: airplaneSearchText,
+      setSearchText: setAirplaneSearchText
+    }
   });
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
@@ -55,13 +88,35 @@ function FlightAdd(props) {
     }
   };
 
-  const genDateHandler = key => (date, { disabled }) => {
-    if (!disabled) {
-      setFormData({
-        ...formData,
-        [key]: { value: date }
-      });
+  const getDateHandler = key => date => {
+    setFormData({
+      ...formData,
+      [key]: { value: date }
+    });
+  };
+
+  const getDateProps = key => {
+    const currentDate = new Date();
+    const { departureTime, arrivalTime } = formData;
+    const dateProps = {};
+
+    if (key === 'departureTime') {
+      dateProps.selected = departureTime.value > currentDate ? departureTime.value : currentDate;
+      dateProps.minDate = currentDate;
+      if (compare.dates(dateProps.selected, currentDate)) {
+        dateProps.minTime = currentDate;
+        dateProps.maxTime = new Date(currentDate).setHours(23, 45);
+      }
+    } else {
+      dateProps.selected = departureTime.value > arrivalTime.value ? departureTime.value : arrivalTime.value;
+      dateProps.minDate = departureTime.value;
+      if (compare.dates(dateProps.selected, departureTime.value)) {
+        dateProps.minTime = departureTime.value;
+        dateProps.maxTime = new Date(departureTime.value).setHours(23, 45);
+      }
     }
+
+    return dateProps;
   };
 
   const handleSelectChange = event => {
@@ -73,30 +128,40 @@ function FlightAdd(props) {
     });
   };
 
+  const handleListItemSelect = event => {
+    console.log('target: ', event.target);
+  };
+
   return (
     <>
       {Object.keys(formData).map(key => {
-        const { value, isValid, invalidFeedback } = formData[key];
+        const { value, searchText, setSearchText, isValid, invalidFeedback } = formData[key];
         let component = null;
 
         if (value instanceof Date) {
-          const modifiers = {
-            selected: value,
-            disabled: { before: key === 'departureTime' ? new Date() : formData.departureTime.value }
-          };
-          const handleDateChange = genDateHandler(key);
+          const dateProps = getDateProps(key);
+          const handleDateChange = getDateHandler(key);
 
           component = (
             <div key={key}>
-              <CustomInput label={stringFormatter.toRegular(key)} name={key} value={value.toDateString()} />
-              <DayPicker modifiers={modifiers} onDayClick={handleDateChange} />
+              <CustomInput label={formatString(key)} name={key} value={formatDate(dateProps.selected)} disabled />
+              <DatePicker
+                inline
+                {...dateProps}
+                onChange={handleDateChange}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="MMMM d, yyyy HH:mm"
+                showDisabledMonthNavigation
+              />
             </div>
           );
         } else if (typeof value === 'boolean') {
           component = (
             <CustomInput
               key={key}
-              label={stringFormatter.toRegular(key)}
+              label={formatString(key)}
               name={key}
               value={value ? 'Yes' : 'No'}
               as="select"
@@ -104,14 +169,41 @@ function FlightAdd(props) {
               onChange={handleSelectChange}
             />
           );
+        } else if (typeof value === 'number') {
+          component = (
+            <div key={key}>
+              <CustomInput
+                label={formatString(key)}
+                name={key}
+                value={searchText}
+                placeholder={`Search ${formatString(key)}`}
+                onChange={setSearchText}
+              />
+              <ListGroup>
+                {key === 'airplane'
+                  ? !areAirplanesLoading &&
+                    airplanes.map(airplane => (
+                      <ListGroup.Item key={airplane.id} id={airplane.id} onClick={handleListItemSelect}>
+                        {airplane.name}
+                      </ListGroup.Item>
+                    ))
+                  : !areAirportsLoading &&
+                    airports.map(airport => (
+                      <ListGroup.Item key={airport.id} id={airport.id} onClick={handleListItemSelect}>
+                        {airport.name}
+                      </ListGroup.Item>
+                    ))}
+              </ListGroup>
+            </div>
+          );
         } else {
           component = (
             <CustomInput
               key={key}
-              label={stringFormatter.toRegular(key)}
+              label={formatString(key)}
               name={key}
               value={value}
-              placeholder={`Input ${stringFormatter.toRegular(key)}`}
+              placeholder={`Input ${formatString(key)}`}
               onChange={handleChange}
               isValid={isValid}
               invalidFeedback={invalidFeedback}
