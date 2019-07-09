@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DatePicker from 'react-datepicker';
@@ -24,44 +23,50 @@ import formatDate from '../../../helpers/formatters/formatDate';
 import compare from '../../../helpers/compare';
 import extractFormData from '../../../helpers/extractFormData';
 
+import './style.scss';
+
 function FlightAdd(props) {
   const { handleSave, handleBack } = props;
+
+  const searchParams = { field: 'name', limit: 5 };
 
   const {
     items: airports,
     isLoading: areAirportsLoading,
     searchText: airportSearchText,
     setSearchText: setAirportSearchText
-  } = useFetchData(airportApi.getAirports, { field: 'name' });
+  } = useFetchData(airportApi.getAirports, searchParams);
 
   const {
     items: airplanes,
     isLoading: areAirplanesLoading,
     searchText: airplaneSearchText,
     setSearchText: setAirplaneSearchText
-  } = useFetchData(airplaneApi.getAirplanes);
+  } = useFetchData(airplaneApi.getAirplanes, searchParams);
 
   const [formData, setFormData] = useState({
     departureTime: { value: new Date() },
     arrivalTime: { value: new Date() },
     luggageOverweightCost: { value: '', isValid: true, invalidFeedback: '' },
     isCancelled: { value: false },
-    departureAirport: {
+    departureAirportId: {
       value: 0,
       searchText: airportSearchText,
       setSearchText: setAirportSearchText
     },
-    arrivalAirport: {
+    arrivalAirportId: {
       value: 0,
       searchText: airportSearchText,
       setSearchText: setAirportSearchText
     },
-    airplane: {
+    airplaneId: {
       value: 0,
       searchText: airplaneSearchText,
       setSearchText: setAirplaneSearchText
     }
   });
+
+  const [activeInput, setActiveInput] = useState('');
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
@@ -110,6 +115,7 @@ function FlightAdd(props) {
     } else {
       dateProps.selected = departureTime.value > arrivalTime.value ? departureTime.value : arrivalTime.value;
       dateProps.minDate = departureTime.value;
+      dateProps.openToDate = departureTime.value;
       if (compare.dates(dateProps.selected, departureTime.value)) {
         dateProps.minTime = departureTime.value;
         dateProps.maxTime = new Date(departureTime.value).setHours(23, 45);
@@ -120,7 +126,7 @@ function FlightAdd(props) {
   };
 
   const handleSelectChange = event => {
-    const value = event.target.value === 'Yes' ? true : false;
+    const value = event.target.value === 'Yes';
 
     setFormData({
       ...formData,
@@ -128,14 +134,35 @@ function FlightAdd(props) {
     });
   };
 
-  const handleListItemSelect = event => {
-    console.log('target: ', event.target);
+  const handleSearch = ({ target }) => {
+    const { name: propName, value: propValue } = target;
+
+    setActiveInput(propName);
+
+    setFormData({
+      ...formData,
+      [propName]: { ...formData[propName], searchText: propValue }
+    });
+
+    formData[propName].setSearchText(propValue);
+  };
+
+  const handleListItemSelect = ({ target }) => {
+    const propName = target.getAttribute('name');
+    const propValue = +target.getAttribute('value');
+
+    setActiveInput('');
+
+    setFormData({
+      ...formData,
+      [propName]: { ...formData[propName], value: propValue, searchText: target.innerText }
+    });
   };
 
   return (
     <>
       {Object.keys(formData).map(key => {
-        const { value, searchText, setSearchText, isValid, invalidFeedback } = formData[key];
+        const { value, searchText, isValid, invalidFeedback } = formData[key];
         let component = null;
 
         if (value instanceof Date) {
@@ -173,27 +200,44 @@ function FlightAdd(props) {
           component = (
             <div key={key}>
               <CustomInput
-                label={formatString(key)}
+                type="search"
+                label={formatString(key.slice(0, -2))}
                 name={key}
                 value={searchText}
-                placeholder={`Search ${formatString(key)}`}
-                onChange={setSearchText}
+                placeholder={`Search ${formatString(key.slice(0, -2))}`}
+                onChange={handleSearch}
               />
-              <ListGroup>
-                {key === 'airplane'
-                  ? !areAirplanesLoading &&
-                    airplanes.map(airplane => (
-                      <ListGroup.Item key={airplane.id} id={airplane.id} onClick={handleListItemSelect}>
-                        {airplane.name}
-                      </ListGroup.Item>
-                    ))
-                  : !areAirportsLoading &&
-                    airports.map(airport => (
-                      <ListGroup.Item key={airport.id} id={airport.id} onClick={handleListItemSelect}>
-                        {airport.name}
-                      </ListGroup.Item>
-                    ))}
-              </ListGroup>
+              {key === activeInput && searchText && (
+                <ListGroup>
+                  {key === 'airplaneId'
+                    ? airplanes &&
+                      !areAirplanesLoading &&
+                      airplanes.map(airplane => (
+                        <ListGroup.Item
+                          className="list-item"
+                          key={airplane.id}
+                          name={key}
+                          value={airplane.id}
+                          onClick={handleListItemSelect}
+                        >
+                          {airplane.name}
+                        </ListGroup.Item>
+                      ))
+                    : airports &&
+                      !areAirportsLoading &&
+                      airports.map(airport => (
+                        <ListGroup.Item
+                          className="list-item"
+                          key={airport.id}
+                          name={key}
+                          value={airport.id}
+                          onClick={handleListItemSelect}
+                        >
+                          {airport.name}
+                        </ListGroup.Item>
+                      ))}
+                </ListGroup>
+              )}
             </div>
           );
         } else {
@@ -215,7 +259,7 @@ function FlightAdd(props) {
       })}
       <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
       <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
-      {showAlert && <CustomAlert props={alert} />}
+      {showAlert && <CustomAlert {...alert} />}
     </>
   );
 }
