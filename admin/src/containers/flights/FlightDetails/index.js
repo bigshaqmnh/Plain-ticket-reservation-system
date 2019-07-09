@@ -34,7 +34,7 @@ FlightDetails.propTypes = {
     departureTime: PropTypes.instanceOf(Date),
     arrivalTime: PropTypes.instanceOf(Date),
     luggageOverweightCost: PropTypes.string,
-    isCancelled: PropTypes.string,
+    isCancelled: PropTypes.bool,
     departureAirport: PropTypes.string,
     arrivalAirport: PropTypes.string
   }).isRequired,
