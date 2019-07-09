@@ -151,7 +151,7 @@ function FlightsContainer() {
         />
         <CustomButton variant={componentStyles.success} text="Add flight" onClick={handleShowAddScreen} />
         {isLoading ? <Spinner animation="border" variant={componentStyles.default} /> : renderTable()}
-        {showAlert && <CustomAlert props={alert} />}
+        {showAlert && <CustomAlert {...alert} />}
       </>
     );
   }
