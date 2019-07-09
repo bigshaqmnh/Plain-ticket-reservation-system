@@ -8,7 +8,8 @@ const formatFlights = flights => {
     departureTime: new Date(flight.departureTime),
     arrivalTime: new Date(flight.arrivalTime),
     departureAirport: flight.departureAirport.name,
-    arrivalAirport: flight.arrivalAirport.name
+    arrivalAirport: flight.arrivalAirport.name,
+    airplane: flight.airplane.name
   }));
 };
 
