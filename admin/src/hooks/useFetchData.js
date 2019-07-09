@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function useFetchData(apiMethod, userParams) {
+function useFetchData(apiMethod, customParams) {
   const [items, setItems] = useState([]);
   const [itemsCount, setItemsCount] = useState(0);
 
@@ -23,7 +23,7 @@ function useFetchData(apiMethod, userParams) {
   };
 
   useEffect(() => {
-    const params = searchText ? { ...userParams, query: searchText } : { ...userParams, page: currentPage };
+    const params = searchText ? { ...customParams, query: searchText } : { ...customParams, page: currentPage };
     setIsLoading(true);
 
     fetchData(params);
