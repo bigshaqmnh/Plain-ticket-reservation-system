@@ -10,6 +10,13 @@ export default {
       params
     }),
 
+  getFlight: flightId =>
+    fetchData({
+      method: 'GET',
+      needAuth: true,
+      url: `${config.adminUrl}/flights/${flightId}`
+    }),
+
   addFlight: flight =>
     fetchData({
       method: 'POST',
@@ -18,11 +25,11 @@ export default {
       data: flight
     }),
 
-  updateFlight: async flight =>
+  updateFlight: async (flightId, flight) =>
     fetchData({
       method: 'PUT',
       needAuth: true,
-      url: `${config.adminUrl}/flights/${flight.id}`,
+      url: `${config.adminUrl}/flights/${flightId}`,
       data: flight
     })
 };
