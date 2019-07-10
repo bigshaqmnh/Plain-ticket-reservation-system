@@ -23,11 +23,9 @@ import formatDate from '../../../helpers/formatters/formatDate';
 import compare from '../../../helpers/compare';
 import extractFormData from '../../../helpers/extractFormData';
 
-import './style.scss';
+import '../style.scss';
 
-function FlightAdd(props) {
-  const { handleSave, handleBack } = props;
-
+function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
   const searchParams = { field: 'name', limit: 5 };
 
   const {
@@ -44,24 +42,34 @@ function FlightAdd(props) {
     setSearchText: setAirplaneSearchText
   } = useFetchData(airplaneApi.getAirplanes, searchParams);
 
+  const {
+    departureTime,
+    arrivalTime,
+    luggageOverweightCost,
+    isCancelled,
+    departureAirport,
+    arrivalAirport,
+    airplane
+  } = flight;
+
   const [formData, setFormData] = useState({
-    departureTime: { value: new Date() },
-    arrivalTime: { value: new Date() },
-    luggageOverweightCost: { value: '', isValid: true, invalidFeedback: '' },
-    isCancelled: { value: false },
+    departureTime: { value: departureTime || new Date() },
+    arrivalTime: { value: arrivalTime || new Date() },
+    luggageOverweightCost: { value: luggageOverweightCost, isValid: true, invalidFeedback: '' },
+    isCancelled: { value: isCancelled || false },
     departureAirportId: {
-      value: 0,
-      searchText: airportSearchText,
+      value: departureAirport.id || 0,
+      searchText: airportSearchText || departureAirport.name,
       setSearchText: setAirportSearchText
     },
     arrivalAirportId: {
-      value: 0,
-      searchText: airportSearchText,
+      value: arrivalAirport.id || 0,
+      searchText: airportSearchText || arrivalAirport.name,
       setSearchText: setAirportSearchText
     },
     airplaneId: {
-      value: 0,
-      searchText: airplaneSearchText,
+      value: airplane.id || 0,
+      searchText: airplaneSearchText || airplane.name,
       setSearchText: setAirplaneSearchText
     }
   });
@@ -172,16 +180,18 @@ function FlightAdd(props) {
           component = (
             <div key={key}>
               <CustomInput label={formatString(key)} name={key} value={formatDate(dateProps.selected)} disabled />
-              <DatePicker
-                inline
-                {...dateProps}
-                onChange={handleDateChange}
-                showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={15}
-                dateFormat="MMMM d, yyyy HH:mm"
-                showDisabledMonthNavigation
-              />
+              {canEdit && (
+                <DatePicker
+                  inline
+                  {...dateProps}
+                  onChange={handleDateChange}
+                  showTimeSelect
+                  timeFormat="HH:mm"
+                  timeIntervals={15}
+                  dateFormat="MMMM d, yyyy HH:mm"
+                  showDisabledMonthNavigation
+                />
+              )}
             </div>
           );
         } else if (typeof value === 'boolean') {
@@ -194,6 +204,7 @@ function FlightAdd(props) {
               as="select"
               options={['No', 'Yes']}
               onChange={handleSelectChange}
+              disabled={!canEdit}
             />
           );
         } else if (typeof value === 'number') {
@@ -206,6 +217,7 @@ function FlightAdd(props) {
                 value={searchText}
                 placeholder={`Search ${formatString(key.slice(0, -2))}`}
                 onChange={handleSearch}
+                disabled={!canEdit}
               />
               {key === activeInput && searchText && (
                 <ListGroup>
@@ -251,6 +263,7 @@ function FlightAdd(props) {
               onChange={handleChange}
               isValid={isValid}
               invalidFeedback={invalidFeedback}
+              disabled={!canEdit}
             />
           );
         }
@@ -258,15 +271,42 @@ function FlightAdd(props) {
         return component;
       })}
       <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
-      <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
+      {canEdit ? (
+        <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
+      ) : (
+        <CustomButton variant={componentStyles.warning} text="Edit" onClick={handleEdit} />
+      )}
+
       {showAlert && <CustomAlert {...alert} />}
     </>
   );
 }
 
-FlightAdd.propTypes = {
+FlightForm.propTypes = {
+  flight: PropTypes.shape({
+    id: PropTypes.number,
+    departureTime: PropTypes.instanceOf(Date),
+    arrivalTime: PropTypes.instanceOf(Date),
+    luggageOverweightCost: PropTypes.string,
+    isCancelled: PropTypes.bool,
+    departureAirport: PropTypes.object,
+    arrivalAirport: PropTypes.object,
+    airplane: PropTypes.object
+  }),
+  canEdit: PropTypes.bool,
   handleSave: PropTypes.func.isRequired,
+  handleEdit: PropTypes.func,
   handleBack: PropTypes.func.isRequired
 };
 
-export default FlightAdd;
+FlightForm.defaultProps = {
+  flight: {
+    departureAirport: {},
+    arrivalAirport: {},
+    airplane: {}
+  },
+  canEdit: true,
+  handleEdit: null
+};
+
+export default FlightForm;
