@@ -12,6 +12,17 @@ const getAll = async (req, res, next) => {
   }
 };
 
+const getById = async (req, res, next) => {
+  const flightId = +req.params.flightId;
+  const data = await flightController.getById(flightId);
+
+  if (!data) {
+    res.sendStatus(statusCode.NOT_FOUND);
+  } else {
+    res.status(statusCode.OK).json(data);
+  }
+};
+
 const getByParams = async (req, res, next) => {
   const data = await flightController.getByParams(req.query);
 
@@ -34,4 +45,4 @@ const update = async (req, res, next) => {
   res.sendStatus(statusCode.OK);
 };
 
-module.exports = { getAll, getByParams, add, update };
+module.exports = { getAll, getByParams, getById, add, update };

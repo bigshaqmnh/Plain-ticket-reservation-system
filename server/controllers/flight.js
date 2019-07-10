@@ -4,6 +4,8 @@ const costService = require('../services/cost');
 
 const getAll = params => flightService.find(params);
 
+const getById = flightId => flightService.findById(flightId);
+
 const getByParams = async params => {
   const { data: flights, nextPage } = await flightService.findByParams(params);
 
@@ -38,4 +40,4 @@ const add = flight => flightService.add(flight);
 
 const update = (id, flight) => flightService.update(id, flight);
 
-module.exports = { getAll, getByParams, add, update };
+module.exports = { getAll, getById, getByParams, add, update };

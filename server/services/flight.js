@@ -18,7 +18,7 @@ const _genWhereStatement = {
   location: (country, city) => ({ country, city })
 };
 
-const _genIncludeStatement = (model, as, where = {}, attributes = ['name']) => ({
+const _genIncludeStatement = (model, as, where = {}, attributes = ['id', 'name']) => ({
   model,
   as,
   where,
@@ -155,10 +155,9 @@ const findByIds = async ids => {
   }));
 };
 
-const add = async flight => {
-  const newFlight = await db.flight.create(flight);
-  const fullInfo = await db.flight.findOne({
-    where: { id: newFlight.id },
+const findById = async flightId => {
+  const flight = await db.flight.findOne({
+    where: { id: flightId },
     include: [
       _genIncludeStatement(db.airport, 'departureAirport'),
       _genIncludeStatement(db.airport, 'arrivalAirport'),
@@ -167,7 +166,14 @@ const add = async flight => {
     attributes: ['id', 'departureTime', 'arrivalTime', 'luggageOverweightCost', 'isCancelled']
   });
 
-  return fullInfo.dataValues;
+  return flight.dataValues;
+};
+
+const add = async flight => {
+  const newFlight = await db.flight.create(flight);
+  const fullFlightInfo = await findById(newFlight.id);
+
+  return fullFlightInfo;
 };
 
 const update = async (id, flight) => {
@@ -178,4 +184,4 @@ const update = async (id, flight) => {
   return wasUpdated;
 };
 
-module.exports = { find, findByParams, findByIds, add, update };
+module.exports = { find, findByParams, findByIds, findById, add, update };

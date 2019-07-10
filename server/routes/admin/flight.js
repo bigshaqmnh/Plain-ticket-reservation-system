@@ -5,6 +5,8 @@ const flightHandler = require('../../handlers/flight');
 
 router.get('/', wrapHandlerToCatchError(flightHandler.getAll));
 
+router.get('/:flightId', wrapHandlerToCatchError(flightHandler.getById));
+
 router.post('/', wrapHandlerToCatchError(flightHandler.add));
 
 router.put('/:flightId', wrapHandlerToCatchError(flightHandler.update));
