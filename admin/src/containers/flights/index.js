@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import Pagination from 'react-js-pagination';
 
-import FlightDetails from './FlightDetails';
-import FlightAdd from './FlightAdd';
-import FlightEdit from './FlightEdit';
+import FlightForm from './FlightForm';
 import CustomInput from '../../components/customInput';
 import CustomTable from '../../components/customTable';
 import CustomButton from '../../components/customButton';
@@ -97,7 +95,9 @@ function FlightsContainer() {
     try {
       handleBackAction();
 
-      const updatedFlight = await flightApi.updateFlight(data);
+      const flightId = selectedItem.id;
+      await flightApi.updateFlight(flightId, data);
+      const updatedFlight = await flightApi.getFlight(flightId);
 
       setItems(items.map(flight => (flight.id === updatedFlight.id ? updatedFlight : flight)));
 
@@ -119,10 +119,21 @@ function FlightsContainer() {
     }
   };
 
-  const renderTable = () =>
-    flights && flights.length ? (
+  const renderTable = () => {
+    if (!flights || !flights.length) {
+      return <h1>No Data.</h1>;
+    }
+
+    const items = flights.map(flight => ({
+      ...flight,
+      departureAirport: flight.departureAirport.name,
+      arrivalAirport: flight.arrivalAirport.name,
+      airplane: flight.airplane.name
+    }));
+
+    return (
       <>
-        <CustomTable headers={Object.keys(flights[0])} items={flights} onClick={handleClickItem} />
+        <CustomTable headers={Object.keys(items[0])} items={items} onClick={handleClickItem} />
         {itemsCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"
@@ -134,9 +145,8 @@ function FlightsContainer() {
           />
         )}
       </>
-    ) : (
-      <h1>No Data.</h1>
     );
+  };
 
   function renderTableScreen() {
     return (
@@ -157,15 +167,22 @@ function FlightsContainer() {
   }
 
   function renderDetailsScreen() {
-    return <FlightDetails flight={selectedItem} handleBack={handleBackAction} handleEdit={handleShowEditScreen} />;
+    return (
+      <FlightForm
+        flight={selectedItem}
+        canEdit={false}
+        handleBack={handleBackAction}
+        handleEdit={handleShowEditScreen}
+      />
+    );
   }
 
   function renderAddScreen() {
-    return <FlightAdd handleBack={handleBackAction} handleSave={handleAddItem} />;
+    return <FlightForm handleBack={handleBackAction} handleSave={handleAddItem} />;
   }
 
   function renderEditScreen() {
-    return <FlightEdit flight={selectedItem} handleBack={handleBackAction} handleSave={handleUpdateItem} />;
+    return <FlightForm flight={selectedItem} handleBack={handleBackAction} handleSave={handleUpdateItem} />;
   }
 
   return screens[currentScreen]();
