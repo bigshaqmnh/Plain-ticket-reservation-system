@@ -12,6 +12,7 @@
     "consistent-return": "off",
     "no-unused-expressions": "off",
     "no-use-before-define": "off",
+    "import/prefer-default-export": "off",
     "react/jsx-filename-extension": [
       1,
       {
