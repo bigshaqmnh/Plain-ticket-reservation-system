@@ -2,14 +2,14 @@ const statusCode = require('http-status-codes');
 
 const userController = require('../controllers/user');
 
-const getInfo = (req, res, next) => {
+const getInfo = async (req, res, next) => {
   if (!req.user) {
     res.sendStatus(statusCode.NOT_FOUND);
   }
 
-  const { username, email } = req.user;
+  const data = await userController.getUserInfo(req.user);
 
-  res.status(statusCode.OK).json({ username, email });
+  res.status(statusCode.OK).json(data);
 };
 
 const update = async (req, res, next) => {
