@@ -294,7 +294,7 @@ FlightForm.propTypes = {
     airplane: PropTypes.object
   }),
   canEdit: PropTypes.bool,
-  handleSave: PropTypes.func.isRequired,
+  handleSave: PropTypes.func,
   handleEdit: PropTypes.func,
   handleBack: PropTypes.func.isRequired
 };
@@ -306,6 +306,7 @@ FlightForm.defaultProps = {
     airplane: {}
   },
   canEdit: true,
+  handleSave: null,
   handleEdit: null
 };
 
