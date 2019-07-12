@@ -12,6 +12,7 @@ import componentStyles from '../../constants/componentStyles';
 import { authValidationScheme } from '../../constants/validation/schemes';
 
 import formValidation from '../../helpers/formValidation';
+import { saveUserToken } from '../../helpers/token';
 
 function AuthContainer() {
   const [formData, setFormData] = useState({
@@ -35,7 +36,9 @@ function AuthContainer() {
 
   const logIn = async data => {
     try {
-      await authApi.logIn(data);
+      const token = await authApi.logIn(data);
+
+      saveUserToken(token);
 
       setAlert({
         variant: componentStyles.success,
