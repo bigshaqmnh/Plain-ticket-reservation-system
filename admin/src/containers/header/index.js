@@ -1,16 +1,22 @@
 import React from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
+import { Navbar, Nav, Image } from 'react-bootstrap';
+
+import useFetchData from '../../hooks/useFetchData';
+import userApi from '../../api/user';
+
+import defaultAccountImage from '../../assets/img/account.svg';
 
 const links = [
   { path: '/', name: 'Home' },
   { path: '/airplanes', name: 'Airplanes' },
   { path: '/airports', name: 'Airports' },
-  { path: '/flights', name: 'Flights' },
-  { path: '/auth', name: 'Sign in / Sign out' }
+  { path: '/flights', name: 'Flights' }
 ];
 
 function HeaderContainer() {
+  const { items: user, isLoading } = useFetchData(userApi.getUserInfo);
+
   return (
     <Navbar bg="primary" variant="dark">
       <Navbar.Brand href="#home">Navbar</Navbar.Brand>
@@ -21,10 +27,14 @@ function HeaderContainer() {
           </LinkContainer>
         ))}
       </Nav>
-      <Form inline>
-        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-        <Button variant="outline-light">Search</Button>
-      </Form>
+      {!isLoading && (
+        <Nav className="account-link">
+          <Image src={defaultAccountImage} roundedCircle />
+          <LinkContainer to="/account">
+            <Nav.Link>{user.username}</Nav.Link>
+          </LinkContainer>
+        </Nav>
+      )}
     </Navbar>
   );
 }
