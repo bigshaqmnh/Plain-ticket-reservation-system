@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
@@ -10,22 +11,28 @@ import AirportsContainer from './containers/airports';
 import FlightsContainer from './containers/flights';
 import NotFound from './containers/notFound';
 
-import PrivateRoute from './helpers/privateRoute';
+// import PrivateRoute from './helpers/privateRoute';
+import userApi from './api/user';
+import useFetchData from './hooks/useFetchData';
 
 function App() {
-  return (
-    <Container>
-      <HeaderContainer />
+  const { items: user, isLoading } = useFetchData(userApi.getUserInfo);
 
-      <Switch>
-        <Route exact path="/" component={MainContainer} />
-        <Route exact path="/auth" component={AuthContainer} />
-        <PrivateRoute path="/airplanes" component={AirplanesContainer} />
-        <PrivateRoute path="/airports" component={AirportsContainer} />
-        <PrivateRoute path="/flights" component={FlightsContainer} />
-        <Route component={NotFound} />
-      </Switch>
-    </Container>
+  return (
+    !isLoading && (
+      <Container>
+        <HeaderContainer user={user} />
+
+        <Switch>
+          <Route exact path="/" component={MainContainer} />
+          <Route exact path="/auth" component={AuthContainer} />
+          <Route path="/airplanes" component={AirplanesContainer} />
+          <Route path="/airports" component={AirportsContainer} />
+          <Route path="/flights" component={FlightsContainer} />
+          <Route component={NotFound} />
+        </Switch>
+      </Container>
+    )
   );
 }
 
