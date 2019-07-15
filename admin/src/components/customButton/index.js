@@ -11,7 +11,7 @@ function CustomButton({ variant, type, text, onClick, disabled }) {
 }
 
 CustomButton.propTypes = {
-  variant: PropTypes.string.isRequired,
+  variant: PropTypes.string,
   type: PropTypes.string,
   text: PropTypes.string.isRequired,
   onClick: PropTypes.func,
@@ -19,6 +19,7 @@ CustomButton.propTypes = {
 };
 
 CustomButton.defaultProps = {
+  variant: null,
   type: 'button',
   onClick: null,
   disabled: false
