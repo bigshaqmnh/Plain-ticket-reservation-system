@@ -1,7 +1,11 @@
-/* eslint-disable */
 import axios from 'axios';
 
 import { getUserToken, deleteUserToken } from '../helpers/token';
+
+const redirectToLogIn = () => {
+  deleteUserToken();
+  window.location.assign('/auth');
+};
 
 const fetchData = async ({ needAuth, ...requestParams }) => {
   try {
@@ -20,8 +24,7 @@ const fetchData = async ({ needAuth, ...requestParams }) => {
     return data;
   } catch (err) {
     if (err.response.status === 401) {
-      deleteUserToken();
-      window.location.href = '/auth';
+      redirectToLogIn();
     }
     console.error('Error: unable to fetch data.', err);
     throw err;
