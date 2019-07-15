@@ -1,0 +1,43 @@
+$gradient: linear-gradient(140deg, rgb(219, 98, 65) 20%, rgb(229, 91, 141) 100%);
+$purple: #6c5ce7;
+
+.auth-form {
+  background: $gradient;
+  height: 400px;
+  width: 400px;
+  margin: 15% auto;
+  padding: 40px 30px;
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  & input {
+    text-indent: 20px;
+
+    &::placeholder {
+      text-indent: 20px;
+    }
+  }
+
+  & .email-input,
+  .password-input {
+    position: relative;
+
+    & img {
+      position: absolute;
+      left: 5px;
+      top: 35px;
+    }
+  }
+
+  & button {
+    align-self: center;
+    border-color: $purple;
+
+    &:hover {
+      background-color: $purple;
+    }
+  }
+}

@@ -14,6 +14,11 @@ import { authValidationScheme } from '../../constants/validation/schemes';
 import formValidation from '../../helpers/formValidation';
 import { saveUserToken } from '../../helpers/token';
 
+import emailSvg from '../../assets/img/email.svg';
+import passwordSvg from '../../assets/img/password.svg';
+
+import './style.scss';
+
 function AuthContainer() {
   const [formData, setFormData] = useState({
     email: { value: '', isValid: true, invalidFeedback: '' },
@@ -39,6 +44,8 @@ function AuthContainer() {
       const token = await authApi.logIn(data);
 
       saveUserToken(token);
+
+      window.location.assign('/');
 
       setAlert({
         variant: componentStyles.success,
@@ -76,28 +83,35 @@ function AuthContainer() {
 
   return (
     <Container>
-      <Form onSubmit={handleSubmit}>
-        <CustomInput
-          label="Email"
-          type="text"
-          name="email"
-          value={formData.email.value}
-          placeholder="Enter your email"
-          invalidFeedback={formData.email.invalidFeedback}
-          isValid={formData.email.isValid}
-          onChange={handleChange}
-        />
-        <CustomInput
-          label="Password"
-          type="password"
-          name="password"
-          value={formData.password.value}
-          placeholder="Enter your password"
-          invalidFeedback={formData.password.invalidFeedback}
-          isValid={formData.password.isValid}
-          onChange={handleChange}
-        />
-        <CustomButton variant={componentStyles.default} type="submit" text="Log in" />
+      <Form onSubmit={handleSubmit} className="auth-form">
+        <h2>Please, Log In.</h2>
+        <div className="email-input">
+          <img src={emailSvg} alt="" />
+          <CustomInput
+            label="Email"
+            type="text"
+            name="email"
+            value={formData.email.value}
+            placeholder="Enter your email"
+            invalidFeedback={formData.email.invalidFeedback}
+            isValid={formData.email.isValid}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="password-input">
+          <img src={passwordSvg} alt="" />
+          <CustomInput
+            label="Password"
+            type="password"
+            name="password"
+            value={formData.password.value}
+            placeholder="Enter your password"
+            invalidFeedback={formData.password.invalidFeedback}
+            isValid={formData.password.isValid}
+            onChange={handleChange}
+          />
+        </div>
+        <CustomButton type="submit" text="Log in" />
       </Form>
       {showAlert && <CustomAlert {...alert} />}
     </Container>
