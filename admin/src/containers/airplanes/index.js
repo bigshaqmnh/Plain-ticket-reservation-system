@@ -104,14 +104,16 @@ function AirplanesContainer() {
   function renderTableScreen() {
     return (
       <>
-        <CustomInput
-          label="Search"
-          name="airplane-search"
-          value={searchText}
-          placeholder="Search airplanes"
-          onChange={handleSearchItem}
-        />
-        <CustomButton variant={componentStyles.success} text="Add airplane" onClick={handleShowAddScreen} />
+        <div className="above-table">
+          <CustomInput
+            label="Search"
+            name="airplane-search"
+            value={searchText}
+            placeholder="Search airplanes"
+            onChange={handleSearchItem}
+          />
+          <CustomButton variant={componentStyles.success} text="Add airplane" onClick={handleShowAddScreen} />
+        </div>
         {isLoading ? <Spinner animation="border" variant={componentStyles.default} /> : renderTable()}
         {showAlert && <CustomAlert {...alert} />}
       </>

@@ -49,7 +49,7 @@ function AirplaneAdd(props) {
   };
 
   return (
-    <>
+    <div className="add-container">
       {Object.keys(formData).map(key => (
         <CustomInput
           key={key}
@@ -62,10 +62,12 @@ function AirplaneAdd(props) {
           invalidFeedback={formData[key].invalidFeedback}
         />
       ))}
-      <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
-      <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
+      <div className="buttons">
+        <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
+        <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
+      </div>
       {showAlert && <CustomAlert {...alert} />}
-    </>
+    </div>
   );
 }
 
