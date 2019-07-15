@@ -26,7 +26,7 @@ function CustomInput(props) {
           ))}
       </Form.Control>
 
-      {!isValid && <Form.Text style={{ color: 'red' }}>{invalidFeedback}</Form.Text>}
+      {!isValid && <Form.Text style={{ color: '#6c5ce7' }}>{invalidFeedback}</Form.Text>}
     </Form.Group>
   );
 }
