@@ -1,8 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
 
-import HeaderContainer from './containers/header';
 import MainContainer from './containers/main';
 import AuthContainer from './containers/auth';
 import AirplanesContainer from './containers/airplanes';
@@ -14,18 +12,14 @@ import PrivateRoute from './helpers/privateRoute';
 
 function App() {
   return (
-    <Container>
-      <HeaderContainer />
-
-      <Switch>
-        <Route exact path="/auth" component={AuthContainer} />
-        <PrivateRoute exact path="/" component={MainContainer} />
-        <PrivateRoute path="/airplanes" component={AirplanesContainer} />
-        <PrivateRoute path="/airports" component={AirportsContainer} />
-        <PrivateRoute path="/flights" component={FlightsContainer} />
-        <Route component={NotFound} />
-      </Switch>
-    </Container>
+    <Switch>
+      <Route exact path="/auth" component={AuthContainer} />
+      <PrivateRoute exact path="/" component={MainContainer} />
+      <PrivateRoute path="/airplanes" component={AirplanesContainer} />
+      <PrivateRoute path="/airports" component={AirportsContainer} />
+      <PrivateRoute path="/flights" component={FlightsContainer} />
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 
