@@ -119,14 +119,6 @@ function AirplanesContainer() {
     );
   }
 
-  // function renderDetailsScreen() {
-  //   return <AirplaneDetails airplane={selectedItem} handleBack={handleBackAction} />;
-  // }
-
-  // function renderAddScreen() {
-  //   return <AirplaneAdd handleSave={handleAddItem} handleBack={handleBackAction} />;
-  // }
-
   function renderDetailsScreen() {
     return <AirplaneForm airplane={selectedItem} handleBack={handleBackAction} />;
   }
