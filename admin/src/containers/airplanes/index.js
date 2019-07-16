@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import Pagination from 'react-js-pagination';
 
-import AirplaneDetails from './AirplaneDetails';
-import AirplaneAdd from './AirplaneAdd';
+import AirplaneForm from './AirplaneForm';
 import CustomInput from '../../components/customInput';
 import CustomTable from '../../components/customTable';
 import CustomButton from '../../components/customButton';
@@ -114,18 +113,26 @@ function AirplanesContainer() {
           />
           <CustomButton variant={componentStyles.success} text="Add airplane" onClick={handleShowAddScreen} />
         </div>
-        {isLoading ? <Spinner animation="border" variant={componentStyles.default} /> : renderTable()}
+        {isLoading ? <Spinner animation="border" /> : renderTable()}
         {showAlert && <CustomAlert {...alert} />}
       </>
     );
   }
 
+  // function renderDetailsScreen() {
+  //   return <AirplaneDetails airplane={selectedItem} handleBack={handleBackAction} />;
+  // }
+
+  // function renderAddScreen() {
+  //   return <AirplaneAdd handleSave={handleAddItem} handleBack={handleBackAction} />;
+  // }
+
   function renderDetailsScreen() {
-    return <AirplaneDetails airplane={selectedItem} handleBack={handleBackAction} />;
+    return <AirplaneForm airplane={selectedItem} handleBack={handleBackAction} />;
   }
 
   function renderAddScreen() {
-    return <AirplaneAdd handleSave={handleAddItem} handleBack={handleBackAction} />;
+    return <AirplaneForm handleSave={handleAddItem} handleBack={handleBackAction} />;
   }
 
   return screens[currentScreen]();
