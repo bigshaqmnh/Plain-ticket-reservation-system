@@ -5,7 +5,7 @@ import { Table } from 'react-bootstrap';
 import './style.scss';
 
 import sortAlgorithms from '../../constants/sortAlgorithms';
-import formatString from '../../helpers/formatters/formatString';
+import formatHeader from '../../helpers/formatters/formatString';
 import formatDate from '../../helpers/formatters/formatDate';
 
 function СustomTable(props) {
@@ -46,7 +46,7 @@ function СustomTable(props) {
         <tr onClick={handleSort}>
           {headers.map(header => (
             <th key={header} name={header} className={sortOption.column === header ? sortOption.alg : ''}>
-              {formatString(header)}
+              {formatHeader(header)}
             </th>
           ))}
         </tr>
