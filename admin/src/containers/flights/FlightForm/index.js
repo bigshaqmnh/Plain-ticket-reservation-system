@@ -28,19 +28,15 @@ import '../style.scss';
 function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
   const searchParams = { field: 'name', limit: 5 };
 
-  const {
-    items: airports,
-    isLoading: areAirportsLoading,
-    searchText: airportSearchText,
-    setSearchText: setAirportSearchText
-  } = useFetchData(airportApi.getAirports, searchParams);
+  const { items: airports, searchText: airportSearchText, setSearchText: setAirportSearchText } = useFetchData(
+    airportApi.getAirports,
+    searchParams
+  );
 
-  const {
-    items: airplanes,
-    isLoading: areAirplanesLoading,
-    searchText: airplaneSearchText,
-    setSearchText: setAirplaneSearchText
-  } = useFetchData(airplaneApi.getAirplanes, searchParams);
+  const { items: airplanes, searchText: airplaneSearchText, setSearchText: setAirplaneSearchText } = useFetchData(
+    airplaneApi.getAirplanes,
+    searchParams
+  );
 
   const {
     departureTime,
@@ -74,7 +70,7 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
     }
   });
 
-  const [activeInput, setActiveInput] = useState('');
+  const [activeSearchInput, setActiveSearchInput] = useState('');
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
@@ -145,7 +141,7 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
   const handleSearch = ({ target }) => {
     const { name: propName, value: propValue } = target;
 
-    setActiveInput(propName);
+    setActiveSearchInput(propName);
 
     setFormData({
       ...formData,
@@ -159,13 +155,59 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
     const propName = target.getAttribute('name');
     const propValue = +target.getAttribute('value');
 
-    setActiveInput('');
+    setActiveSearchInput('');
 
     setFormData({
       ...formData,
       [propName]: { ...formData[propName], value: propValue, searchText: target.innerText }
     });
   };
+
+  const renderCalendar = key => {
+    const dateProps = getDateProps(key);
+    const handleDateChange = getDateHandler(key);
+
+    return (
+      <div key={key}>
+        <CustomInput label={formatString(key)} name={key} value={formatDate(dateProps.selected)} disabled />
+        {canEdit && (
+          <DatePicker
+            inline
+            {...dateProps}
+            onChange={handleDateChange}
+            showTimeSelect
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            dateFormat="MMMM d, yyyy HH:mm"
+            showDisabledMonthNavigation
+          />
+        )}
+      </div>
+    );
+  };
+
+  const renderSelect = (key, value) => (
+    <CustomInput
+      key={key}
+      label={formatString(key)}
+      name={key}
+      value={value}
+      as="select"
+      options={['No', 'Yes']}
+      onChange={handleSelectChange}
+      disabled={!canEdit}
+    />
+  );
+
+  const renderList = (key, items) => (
+    <ListGroup>
+      {items.map(item => (
+        <ListGroup.Item className="list-item" key={item.id} name={key} value={item.id} onClick={handleListItemSelect}>
+          {item.name}
+        </ListGroup.Item>
+      ))}
+    </ListGroup>
+  );
 
   return (
     <>
@@ -174,40 +216,13 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
         let component = null;
 
         if (value instanceof Date) {
-          const dateProps = getDateProps(key);
-          const handleDateChange = getDateHandler(key);
-
-          component = (
-            <div key={key}>
-              <CustomInput label={formatString(key)} name={key} value={formatDate(dateProps.selected)} disabled />
-              {canEdit && (
-                <DatePicker
-                  inline
-                  {...dateProps}
-                  onChange={handleDateChange}
-                  showTimeSelect
-                  timeFormat="HH:mm"
-                  timeIntervals={15}
-                  dateFormat="MMMM d, yyyy HH:mm"
-                  showDisabledMonthNavigation
-                />
-              )}
-            </div>
-          );
+          component = renderCalendar(key);
         } else if (typeof value === 'boolean') {
-          component = (
-            <CustomInput
-              key={key}
-              label={formatString(key)}
-              name={key}
-              value={value ? 'Yes' : 'No'}
-              as="select"
-              options={['No', 'Yes']}
-              onChange={handleSelectChange}
-              disabled={!canEdit}
-            />
-          );
+          component = renderSelect(key, value ? 'Yes' : 'No');
         } else if (typeof value === 'number') {
+          const showSearchResults = key === activeSearchInput && searchText && airplanes && airports;
+          const items = key === 'airplaneId' ? airplanes : airports;
+
           component = (
             <div key={key}>
               <CustomInput
@@ -219,37 +234,7 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
                 onChange={handleSearch}
                 disabled={!canEdit}
               />
-              {key === activeInput && searchText && (
-                <ListGroup>
-                  {key === 'airplaneId'
-                    ? airplanes &&
-                      !areAirplanesLoading &&
-                      airplanes.map(airplane => (
-                        <ListGroup.Item
-                          className="list-item"
-                          key={airplane.id}
-                          name={key}
-                          value={airplane.id}
-                          onClick={handleListItemSelect}
-                        >
-                          {airplane.name}
-                        </ListGroup.Item>
-                      ))
-                    : airports &&
-                      !areAirportsLoading &&
-                      airports.map(airport => (
-                        <ListGroup.Item
-                          className="list-item"
-                          key={airport.id}
-                          name={key}
-                          value={airport.id}
-                          onClick={handleListItemSelect}
-                        >
-                          {airport.name}
-                        </ListGroup.Item>
-                      ))}
-                </ListGroup>
-              )}
+              {showSearchResults && renderList(key, items)}
             </div>
           );
         } else {
