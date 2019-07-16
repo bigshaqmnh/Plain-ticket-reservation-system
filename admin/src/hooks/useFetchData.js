@@ -14,11 +14,6 @@ function useFetchData(apiMethod, customParams) {
     try {
       const response = await apiMethod(params);
 
-      if (!response) {
-        setIsLoading(false);
-        return;
-      }
-
       setItems(response.data);
       setItemsCount(response.count);
       setIsLoading(false);

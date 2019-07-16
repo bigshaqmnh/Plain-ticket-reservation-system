@@ -9,12 +9,6 @@ const redirectToLogIn = () => {
 
 const fetchData = async ({ needAuth, ...requestParams }) => {
   try {
-    const token = getUserToken();
-
-    if (needAuth && !token) {
-      return;
-    }
-
     const { data } = await axios(
       needAuth
         ? { ...requestParams, headers: { ...requestParams.headers, Authorization: `Bearer ${getUserToken()}` } }
