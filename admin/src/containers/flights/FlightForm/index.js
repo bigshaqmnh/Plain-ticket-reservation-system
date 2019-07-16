@@ -168,7 +168,7 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
   };
 
   return (
-    <>
+    <div className="form-container">
       {Object.keys(formData).map(key => {
         const { value, searchText, isValid, invalidFeedback } = formData[key];
         let component = null;
@@ -270,15 +270,18 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
 
         return component;
       })}
-      <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
-      {canEdit ? (
-        <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
-      ) : (
-        <CustomButton variant={componentStyles.warning} text="Edit" onClick={handleEdit} />
-      )}
+
+      <div className="buttons">
+        <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
+        {canEdit ? (
+          <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
+        ) : (
+          <CustomButton variant={componentStyles.warning} text="Edit" onClick={handleEdit} />
+        )}
+      </div>
 
       {showAlert && <CustomAlert {...alert} />}
-    </>
+    </div>
   );
 }
 
@@ -294,7 +297,7 @@ FlightForm.propTypes = {
     airplane: PropTypes.object
   }),
   canEdit: PropTypes.bool,
-  handleSave: PropTypes.func.isRequired,
+  handleSave: PropTypes.func,
   handleEdit: PropTypes.func,
   handleBack: PropTypes.func.isRequired
 };
@@ -306,6 +309,7 @@ FlightForm.defaultProps = {
     airplane: {}
   },
   canEdit: true,
+  handleSave: null,
   handleEdit: null
 };
 
