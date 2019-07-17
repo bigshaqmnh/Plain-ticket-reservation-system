@@ -3,6 +3,7 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
   const pageNum = +page || 1;
   const offset = pageNum * limit - limit;
   let searchParam = {};
+  const attributes = field ? ['id', field] : ['id', 'name', 'country', 'city', 'latitude', 'longitude'];
 
   if (field && inputString) {
     searchParam = {
@@ -29,7 +30,7 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
     offset,
     limit,
     order: [['id', 'ASC']],
-    attributes: ['id', 'name', 'country', 'city', 'latitude', 'longitude']
+    attributes
   });
 
   const { rows, count } = airports;

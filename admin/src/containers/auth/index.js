@@ -5,11 +5,13 @@ import 'babel-polyfill';
 import CustomButton from '../../components/customButton';
 import CustomInput from '../../components/customInput';
 import CustomAlert from '../../components/customAlert';
-import componentStyles from '../../constants/componentStyles';
-import formValidation from '../../helpers/formValidation';
-import validationSchema from '../../constants/auth/validationSchema';
 
-import { authApi } from '../../api';
+import authApi from '../../api/auth';
+
+import componentStyles from '../../constants/componentStyles';
+import { authValidationScheme } from '../../constants/validation/schemes';
+
+import formValidation from '../../helpers/formValidation';
 
 function AuthContainer() {
   const [formData, setFormData] = useState({
@@ -23,7 +25,7 @@ function AuthContainer() {
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;
 
-    const validatedProp = await formValidation.validateOnChange(validationSchema, propName, propValue);
+    const validatedProp = await formValidation.validateOnChange(authValidationScheme, propName, propValue);
 
     setFormData({
       ...formData,

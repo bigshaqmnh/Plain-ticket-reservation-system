@@ -15,8 +15,13 @@ const validateOnChange = async (schema, propName, propValue) => {
 };
 
 const validateOnSubmit = formData => {
-  const isEmpty = !Object.keys(formData).every(key => formData[key].value);
-  const isValid = Object.keys(formData).every(key => formData[key].isValid);
+  const isEmpty = !Object.keys(formData).every(key => {
+    const { value } = formData[key];
+    return typeof value === 'boolean' ? true : value;
+  });
+  const isValid = Object.keys(formData).every(key =>
+    hasOwnProperty.call(formData[key], 'isValid') ? formData[key].isValid : true
+  );
 
   if (isEmpty || !isValid) {
     const type = isEmpty ? 'emptyInput' : 'invalidInput';

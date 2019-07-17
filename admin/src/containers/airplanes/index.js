@@ -12,15 +12,18 @@ import CustomAlert from '../../components/customAlert';
 import useFetchData from '../../hooks/useFetchData';
 import useAlert from '../../hooks/useAlert';
 
-import { airplaneApi } from '../../api';
+import airplaneApi from '../../api/airplane';
 
 import componentStyles from '../../constants/componentStyles';
 import { resultsPerPageLimit } from '../../constants/common';
+import screen from '../../constants/screens';
+
+import getHandlers from '../../helpers/getHandlers';
 
 function AirplanesContainer() {
   const {
-    items: airplanes,
-    setItems: setAirplanes,
+    items,
+    setItems,
     itemsCount,
     isLoading,
     searchText,
@@ -31,51 +34,47 @@ function AirplanesContainer() {
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
-  const [selectedAirplane, setSelectedAirplane] = useState(null);
-  const [showInfoScreen, setShowInfoScreen] = useState(false);
-  const [showAddScreen, setShowAddScreen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleClick = event => {
-    const { id } = event.currentTarget;
-    const selected = airplanes.find(airplane => airplane.id === +id);
-
-    setSelectedAirplane(selected);
-    setShowInfoScreen(true);
+  const screens = {
+    [screen.TABLE]: renderTableScreen,
+    [screen.DETAILS]: renderDetailsScreen,
+    [screen.ADD]: renderAddScreen
   };
 
-  const handleBack = () => {
-    showInfoScreen && setShowInfoScreen(false);
-    showAddScreen && setShowAddScreen(false);
-  };
+  const [currentScreen, setCurrentScreen] = useState(screen.TABLE);
 
-  const handleSearch = ({ target }) => {
-    setSearchText(target.value);
-  };
+  const { handleClickItem, handleSearchItem, handleShowAddScreen, handleBackAction } = getHandlers({
+    items,
+    setSelectedItem,
+    setCurrentScreen,
+    setSearchText
+  });
 
-  const handleSave = async data => {
+  const handleAddItem = async data => {
     try {
-      handleBack();
+      handleBackAction();
 
       const newAirplane = await airplaneApi.addAirplane(data);
       const maxPage = Math.ceil(itemsCount / resultsPerPageLimit);
 
-      setCurrentPage(airplanes.length >= resultsPerPageLimit ? maxPage + 1 : maxPage);
-
       if (currentPage === maxPage) {
-        setAirplanes([...airplanes, newAirplane]);
+        items.length >= resultsPerPageLimit ? setCurrentPage(maxPage + 1) : setItems([...items, newAirplane]);
+      } else {
+        setCurrentPage(maxPage);
       }
 
       setAlert({
         variant: componentStyles.success,
-        heading: 'Saved',
-        mainText: 'Airplane was successfully saved.',
+        heading: 'Added',
+        mainText: 'Airplane was successfully added.',
         isShown: setShowAlert
       });
     } catch (err) {
       setAlert({
         variant: componentStyles.error,
-        heading: 'Not Saved',
-        mainText: 'An error occured while saving airplane data.',
+        heading: 'Not Added',
+        mainText: 'An error occured while adding new airplane.',
         isShown: setShowAlert
       });
     } finally {
@@ -83,12 +82,10 @@ function AirplanesContainer() {
     }
   };
 
-  const handleAdd = () => setShowAddScreen(true);
-
   const renderTable = () =>
-    airplanes && airplanes.length ? (
+    items && items.length ? (
       <>
-        <CustomTable headers={Object.keys(airplanes[0])} items={airplanes} onClick={handleClick} />
+        <CustomTable headers={Object.keys(items[0])} items={items} onClick={handleClickItem} />
         {itemsCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"
@@ -104,34 +101,32 @@ function AirplanesContainer() {
       <h1>No Data.</h1>
     );
 
-  const renderPage = () => (
-    <>
-      <CustomInput
-        label="Search"
-        name="airplane-search"
-        value={searchText}
-        placeholder="Search airplanes"
-        onChange={handleSearch}
-      />
-      <CustomButton variant={componentStyles.success} text="Add airplane" onClick={handleAdd} />
-      {isLoading ? <Spinner animation="border" variant={componentStyles.default} /> : renderTable()}
-      {showAlert && <CustomAlert {...alert} />}
-    </>
-  );
-
-  const renderScreen = () =>
-    showInfoScreen ? (
-      <AirplaneDetails
-        name={selectedAirplane.name}
-        type={selectedAirplane.type}
-        maxLuggageCarryWeight={selectedAirplane.maxLuggageCarryWeight}
-        handleBack={handleBack}
-      />
-    ) : (
-      <AirplaneAdd handleSave={handleSave} handleBack={handleBack} />
+  function renderTableScreen() {
+    return (
+      <>
+        <CustomInput
+          label="Search"
+          name="airplane-search"
+          value={searchText}
+          placeholder="Search airplanes"
+          onChange={handleSearchItem}
+        />
+        <CustomButton variant={componentStyles.success} text="Add airplane" onClick={handleShowAddScreen} />
+        {isLoading ? <Spinner animation="border" variant={componentStyles.default} /> : renderTable()}
+        {showAlert && <CustomAlert {...alert} />}
+      </>
     );
+  }
 
-  return showInfoScreen || showAddScreen ? renderScreen() : renderPage();
+  function renderDetailsScreen() {
+    return <AirplaneDetails airplane={selectedItem} handleBack={handleBackAction} />;
+  }
+
+  function renderAddScreen() {
+    return <AirplaneAdd handleSave={handleAddItem} handleBack={handleBackAction} />;
+  }
+
+  return screens[currentScreen]();
 }
 
 export default AirplanesContainer;

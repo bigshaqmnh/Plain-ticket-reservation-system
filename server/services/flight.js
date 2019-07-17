@@ -1,22 +1,28 @@
-const _genIncludeStatement = ({ foreignKey, inputString, location }) => ({
-  model: db.airport,
-  as: foreignKey,
-  where: inputString
-    ? {
-        [db.op.or]: [
-          {
-            name: { [db.op.iLike]: `%${inputString}%` }
-          },
-          {
-            country: { [db.op.iLike]: `%${inputString}%` }
-          },
-          {
-            city: { [db.op.iLike]: `%${inputString}%` }
-          }
-        ]
+const _genWhereStatement = {
+  airplaneQuery: inputString => ({
+    name: { [db.op.iLike]: `%${inputString}%` }
+  }),
+  airportQuery: inputString => ({
+    [db.op.or]: [
+      {
+        name: { [db.op.iLike]: `%${inputString}%` }
+      },
+      {
+        country: { [db.op.iLike]: `%${inputString}%` }
+      },
+      {
+        city: { [db.op.iLike]: `%${inputString}%` }
       }
-    : location,
-  attributes: ['name']
+    ]
+  }),
+  location: (country, city) => ({ country, city })
+};
+
+const _genIncludeStatement = (model, as, where = {}, attributes = ['id', 'name']) => ({
+  model,
+  as,
+  where,
+  attributes
 });
 
 const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
@@ -29,14 +35,22 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
 
   if (inputString) {
     const { rows: depFlights, count: depFlightsCount } = await db.flight.findAndCountAll({
-      include: [_genIncludeStatement({ foreignKey: 'departureAirport', inputString })],
+      include: [
+        _genIncludeStatement(db.airport, 'departureAirport', _genWhereStatement.airportQuery(inputString)),
+        _genIncludeStatement(db.airport, 'arrivalAirport'),
+        _genIncludeStatement(db.airplane, 'airplane', _genWhereStatement.airplaneQuery(inputString))
+      ],
       offset,
       attributes,
       order: [['id', 'ASC']]
     });
 
     const { rows: arrFlights, count: arrFlightsCount } = await db.flight.findAndCountAll({
-      include: [_genIncludeStatement({ foreignKey: 'arrivalAirport', inputString })],
+      include: [
+        _genIncludeStatement(db.airport, 'arrivalAirport', _genWhereStatement.airportQuery(inputString)),
+        _genIncludeStatement(db.airport, 'departureAirport'),
+        _genIncludeStatement(db.airplane, 'airplane', _genWhereStatement.airplaneQuery(inputString))
+      ],
       offset,
       attributes,
       order: [['id', 'ASC']]
@@ -49,6 +63,11 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
     };
   } else {
     const { rows, count } = await db.flight.findAndCountAll({
+      include: [
+        _genIncludeStatement(db.airport, 'departureAirport'),
+        _genIncludeStatement(db.airport, 'arrivalAirport'),
+        _genIncludeStatement(db.airplane, 'airplane')
+      ],
       offset,
       limit,
       attributes,
@@ -83,9 +102,9 @@ const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departur
       }
     },
     include: [
-      _genIncludeStatement({ foreignKey: 'departureAirport', location: { country: depCountry, city: depCity } }),
-      _genIncludeStatement({ foreignKey: 'arrivalAirport', location: { country: arrCountry, city: arrCity } }),
-      { model: db.airplane, attributes: ['name'] }
+      _genIncludeStatement(db.airport, 'departureAirport', _genWhereStatement.location(depCountry, depCity)),
+      _genIncludeStatement(db.airport, 'arrivalAirport', _genWhereStatement.location(arrCountry, arrCity)),
+      _genIncludeStatement(db.airplane, 'airplane')
     ],
     offset,
     limit,
@@ -112,12 +131,14 @@ const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departur
 };
 
 const findByIds = async ids => {
+  const attributes = ['name', 'country', 'city'];
+
   const flights = await db.flight.findAll({
     where: { id: { [db.op.in]: ids } },
     include: [
-      { model: db.airport, as: 'departureAirport', attributes: ['name', 'country', 'city'] },
-      { model: db.airport, as: 'arrivalAirport', attributes: ['name', 'country', 'city'] },
-      { model: db.airplane, attributes: ['name'] }
+      _genIncludeStatement(db.airport, 'departureAirport', {}, attributes),
+      _genIncludeStatement(db.airport, 'arrivalAirport', {}, attributes),
+      _genIncludeStatement(db.airplane, 'airplane')
     ],
     attributes: ['id', 'departureTime', 'arrivalTime', 'isCancelled']
   });
@@ -134,7 +155,26 @@ const findByIds = async ids => {
   }));
 };
 
-const add = async flight => await db.flight.create(flight);
+const findById = async flightId => {
+  const flight = await db.flight.findOne({
+    where: { id: flightId },
+    include: [
+      _genIncludeStatement(db.airport, 'departureAirport'),
+      _genIncludeStatement(db.airport, 'arrivalAirport'),
+      _genIncludeStatement(db.airplane, 'airplane')
+    ],
+    attributes: ['id', 'departureTime', 'arrivalTime', 'luggageOverweightCost', 'isCancelled']
+  });
+
+  return flight.dataValues;
+};
+
+const add = async flight => {
+  const newFlight = await db.flight.create(flight);
+  const fullFlightInfo = await findById(newFlight.id);
+
+  return fullFlightInfo;
+};
 
 const update = async (id, flight) => {
   const updated = await db.flight.update(flight, { where: { id } });
@@ -144,4 +184,4 @@ const update = async (id, flight) => {
   return wasUpdated;
 };
 
-module.exports = { find, findByParams, findByIds, add, update };
+module.exports = { find, findByParams, findByIds, findById, add, update };

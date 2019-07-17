@@ -4,10 +4,15 @@ import PropTypes from 'prop-types';
 import CustomInput from '../../../components/customInput';
 import CustomButton from '../../../components/customButton';
 import CustomAlert from '../../../components/customAlert';
+
+import useAlert from '../../../hooks/useAlert';
+
 import componentStyles from '../../../constants/componentStyles';
+import { airplaneValidationScheme } from '../../../constants/validation/schemes';
+
 import formValidation from '../../../helpers/formValidation';
-import validationSchema from '../../../constants/airplane/validationSchema';
-import stringFormatter from '../../../helpers/stringFormatter';
+import formatString from '../../../helpers/formatters/formatString';
+import extractFormData from '../../../helpers/extractFormData';
 
 function AirplaneAdd(props) {
   const { handleSave, handleBack } = props;
@@ -17,13 +22,13 @@ function AirplaneAdd(props) {
     type: { value: '', isValid: true, invalidFeedback: '' },
     maxLuggageCarryWeight: { value: '', isValid: true, invalidFeedback: '' }
   });
-  const [showAlert, setShowAlert] = useState(false);
-  const [alert, setAlert] = useState({});
+
+  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;
 
-    const validatedProp = await formValidation.validateOnChange(validationSchema, propName, propValue);
+    const validatedProp = await formValidation.validateOnChange(airplaneValidationScheme, propName, propValue);
 
     setFormData({
       ...formData,
@@ -38,11 +43,7 @@ function AirplaneAdd(props) {
       setAlert({ ...validatedForm.alertData, isShown: setShowAlert });
       setShowAlert(true);
     } else {
-      const data = {
-        name: formData.name.value,
-        type: formData.type.value,
-        maxLuggageCarryWeight: formData.maxLuggageCarryWeight.value
-      };
+      const data = extractFormData(formData);
       handleSave(data);
     }
   };
@@ -52,10 +53,10 @@ function AirplaneAdd(props) {
       {Object.keys(formData).map(key => (
         <CustomInput
           key={key}
-          label={stringFormatter.toRegular(key)}
+          label={formatString(key)}
           name={key}
           value={formData[key].value}
-          placeholder={`Input ${stringFormatter.toRegular(key)}`}
+          placeholder={`Input ${formatString(key)}`}
           onChange={handleChange}
           isValid={formData[key].isValid}
           invalidFeedback={formData[key].invalidFeedback}
