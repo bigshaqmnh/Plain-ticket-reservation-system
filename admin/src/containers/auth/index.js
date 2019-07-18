@@ -19,7 +19,9 @@ import passwordSvg from '../../assets/img/password.svg';
 
 import './style.scss';
 
-function AuthContainer() {
+function AuthContainer(props) {
+  const { history } = props;
+
   const [formData, setFormData] = useState({
     email: { value: '', isValid: true, invalidFeedback: '' },
     password: { value: '', isValid: true, invalidFeedback: '' }
@@ -45,7 +47,8 @@ function AuthContainer() {
 
       saveUserToken(token);
 
-      window.location.assign('/');
+      history.replace('/');
+      history.go();
 
       setAlert({
         variant: componentStyles.success,
