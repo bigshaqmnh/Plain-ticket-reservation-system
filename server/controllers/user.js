@@ -1,7 +1,20 @@
+const path = require('path');
+const fs = require('fs');
+
 const userService = require('../services/user');
 
-const getUserInfo = user => ({ data: { username: user.username, email: user.email } });
+const getUserInfo = user => ({ username: user.username, email: user.email });
 
-const update = (id, user) => userService.update(id, user);
+const getUserPhoto = userId => {
+  const filePath = path.resolve('../server/static/photos', `${userId}.jpg`);
+  const photo = fs.readFileSync(filePath);
+  const encodedPhoto = Buffer.from(photo).toString('base64');
 
-module.exports = { getUserInfo, update };
+  return encodedPhoto;
+};
+
+const update = (id, user) => {
+  userService.update(id, user);
+};
+
+module.exports = { getUserInfo, getUserPhoto, update };
