@@ -24,3 +24,7 @@ export const flightValidationScheme = {
   arrivalAirport: genValidationScheme('arrivalAirport', validate.number),
   airplane: genValidationScheme('airplane', validate.number)
 };
+
+export const accountValidationScheme = {
+  username: genValidationScheme('username', validate.string)
+};
