@@ -11,7 +11,7 @@ import componentStyles from '../../../constants/componentStyles';
 import { airplaneValidationScheme } from '../../../constants/validation/schemes';
 
 import formValidation from '../../../helpers/formValidation';
-import formatString from '../../../helpers/formatters/formatString';
+import formatFromCamelCase from '../../../helpers/formatters/formatString';
 import extractFormData from '../../../helpers/extractFormData';
 
 function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
@@ -51,10 +51,10 @@ function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
       {Object.keys(formData).map(key => (
         <CustomInput
           key={key}
-          label={formatString(key)}
+          label={formatFromCamelCase(key)}
           name={key}
           value={formData[key].value}
-          placeholder={`Input ${formatString(key)}`}
+          placeholder={`Input ${formatFromCamelCase(key)}`}
           onChange={handleChange}
           isValid={formData[key].isValid}
           invalidFeedback={formData[key].invalidFeedback}

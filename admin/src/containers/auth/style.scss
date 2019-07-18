@@ -1,5 +1,4 @@
-$gradient: linear-gradient(140deg, rgb(219, 98, 65) 20%, rgb(229, 91, 141) 100%);
-$purple: #6c5ce7;
+@import '../../styles/variables';
 
 .auth-form {
   background: $gradient;
@@ -13,7 +12,7 @@ $purple: #6c5ce7;
   flex-direction: column;
   justify-content: space-around;
 
-  & input {
+  input {
     text-indent: 20px;
 
     &::placeholder {
@@ -21,18 +20,18 @@ $purple: #6c5ce7;
     }
   }
 
-  & .email-input,
+  .email-input,
   .password-input {
     position: relative;
 
-    & img {
+    img {
       position: absolute;
       left: 5px;
       top: 40px;
     }
   }
 
-  & button {
+  button {
     align-self: center;
     border-color: $purple;
 

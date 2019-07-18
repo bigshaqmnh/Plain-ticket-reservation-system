@@ -12,7 +12,8 @@ const PrivateRoute = ({ component: Component, ...args }) => (
     render={props =>
       getUserToken() ? (
         <>
-          <HeaderContainer /> <Component {...props} />
+          <HeaderContainer />
+          <Component {...props} />
         </>
       ) : (
         <Redirect to="/auth" />

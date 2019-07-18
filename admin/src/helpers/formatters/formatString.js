@@ -1,3 +1,3 @@
-const formatString = str => str.replace(/([A-Z])/g, ' $1').replace(/^./, letter => letter.toUpperCase());
+const formatFromCamelCase = str => str.replace(/([A-Z])/g, ' $1').replace(/^./, letter => letter.toUpperCase());
 
-export default formatString;
+export default formatFromCamelCase;
