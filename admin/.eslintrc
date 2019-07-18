@@ -19,6 +19,15 @@
         "extensions": [".js", "jsx"]
       }
     ],
+    "jsx-a11y/label-has-for": [
+      2,
+      {
+        "components": ["Label"],
+        "required": {
+          "some": ["nesting", "id"]
+        }
+      }
+    ],
     "prettier/prettier": "error",
     "linebreak-style": 0
   },
