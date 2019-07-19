@@ -3,3 +3,6 @@
 
 # Ignore ./dist directory
 /dist
+
+# Ignore .env files
+.env*
