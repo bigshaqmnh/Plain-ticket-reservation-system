@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import AccountForm from './AccountForm';
 import CustomButton from '../../components/customButton';
@@ -61,5 +62,9 @@ function AccountContainer(props) {
     )
   );
 }
+
+AccountContainer.propTypes = {
+  history: PropTypes.shape({}).isRequired
+};
 
 export default AccountContainer;
