@@ -120,7 +120,7 @@ function AirplanesContainer() {
   }
 
   function renderDetailsScreen() {
-    return <AirplaneForm airplane={selectedItem} handleBack={handleBackAction} />;
+    return <AirplaneForm airplane={selectedItem} canEdit={false} handleBack={handleBackAction} />;
   }
 
   function renderAddScreen() {
