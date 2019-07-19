@@ -14,6 +14,8 @@ import { accountValidationScheme } from '../../../constants/validation/schemes';
 import formValidation from '../../../helpers/formValidation';
 import extractFormData from '../../../helpers/extractFormData';
 
+import defaultUserImage from '../../../assets/img/account.svg';
+
 function AccountForm({ user, handleSave }) {
   const [formData, setFormData] = useState({
     photo: { value: user.photo ? `data:image/jpg;base64, ${user.photo}` : defaultUserImage },
