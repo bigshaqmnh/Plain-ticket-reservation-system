@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react';
 
-function useFetchData(apiMethod, customParams) {
+import { deleteUserToken } from '../helpers/token';
+import logger from '../helpers/logger';
+
+import componentStyles from '../constants/componentStyles';
+
+const redirectToLogIn = () => {
+  deleteUserToken();
+  window.location.assign('/auth');
+};
+
+function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
   const [items, setItems] = useState(null);
   const [itemsCount, setItemsCount] = useState(0);
 
@@ -12,13 +22,32 @@ function useFetchData(apiMethod, customParams) {
 
   const fetchData = async params => {
     try {
-      const response = await apiMethod(params);
+      const { data } = await apiMethod(params);
 
-      setItems(response.data);
-      setItemsCount(response.count);
+      setItems(data.data);
+      setItemsCount(data.count);
       setIsLoading(false);
     } catch (err) {
-      console.error(err);
+      logger(err);
+
+      if (err.response && err.response.status === 401) {
+        setAlert({
+          variant: componentStyles.error,
+          heading: 'Authorization Error',
+          mainText: 'Failed to authorize. Try to log in again.',
+          isShown: setShowAlert
+        });
+        setTimeout(redirectToLogIn, 3000);
+      } else {
+        setAlert({
+          variant: componentStyles.error,
+          heading: 'Network Error',
+          mainText: 'Failed to fetch data. Try again later',
+          isShown: setShowAlert
+        });
+      }
+
+      setShowAlert(true);
     }
   };
 

@@ -19,9 +19,9 @@ import './style.scss';
 function AccountContainer(props) {
   const { history } = props;
 
-  const { items: user, isLoading } = useFetchData(userApi.getUserInfo);
-
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+
+  const { items: user, isLoading } = useFetchData(userApi.getUserInfo, setAlert, setShowAlert);
 
   const handleUpdateUser = async data => {
     try {
