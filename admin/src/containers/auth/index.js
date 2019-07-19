@@ -44,28 +44,20 @@ function AuthContainer(props) {
 
   const logIn = async data => {
     try {
-      const token = await authApi.logIn(data);
+      const { data: token } = await authApi.logIn(data);
 
       saveUserToken(token);
 
       history.replace('/');
-
-      setAlert({
-        variant: componentStyles.success,
-        heading: 'Log In',
-        mainText: 'You are logged in.',
-        isShown: setShowAlert
-      });
     } catch (err) {
       setAlert({
         variant: componentStyles.error,
-        heading: 'Log In',
-        mainText: 'An error occured while trying to log in.',
+        heading: 'Unable to Log In',
+        mainText: 'Please, check your credentials.',
         isShown: setShowAlert
       });
     } finally {
       setShowAlert(true);
-      history.go();
     }
   };
 
