@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
 
+import './style.scss';
+
 function CustomInput(props) {
   const { label, as, options, type, name, value, placeholder, invalidFeedback, isValid, onChange, disabled } = props;
 
@@ -26,7 +28,7 @@ function CustomInput(props) {
           ))}
       </Form.Control>
 
-      {!isValid && <Form.Text style={{ color: 'red' }}>{invalidFeedback}</Form.Text>}
+      {!isValid && <Form.Text className="form-text">{invalidFeedback}</Form.Text>}
     </Form.Group>
   );
 }

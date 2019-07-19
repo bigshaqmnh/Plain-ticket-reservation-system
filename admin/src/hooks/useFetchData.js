@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 function useFetchData(apiMethod, customParams) {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(null);
   const [itemsCount, setItemsCount] = useState(0);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,10 +12,10 @@ function useFetchData(apiMethod, customParams) {
 
   const fetchData = async params => {
     try {
-      const { data, count } = await apiMethod(params);
+      const response = await apiMethod(params);
 
-      setItems(data);
-      setItemsCount(count);
+      setItems(response.data);
+      setItemsCount(response.count);
       setIsLoading(false);
     } catch (err) {
       console.error(err);

@@ -151,15 +151,17 @@ function FlightsContainer() {
   function renderTableScreen() {
     return (
       <>
-        <CustomInput
-          type="search"
-          label="Search"
-          name="flight-search"
-          value={searchText}
-          placeholder="Search flights"
-          onChange={handleSearchItem}
-        />
-        <CustomButton variant={componentStyles.success} text="Add flight" onClick={handleShowAddScreen} />
+        <div className="above-table">
+          <CustomInput
+            type="search"
+            label="Search"
+            name="flight-search"
+            value={searchText}
+            placeholder="Search flights"
+            onChange={handleSearchItem}
+          />
+          <CustomButton variant={componentStyles.success} text="Add flight" onClick={handleShowAddScreen} />
+        </div>
         {isLoading ? <Spinner animation="border" variant={componentStyles.default} /> : renderTable()}
         {showAlert && <CustomAlert {...alert} />}
       </>

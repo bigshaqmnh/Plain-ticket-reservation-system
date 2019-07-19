@@ -18,7 +18,7 @@ import componentStyles from '../../../constants/componentStyles';
 import { flightValidationScheme } from '../../../constants/validation/schemes';
 
 import formValidation from '../../../helpers/formValidation';
-import formatString from '../../../helpers/formatters/formatString';
+import formatFromCamelCase from '../../../helpers/formatters/formatString';
 import formatDate from '../../../helpers/formatters/formatDate';
 import compare from '../../../helpers/compare';
 import extractFormData from '../../../helpers/extractFormData';
@@ -169,7 +169,7 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
 
     return (
       <div key={key}>
-        <CustomInput label={formatString(key)} name={key} value={formatDate(dateProps.selected)} disabled />
+        <CustomInput label={formatFromCamelCase(key)} name={key} value={formatDate(dateProps.selected)} disabled />
         {canEdit && (
           <DatePicker
             inline
@@ -189,7 +189,7 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
   const renderSelect = (key, value) => (
     <CustomInput
       key={key}
-      label={formatString(key)}
+      label={formatFromCamelCase(key)}
       name={key}
       value={value}
       as="select"
@@ -210,7 +210,7 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
   );
 
   return (
-    <>
+    <div className="form-container">
       {Object.keys(formData).map(key => {
         const { value, searchText, isValid, invalidFeedback } = formData[key];
         let component = null;
@@ -227,10 +227,10 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
             <div key={key}>
               <CustomInput
                 type="search"
-                label={formatString(key.slice(0, -2))}
+                label={formatFromCamelCase(key.slice(0, -2))}
                 name={key}
                 value={searchText}
-                placeholder={`Search ${formatString(key.slice(0, -2))}`}
+                placeholder={`Search ${formatFromCamelCase(key.slice(0, -2))}`}
                 onChange={handleSearch}
                 disabled={!canEdit}
               />
@@ -241,10 +241,10 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
           component = (
             <CustomInput
               key={key}
-              label={formatString(key)}
+              label={formatFromCamelCase(key)}
               name={key}
               value={value}
-              placeholder={`Input ${formatString(key)}`}
+              placeholder={`Input ${formatFromCamelCase(key)}`}
               onChange={handleChange}
               isValid={isValid}
               invalidFeedback={invalidFeedback}
@@ -255,15 +255,18 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
 
         return component;
       })}
-      <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
-      {canEdit ? (
-        <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
-      ) : (
-        <CustomButton variant={componentStyles.warning} text="Edit" onClick={handleEdit} />
-      )}
+
+      <div className="buttons">
+        <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
+        {canEdit ? (
+          <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
+        ) : (
+          <CustomButton variant={componentStyles.warning} text="Edit" onClick={handleEdit} />
+        )}
+      </div>
 
       {showAlert && <CustomAlert {...alert} />}
-    </>
+    </div>
   );
 }
 

@@ -11,16 +11,14 @@ import componentStyles from '../../../constants/componentStyles';
 import { airplaneValidationScheme } from '../../../constants/validation/schemes';
 
 import formValidation from '../../../helpers/formValidation';
-import formatString from '../../../helpers/formatters/formatString';
+import formatFromCamelCase from '../../../helpers/formatters/formatString';
 import extractFormData from '../../../helpers/extractFormData';
 
-function AirplaneAdd(props) {
-  const { handleSave, handleBack } = props;
-
+function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
   const [formData, setFormData] = useState({
-    name: { value: '', isValid: true, invalidFeedback: '' },
-    type: { value: '', isValid: true, invalidFeedback: '' },
-    maxLuggageCarryWeight: { value: '', isValid: true, invalidFeedback: '' }
+    name: { value: airplane.name || '', isValid: true, invalidFeedback: '' },
+    type: { value: airplane.type || '', isValid: true, invalidFeedback: '' },
+    maxLuggageCarryWeight: { value: airplane.maxLuggageCarryWeight || 0, isValid: true, invalidFeedback: '' }
   });
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
@@ -49,29 +47,44 @@ function AirplaneAdd(props) {
   };
 
   return (
-    <>
+    <div className="form-container">
       {Object.keys(formData).map(key => (
         <CustomInput
           key={key}
-          label={formatString(key)}
+          label={formatFromCamelCase(key)}
           name={key}
           value={formData[key].value}
-          placeholder={`Input ${formatString(key)}`}
+          placeholder={`Input ${formatFromCamelCase(key)}`}
           onChange={handleChange}
           isValid={formData[key].isValid}
           invalidFeedback={formData[key].invalidFeedback}
+          disabled={!canEdit}
         />
       ))}
-      <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
-      <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
+      <div className="buttons">
+        <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
+        {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />}
+      </div>
       {showAlert && <CustomAlert {...alert} />}
-    </>
+    </div>
   );
 }
 
-AirplaneAdd.propTypes = {
-  handleSave: PropTypes.func.isRequired,
+AirplaneForm.propTypes = {
+  airplane: PropTypes.shape({
+    name: PropTypes.string,
+    type: PropTypes.string,
+    maxLuggageCarryWeight: PropTypes.number
+  }),
+  canEdit: PropTypes.bool,
+  handleSave: PropTypes.func,
   handleBack: PropTypes.func.isRequired
 };
 
-export default AirplaneAdd;
+AirplaneForm.defaultProps = {
+  airplane: {},
+  canEdit: true,
+  handleSave: null
+};
+
+export default AirplaneForm;
