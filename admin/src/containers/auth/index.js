@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Container } from 'react-bootstrap';
 import 'babel-polyfill';
 
@@ -120,5 +121,9 @@ function AuthContainer(props) {
     </Container>
   );
 }
+
+AuthContainer.propTypes = {
+  history: PropTypes.shape({}).isRequired
+};
 
 export default AuthContainer;
