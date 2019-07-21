@@ -17,7 +17,7 @@ function App() {
     <Container>
       <Switch>
         <Route exact path="/auth" component={AuthContainer} />
-        <PrivateRoute exact path="/" component={MainContainer} />
+        <PrivateRoute exact path={['/', '/home']} component={MainContainer} />
         <PrivateRoute path="/airplanes" component={AirplanesContainer} />
         <PrivateRoute path="/airports" component={AirportsContainer} />
         <PrivateRoute path="/flights" component={FlightsContainer} />
