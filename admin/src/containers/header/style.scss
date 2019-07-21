@@ -1,0 +1,30 @@
+@import '../../styles/variables';
+
+.navbar.navbar-light.navbar-expand {
+  display: flex;
+  justify-content: center;
+
+  .link.nav-link:hover,
+  .link.nav-link:focus,
+  .link.nav-link.active {
+    color: $red;
+  }
+}
+
+.logo.navbar-brand {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 1rem;
+
+  img {
+    margin-right: 10px;
+  }
+}
+
+.account-link {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 1rem;
+}
