@@ -13,6 +13,19 @@ const findByEmail = async email => {
   return user.dataValues;
 };
 
+const findById = async id => {
+  const user = await db.user.findOne({
+    where: { id },
+    attributes: ['photo', 'username', 'email']
+  });
+
+  if (!user) {
+    return;
+  }
+
+  return user.dataValues;
+};
+
 const checkIfExists = async email => {
   const userExists = await db.user.count({
     where: { email }
@@ -37,4 +50,4 @@ const hashPassword = async password => await bcrypt.hash(password, 10);
 
 const generateToken = async payload => await jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1d' });
 
-module.exports = { findByEmail, checkIfExists, add, update, comparePasswords, hashPassword, generateToken };
+module.exports = { findByEmail, findById, checkIfExists, add, update, comparePasswords, hashPassword, generateToken };

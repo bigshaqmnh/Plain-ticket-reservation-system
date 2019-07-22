@@ -14,11 +14,11 @@ import { accountValidationScheme } from '../../../constants/validation/schemes';
 import formValidation from '../../../helpers/formValidation';
 import extractFormData from '../../../helpers/extractFormData';
 
-import defaultUserImage from '../../../assets/img/account.svg';
+import defaultAccountImage from '../../../assets/img/account.svg';
 
 function AccountForm({ user, handleSave }) {
   const [formData, setFormData] = useState({
-    photo: { value: user.photo ? `data:image/jpg;base64, ${user.photo}` : defaultUserImage },
+    photo: { value: user.photo ? `data:image/jpg;base64, ${user.photo}` : defaultAccountImage },
     username: { value: user.username, isValid: true, invalidFeedback: '' },
     email: { value: user.email }
   });
@@ -52,7 +52,7 @@ function AccountForm({ user, handleSave }) {
     }
   };
 
-  const handleImageChoose = ({ target }) => {
+  const handleImageChange = ({ target }) => {
     const chosenFile = target.files[0];
     const fileReader = new FileReader();
 
@@ -74,9 +74,9 @@ function AccountForm({ user, handleSave }) {
             name="photo"
             id="photo"
             accept="image/*"
-            onChange={handleImageChoose}
+            onChange={handleImageChange}
           />
-          <p className="img-text">Choose Photo</p>
+          <p className="img-text">Change Photo</p>
         </label>
       </div>
 
