@@ -10,15 +10,16 @@ import useAlert from '../../../hooks/useAlert';
 
 import componentStyles from '../../../constants/componentStyles';
 import { accountValidationScheme } from '../../../constants/validation/schemes';
+import { maxPhotoUploadSize } from '../../../constants/common';
 
 import formValidation from '../../../helpers/formValidation';
 import extractFormData from '../../../helpers/extractFormData';
 
 import defaultAccountImage from '../../../assets/img/account.svg';
 
-function AccountForm({ user, handleSave }) {
+function AccountForm({ user, handleUpdate, handleSave }) {
   const [formData, setFormData] = useState({
-    photo: { value: user.photo ? `data:image/jpg;base64, ${user.photo}` : defaultAccountImage },
+    photo: { value: user.photo ? user.photo : defaultAccountImage },
     username: { value: user.username, isValid: true, invalidFeedback: '' },
     email: { value: user.email }
   });
@@ -48,6 +49,8 @@ function AccountForm({ user, handleSave }) {
       setShowAlert(true);
     } else {
       const data = extractFormData(formData);
+
+      handleUpdate(data);
       handleSave(data);
     }
   };
@@ -58,9 +61,22 @@ function AccountForm({ user, handleSave }) {
 
     fileReader.readAsDataURL(chosenFile);
 
-    fileReader.onload = () => setFormData({ ...formData, photo: { value: fileReader.result } });
+    fileReader.onload = () => {
+      const base64Image = fileReader.result;
 
-    setCanEdit(true);
+      if (base64Image.length > maxPhotoUploadSize) {
+        setAlert({
+          variant: componentStyles.error,
+          heading: 'Not Uploaded',
+          mainText: 'The image is too large. ',
+          isShown: setShowAlert
+        });
+        setShowAlert(true);
+      } else {
+        setFormData({ ...formData, photo: { value: fileReader.result } });
+        setCanEdit(true);
+      }
+    };
   };
 
   return (
@@ -105,6 +121,7 @@ AccountForm.propTypes = {
     username: PropTypes.string,
     email: PropTypes.string
   }).isRequired,
+  handleUpdate: PropTypes.func.isRequired,
   handleSave: PropTypes.func.isRequired
 };
 
