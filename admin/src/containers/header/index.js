@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, Image } from 'react-bootstrap';
 
-import useFetchData from '../../hooks/useFetchData';
-import userApi from '../../api/user';
+import { UserContext } from '../../context/user';
 
 import logo from '../../assets/img/logo.svg';
-import defaultAccountImage from '../../assets/img/account.svg';
 
 import './style.scss';
 
@@ -19,7 +17,7 @@ const links = [
 ];
 
 function HeaderContainer() {
-  const { items: user, isLoading } = useFetchData(userApi.getUserInfo);
+  const { user } = useContext(UserContext);
 
   return (
     <Navbar bg="light">
@@ -35,14 +33,9 @@ function HeaderContainer() {
 
           if (path === '/account') {
             return (
-              !isLoading && (
+              user && (
                 <div className="account-link">
-                  <Image
-                    height="30"
-                    width="30"
-                    src={user.photo ? `data:image/jpg;base64, ${user.photo}` : defaultAccountImage}
-                    roundedCircle
-                  />
+                  <Image height="30" width="30" src={user.photo} roundedCircle />
                   <LinkContainer to="/account">
                     <Nav.Link className="link">{user.username}</Nav.Link>
                   </LinkContainer>

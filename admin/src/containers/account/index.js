@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import AccountForm from './AccountForm';
 import CustomButton from '../../components/customButton';
 import CustomAlert from '../../components/customAlert';
 
-import useFetchData from '../../hooks/useFetchData';
+import { UserContext } from '../../context/user';
 import useAlert from '../../hooks/useAlert';
 
 import userApi from '../../api/user';
@@ -16,10 +16,8 @@ import componentStyles from '../../constants/componentStyles';
 
 import './style.scss';
 
-function AccountContainer(props) {
-  const { history } = props;
-
-  const { items: user, isLoading } = useFetchData(userApi.getUserInfo);
+function AccountContainer({ history }) {
+  const { user, updateUser } = useContext(UserContext);
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
@@ -53,13 +51,11 @@ function AccountContainer(props) {
   };
 
   return (
-    !isLoading && (
-      <>
-        <AccountForm user={user} handleSave={handleUpdateUser} />
-        <CustomButton variant={componentStyles.error} text="Log out" onClick={handleLogOut} />
-        {showAlert && <CustomAlert {...alert} />}
-      </>
-    )
+    <>
+      {user && <AccountForm user={user} handleUpdate={updateUser} handleSave={handleUpdateUser} />}
+      <CustomButton variant={componentStyles.error} text="Log out" onClick={handleLogOut} />
+      {showAlert && <CustomAlert {...alert} />}
+    </>
   );
 }
 

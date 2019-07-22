@@ -10,6 +10,8 @@ import FlightsContainer from './containers/flights';
 import AccountContainer from './containers/account';
 import NotFound from './containers/notFound';
 
+import { withUserContext } from './context/user';
+
 import PrivateRoute from './helpers/privateRoute';
 
 function App() {
@@ -28,4 +30,4 @@ function App() {
   );
 }
 
-export default App;
+export default withUserContext(App);
