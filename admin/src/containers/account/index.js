@@ -49,7 +49,6 @@ function AccountContainer(props) {
     deleteUserToken();
 
     history.replace('/auth');
-    history.go();
   };
 
   return (
