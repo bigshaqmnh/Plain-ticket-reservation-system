@@ -1,13 +1,17 @@
 const path = require('path');
-const fs = require('fs');
+const fsPromises = require('fs').promises;
 
 const userService = require('../services/user');
 
 const getUserInfo = user => ({ username: user.username, email: user.email });
 
-const getUserPhoto = userId => {
+const getUserPhoto = async userId => {
   const filePath = path.resolve('../server/static/photos', `${userId}.jpg`);
-  const photo = fs.readFileSync(filePath);
+
+  const filehandle = await fsPromises.open(filePath, 'r');
+  const photo = await filehandle.readFile();
+  await filehandle.close();
+
   const encodedPhoto = Buffer.from(photo).toString('base64');
 
   return encodedPhoto;
