@@ -7,6 +7,8 @@ import CustomAlert from '../../../components/customAlert';
 
 import useAlert from '../../../hooks/useAlert';
 
+import airportApi from '../../../api/airport';
+
 import componentStyles from '../../../constants/componentStyles';
 import { airportValidationScheme } from '../../../constants/validation/schemes';
 
@@ -19,8 +21,8 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
     name: { value: airport.name || '', isValid: true, invalidFeedback: '' },
     country: { value: airport.country || '', isValid: true, invalidFeedback: '' },
     city: { value: airport.city || '', isValid: true, invalidFeedback: '' },
-    latitude: { value: airport.latitude || '' },
-    longitude: { value: airport.longitude || '' }
+    latitude: { value: airport.latitude || 0 },
+    longitude: { value: airport.longitude || 0 }
   });
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
@@ -48,21 +50,37 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
     }
   };
 
+  const handleAirportSearch = async event => {
+    handleChange(event);
+
+    const { value: searchQuery } = event.target;
+
+    const searchResults = await airportApi.searchAirports(searchQuery);
+
+    console.log('results: ', searchResults);
+  };
+
   return (
     <div className="form-container">
-      {Object.keys(formData).map(key => (
-        <CustomInput
-          key={key}
-          label={formatFromCamelCase(key)}
-          name={key}
-          value={formData[key].value}
-          placeholder={`Input ${formatFromCamelCase(key)}`}
-          onChange={handleChange}
-          isValid={formData[key].isValid}
-          invalidFeedback={formData[key].invalidFeedback}
-          disabled={!canEdit}
-        />
-      ))}
+      {Object.keys(formData).map(key => {
+        const { value, isValid, invalidFeedback } = formData[key];
+        const isDisabled = key === 'latitude' || key === 'longitude' || !canEdit;
+        const eventHandler = key === 'name' ? handleAirportSearch : handleChange;
+
+        return (
+          <CustomInput
+            key={key}
+            label={formatFromCamelCase(key)}
+            name={key}
+            value={value}
+            placeholder={`Input ${formatFromCamelCase(key)}`}
+            onChange={eventHandler}
+            isValid={isValid}
+            invalidFeedback={invalidFeedback}
+            disabled={isDisabled}
+          />
+        );
+      })}
       <div className="buttons">
         <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
         {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />}
