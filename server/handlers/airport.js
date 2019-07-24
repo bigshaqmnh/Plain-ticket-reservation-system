@@ -13,9 +13,9 @@ const getAll = async (req, res, next) => {
 };
 
 const add = async (req, res, next) => {
-  await airportController.add(req.body);
+  const created = await airportController.add(req.body);
 
-  res.sendStatus(statusCode.CREATED);
+  res.status(statusCode.CREATED).json(created);
 };
 
 module.exports = { getAll, add };
