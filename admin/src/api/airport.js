@@ -16,27 +16,5 @@ export default {
       needAuth: true,
       url: `${config.adminUrl}/airports`,
       data: airport
-    }),
-
-  searchAirports: query =>
-    fetchData({
-      method: 'GET',
-      url: `${config.mapsSearchPlaceUrl}`,
-      params: {
-        key: MAPS_API_KEY,
-        input: query,
-        language: 'en'
-      }
-    }),
-
-  getAirportDetails: placeId =>
-    fetchData({
-      method: 'GET',
-      url: `${config.mapsPlaceDetailsUrl}`,
-      params: {
-        key: MAPS_API_KEY,
-        placeid: placeId,
-        language: 'en'
-      }
     })
 };
