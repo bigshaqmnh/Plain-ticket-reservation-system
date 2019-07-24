@@ -7,8 +7,6 @@ import CustomAlert from '../../../components/customAlert';
 
 import useAlert from '../../../hooks/useAlert';
 
-import airportApi from '../../../api/airport';
-
 import componentStyles from '../../../constants/componentStyles';
 import { airportValidationScheme } from '../../../constants/validation/schemes';
 
@@ -26,6 +24,8 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
   });
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+
+  const airportSearchInput = React.createRef();
 
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;
@@ -53,11 +53,37 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
   const handleAirportSearch = async event => {
     handleChange(event);
 
-    const { value: searchQuery } = event.target;
+    const searchResults = new google.maps.places.Autocomplete(airportSearchInput.current, {
+      language: 'en',
+      fields: ['address_components', 'name', 'geometry']
+    });
 
-    const searchResults = await airportApi.searchAirports(searchQuery);
+    searchResults.addListener('place_changed', () => {
+      const selectedAirport = searchResults.getPlace();
+      const { address_components: addressParts, name } = selectedAirport;
+      const { na: latitude, ga: longitude } = selectedAirport.geometry.viewport;
+      let city = '';
+      let country = '';
 
-    console.log('results: ', searchResults);
+      addressParts.forEach(addressPart =>
+        addressPart.types.forEach(type => {
+          if (type === 'locality') {
+            city = addressPart.long_name;
+          }
+          if (type === 'country') {
+            country = addressPart.long_name;
+          }
+        })
+      );
+
+      setFormData({
+        name: { ...formData.name, value: name },
+        country: { ...formData.country, value: country },
+        city: { ...formData.city, value: city },
+        latitude: { value: latitude.j.toFixed(6) },
+        longitude: { value: longitude.j.toFixed(6) }
+      });
+    });
   };
 
   return (
@@ -65,16 +91,25 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
       {Object.keys(formData).map(key => {
         const { value, isValid, invalidFeedback } = formData[key];
         const isDisabled = key === 'latitude' || key === 'longitude' || !canEdit;
-        const eventHandler = key === 'name' ? handleAirportSearch : handleChange;
+        const inputProps =
+          key === 'name'
+            ? {
+                refElement: airportSearchInput,
+                type: 'search',
+                onChange: handleAirportSearch
+              }
+            : {
+                onChange: handleChange
+              };
 
         return (
           <CustomInput
+            {...inputProps}
             key={key}
             label={formatFromCamelCase(key)}
             name={key}
             value={value}
             placeholder={`Input ${formatFromCamelCase(key)}`}
-            onChange={eventHandler}
             isValid={isValid}
             invalidFeedback={invalidFeedback}
             disabled={isDisabled}
