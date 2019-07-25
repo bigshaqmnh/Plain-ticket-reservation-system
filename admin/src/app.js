@@ -10,6 +10,8 @@ import FlightsContainer from './containers/flights';
 import AccountContainer from './containers/account';
 import NotFound from './containers/notFound';
 
+import { withUserContext } from './context/user';
+
 import PrivateRoute from './helpers/privateRoute';
 
 function App() {
@@ -17,15 +19,15 @@ function App() {
     <Container>
       <Switch>
         <Route exact path="/auth" component={AuthContainer} />
-        <PrivateRoute exact path="/" component={MainContainer} />
-        <PrivateRoute exact path="/airplanes" component={AirplanesContainer} />
-        <PrivateRoute exact path="/airports" component={AirportsContainer} />
-        <PrivateRoute exact path="/flights" component={FlightsContainer} />
-        <PrivateRoute exact path="/account" component={AccountContainer} />
+        <PrivateRoute exact path={['/', '/home']} component={MainContainer} />
+        <PrivateRoute path="/airplanes" component={AirplanesContainer} />
+        <PrivateRoute path="/airports" component={AirportsContainer} />
+        <PrivateRoute path="/flights" component={FlightsContainer} />
+        <PrivateRoute path="/account" component={AccountContainer} />
         <Route component={NotFound} />
       </Switch>
     </Container>
   );
 }
 
-export default App;
+export default withUserContext(App);
