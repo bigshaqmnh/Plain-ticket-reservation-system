@@ -4,10 +4,10 @@ import { Alert } from 'react-bootstrap';
 
 import './style.scss';
 
-function CustomAlert({ variant, heading, mainText, isShown }) {
+function CustomAlert({ variant, heading, mainText, isShown, autoClose }) {
   const handleDismiss = () => isShown(false);
 
-  setTimeout(handleDismiss, 3000);
+  autoClose && setTimeout(handleDismiss, 3000);
 
   return (
     <Alert variant={variant} onClose={handleDismiss} dismissible>
@@ -21,7 +21,12 @@ CustomAlert.propTypes = {
   variant: PropTypes.string.isRequired,
   heading: PropTypes.string.isRequired,
   mainText: PropTypes.string.isRequired,
-  isShown: PropTypes.func.isRequired
+  isShown: PropTypes.func.isRequired,
+  autoClose: PropTypes.bool
+};
+
+CustomAlert.defaultProps = {
+  autoClose: true
 };
 
 export default CustomAlert;

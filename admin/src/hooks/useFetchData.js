@@ -35,9 +35,12 @@ function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
           variant: componentStyles.error,
           heading: 'Authorization Error',
           mainText: 'Failed to authorize. Try to log in again.',
-          isShown: setShowAlert
+          isShown: isShown => {
+            setShowAlert(isShown);
+            redirectToLogIn();
+          },
+          autoClose: false
         });
-        setTimeout(redirectToLogIn, 3000);
       } else {
         setAlert({
           variant: componentStyles.error,

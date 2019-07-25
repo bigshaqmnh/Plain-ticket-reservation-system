@@ -8,7 +8,7 @@ const getInfo = async (req, res, next) => {
   }
 
   const user = await userController.getUserInfo(req.user);
-  const photo = userController.getUserPhoto(req.user.id);
+  const photo = await userController.getUserPhoto(req.user.id);
 
   const data = {
     data: {
