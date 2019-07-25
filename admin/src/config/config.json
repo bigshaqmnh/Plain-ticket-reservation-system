@@ -1,6 +1,5 @@
 {
   "baseUrl": "http://localhost:3000",
   "adminUrl": "http://localhost:3000/admin",
-  "mapsSearchPlaceUrl": "https://maps.googleapis.com/maps/api/place/autocomplete/json",
-  "mapsPlaceDetailsUrl:": "https://maps.googleapis.com/maps/api/place/details/json"
+  "requestTimeout": 30000
 }
