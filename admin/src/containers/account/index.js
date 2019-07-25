@@ -21,6 +21,8 @@ function AccountContainer({ history }) {
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
+  const { items: user, isLoading } = useFetchData(userApi.getUserInfo, setAlert, setShowAlert);
+
   const handleUpdateUser = async data => {
     try {
       await userApi.updateUser(data);
@@ -47,12 +49,11 @@ function AccountContainer({ history }) {
     deleteUserToken();
 
     history.replace('/auth');
-    history.go();
   };
 
   return (
     <>
-      {user && <AccountForm user={user} handleUpdate={updateUser} handleSave={handleUpdateUser} />}
+      {!isLoading && <AccountForm user={user} handleUpdate={updateUser} handleSave={handleUpdateUser} />}
       <CustomButton variant={componentStyles.error} text="Log out" onClick={handleLogOut} />
       {showAlert && <CustomAlert {...alert} />}
     </>

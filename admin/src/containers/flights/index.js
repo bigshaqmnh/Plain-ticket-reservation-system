@@ -21,6 +21,8 @@ import formatFlights from '../../helpers/formatters/formatFlights';
 import getHandlers from '../../helpers/getHandlers';
 
 function FlightsContainer() {
+  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+
   const {
     items,
     setItems,
@@ -30,11 +32,9 @@ function FlightsContainer() {
     setSearchText,
     currentPage,
     setCurrentPage
-  } = useFetchData(flightApi.getFlights);
+  } = useFetchData(flightApi.getFlights, setAlert, setShowAlert);
 
   const flights = formatFlights(items);
-
-  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -64,7 +64,7 @@ function FlightsContainer() {
     try {
       handleBackAction();
 
-      const newFlight = await flightApi.addFlight(data);
+      const { data: newFlight } = await flightApi.addFlight(data);
       const maxPage = Math.ceil(itemsCount / resultsPerPageLimit);
 
       if (currentPage === maxPage) {
@@ -97,7 +97,7 @@ function FlightsContainer() {
 
       const flightId = selectedItem.id;
       await flightApi.updateFlight(flightId, data);
-      const updatedFlight = await flightApi.getFlight(flightId);
+      const { data: updatedFlight } = await flightApi.getFlight(flightId);
 
       setItems(items.map(flight => (flight.id === updatedFlight.id ? updatedFlight : flight)));
 
@@ -162,7 +162,7 @@ function FlightsContainer() {
           />
           <CustomButton variant={componentStyles.success} text="Add flight" onClick={handleShowAddScreen} />
         </div>
-        {isLoading ? <Spinner animation="border" variant={componentStyles.default} /> : renderTable()}
+        {isLoading ? <Spinner animation="border" /> : renderTable()}
         {showAlert && <CustomAlert {...alert} />}
       </>
     );

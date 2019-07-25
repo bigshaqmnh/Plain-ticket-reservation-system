@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('fs');
+const fsPromises = require('fs').promises;
 
 const userService = require('../services/user');
 
@@ -21,7 +21,10 @@ const getUserInfo = async userId => {
     return;
   }
 
-  const photo = fs.readFileSync(user.photo);
+  const filehandle = await fsPromises.open(user.photo, 'r');
+  const photo = await filehandle.readFile();
+  await filehandle.close();
+
   const encodedPhoto = Buffer.from(photo).toString('base64');
 
   return { data: { ...user, photo: encodedPhoto } };
@@ -34,11 +37,11 @@ const update = (id, user) => {
 
   const fileExtension = photo.slice(parseBase64.data.length, photo.indexOf(parseBase64.base));
   const fileData = photo.slice(parseBase64.data.length + fileExtension.length + parseBase64.base.length);
-  const filePath = `${photosStoragePath}/${id}/photo.${fileExtension}`;
+  const photoFilePath = `${photosStoragePath}/${id}/photo.${fileExtension}`;
 
-  fs.writeFileSync(filePath, fileData, 'base64');
+  fs.writeFileSync(photoFilePath, fileData, 'base64');
 
-  userService.update(id, { ...user, photo: filePath });
+  userService.update(id, { ...user, photo: photoFilePath });
 };
 
 module.exports = { getUserInfo, update };

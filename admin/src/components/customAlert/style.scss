@@ -1,4 +1,12 @@
-.alert {
-  float: right;
-  width: 30%;
+.fade.alert {
+  position: fixed;
+  bottom: 20px;
+  right: 10%;
+  width: 20%;
+
+  button span {
+    position: absolute;
+    top: 0;
+    right: 20px;
+  }
 }

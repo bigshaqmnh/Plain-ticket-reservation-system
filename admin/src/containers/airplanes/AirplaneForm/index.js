@@ -18,7 +18,7 @@ function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
   const [formData, setFormData] = useState({
     name: { value: airplane.name || '', isValid: true, invalidFeedback: '' },
     type: { value: airplane.type || '', isValid: true, invalidFeedback: '' },
-    maxLuggageCarryWeight: { value: airplane.maxLuggageCarryWeight || 0, isValid: true, invalidFeedback: '' }
+    maxLuggageCarryWeight: { value: airplane.maxLuggageCarryWeight || '', isValid: true, invalidFeedback: '' }
   });
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
