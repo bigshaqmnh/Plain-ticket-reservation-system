@@ -1,17 +1,18 @@
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const morgan = require('morgan');
 const cors = require('cors');
 const statusCode = require('http-status-codes');
 const passport = require('passport');
+const logger = require('./winstonSetup');
 require('./passportSetup')(passport);
 require('./sequelizeSetup');
 
 const app = express();
 const routes = require('./routes');
 
-app.use(logger(process.env.LOGGER_CONFIG));
+app.use(morgan(process.env.MORGAN_CONFIG));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('../public/index.html'));
@@ -28,7 +29,10 @@ app.use(routes);
 
 app.use((req, res, next) => res.sendStatus(statusCode.NOT_FOUND));
 
-app.use((err, req, res, next) => res.sendStatus(statusCode.INTERNAL_SERVER_ERROR));
+app.use((err, req, res, next) => {
+  logger.error(err);
+  res.sendStatus(statusCode.INTERNAL_SERVER_ERROR);
+});
 
 const port = process.env.SERVER_PORT || '3000';
 
