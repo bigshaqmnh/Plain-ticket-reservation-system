@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import CustomInput from '../../../components/customInput';
@@ -14,9 +14,11 @@ import formValidation from '../../../helpers/formValidation';
 import formatFromCamelCase from '../../../helpers/formatters/formatString';
 import extractFormData from '../../../helpers/extractFormData';
 
+import '../style.scss';
+
 function AirportForm({ airport, canEdit, handleBack, handleSave }) {
   const [formData, setFormData] = useState({
-    name: { value: airport.name || '', isValid: true, invalidFeedback: '' },
+    name: { value: airport.name || '' },
     country: { value: airport.country || '', isValid: true, invalidFeedback: '' },
     city: { value: airport.city || '', isValid: true, invalidFeedback: '' },
     latitude: { value: airport.latitude || 0 },
@@ -25,10 +27,14 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
-  const airportSearchInput = React.createRef();
+  const [showMap, setShowMap] = useState(formData.latitude.value && formData.longitude.value);
 
-  const handleChange = async event => {
-    const { name: propName, value: propValue } = event.target;
+  const airportSearchInput = useRef(null);
+
+  const mapContainer = useRef(null);
+
+  const handleChange = async ({ target }) => {
+    const { name: propName, value: propValue } = target;
 
     const validatedProp = await formValidation.validateOnChange(airportValidationScheme, propName, propValue);
 
@@ -50,40 +56,71 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
     }
   };
 
-  const handleAirportSearch = async event => {
-    handleChange(event);
+  const setMapData = () => {
+    const airportPosition = { lat: +formData.latitude.value, lng: +formData.longitude.value };
+
+    const map = new google.maps.Map(mapContainer.current, {
+      center: airportPosition,
+      zoom: 13,
+      disableDefaultUI: true
+    });
+
+    const marker = new google.maps.Marker({
+      position: airportPosition
+    });
+
+    marker.setMap(map);
+    mapContainer.current.classList.remove('hidden');
+  };
+
+  useEffect(() => {
+    if (showMap) {
+      setMapData();
+    }
+  }, [showMap]);
+
+  const handleAirportChoose = searchResults => {
+    const selectedAirport = searchResults.getPlace();
+    const { address_components: addressParts, name } = selectedAirport;
+    const { na: latitude, ga: longitude } = selectedAirport.geometry.viewport;
+    let city = '';
+    let country = '';
+
+    addressParts.forEach(addressPart =>
+      addressPart.types.forEach(type => {
+        if (type === 'locality') {
+          city = addressPart.long_name;
+        }
+        if (type === 'country') {
+          country = addressPart.long_name;
+        }
+      })
+    );
+
+    setFormData({
+      name: { ...formData.name, value: name },
+      country: { ...formData.country, value: country },
+      city: { ...formData.city, value: city },
+      latitude: { value: latitude.l.toFixed(6) },
+      longitude: { value: longitude.l.toFixed(6) }
+    });
+
+    setShowMap(true);
+  };
+
+  const handleAirportSearch = async ({ target }) => {
+    setFormData({
+      ...formData,
+      name: { value: target.value }
+    });
+    setShowMap(false);
 
     const searchResults = new google.maps.places.Autocomplete(airportSearchInput.current, {
       language: 'en',
       fields: ['address_components', 'name', 'geometry']
     });
 
-    searchResults.addListener('place_changed', () => {
-      const selectedAirport = searchResults.getPlace();
-      const { address_components: addressParts, name } = selectedAirport;
-      const { na: latitude, ga: longitude } = selectedAirport.geometry.viewport;
-      let city = '';
-      let country = '';
-
-      addressParts.forEach(addressPart =>
-        addressPart.types.forEach(type => {
-          if (type === 'locality') {
-            city = addressPart.long_name;
-          }
-          if (type === 'country') {
-            country = addressPart.long_name;
-          }
-        })
-      );
-
-      setFormData({
-        name: { ...formData.name, value: name },
-        country: { ...formData.country, value: country },
-        city: { ...formData.city, value: city },
-        latitude: { value: latitude.j.toFixed(6) },
-        longitude: { value: longitude.j.toFixed(6) }
-      });
-    });
+    searchResults.addListener('place_changed', () => handleAirportChoose(searchResults));
   };
 
   return (
@@ -116,6 +153,8 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
           />
         );
       })}
+      <div id="map" className="map hidden" ref={mapContainer} />
+
       <div className="buttons">
         <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
         {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />}
