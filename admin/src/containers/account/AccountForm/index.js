@@ -59,21 +59,27 @@ function AccountForm({ user, handleSave }) {
 
     fileReader.readAsDataURL(chosenFile);
 
-    fileReader.onload = () => {
-      const base64Image = fileReader.result;
+    fileReader.onloadstart = event => {
+      const fileSize = event.total;
 
-      if (base64Image.length > maxPhotoUploadSize) {
+      if (fileSize > maxPhotoUploadSize) {
         setAlert({
           variant: componentStyles.error,
           heading: 'Not Uploaded',
           mainText: 'The image is too large. ',
           isShown: setShowAlert
         });
+
+        fileReader.abort();
         setShowAlert(true);
-      } else {
-        setFormData({ ...formData, photo: { value: fileReader.result } });
-        setCanEdit(true);
       }
+    };
+
+    fileReader.onload = () => {
+      const base64Image = fileReader.result;
+
+      setFormData({ ...formData, photo: { value: base64Image } });
+      setCanEdit(true);
     };
   };
 
