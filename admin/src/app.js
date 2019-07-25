@@ -5,8 +5,11 @@ import { Route, Switch } from 'react-router-dom';
 import MainContainer from './containers/main';
 import AuthContainer from './containers/auth';
 import AirplanesContainer from './containers/airplanes';
+import AirplaneForm from './containers/airplanes/AirplaneForm';
 import AirportsContainer from './containers/airports';
+import AirportForm from './containers/airports/AirportForm';
 import FlightsContainer from './containers/flights';
+import FlightForm from './containers/flights/FlightForm';
 import AccountContainer from './containers/account';
 import NotFound from './containers/notFound';
 
@@ -20,10 +23,17 @@ function App() {
       <Switch>
         <Route exact path="/auth" component={AuthContainer} />
         <PrivateRoute exact path={['/', '/home']} component={MainContainer} />
-        <PrivateRoute path="/airplanes" component={AirplanesContainer} />
-        <PrivateRoute path="/airports" component={AirportsContainer} />
-        <PrivateRoute path="/flights" component={FlightsContainer} />
-        <PrivateRoute path="/account" component={AccountContainer} />
+        <PrivateRoute exact path="/airplanes" component={AirplanesContainer} />
+        <PrivateRoute exact path={['/airplanes/:airplaneId/details', '/airplanes/add']} component={AirplaneForm} />
+        <PrivateRoute exact path="/airports" component={AirportsContainer} />
+        <PrivateRoute exact path={['/airports/:airportId/details', '/airports/add']} component={AirportForm} />
+        <PrivateRoute exact path="/flights" component={FlightsContainer} />
+        <PrivateRoute
+          exact
+          path={['/flights/:flightId/details', '/flights/add', '/flights/:flightId/edit']}
+          component={FlightForm}
+        />
+        <PrivateRoute exact path="/account" component={AccountContainer} />
         <Route component={NotFound} />
       </Switch>
     </Container>
