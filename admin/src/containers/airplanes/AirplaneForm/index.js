@@ -34,6 +34,37 @@ function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
     });
   };
 
+  const handleAddItem = async data => {
+    try {
+      handleBack();
+
+      const { data: newAirplane } = await airplaneApi.addAirplane(data);
+      const maxPage = Math.ceil(itemsCount / resultsPerPageLimit);
+
+      if (currentPage === maxPage) {
+        items.length >= resultsPerPageLimit ? setCurrentPage(maxPage + 1) : setItems([...items, newAirplane]);
+      } else {
+        setCurrentPage(maxPage);
+      }
+
+      setAlert({
+        variant: componentStyles.success,
+        heading: 'Added',
+        mainText: 'Airplane was successfully added.',
+        isShown: setShowAlert
+      });
+    } catch (err) {
+      setAlert({
+        variant: componentStyles.error,
+        heading: 'Not Added',
+        mainText: 'An error occured while adding new airplane.',
+        isShown: setShowAlert
+      });
+    } finally {
+      setShowAlert(true);
+    }
+  };
+
   const handleSaveClick = () => {
     const validatedForm = formValidation.validateOnSubmit(formData);
 
@@ -42,7 +73,7 @@ function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
       setShowAlert(true);
     } else {
       const data = extractFormData(formData);
-      handleSave(data);
+      handleAddItem(data);
     }
   };
 
