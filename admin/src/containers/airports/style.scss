@@ -1,0 +1,10 @@
+.map {
+  height: 200px;
+  width: 80%;
+  margin: 1rem;
+  border-radius: 10px;
+
+  &.hidden {
+    display: none;
+  }
+}
