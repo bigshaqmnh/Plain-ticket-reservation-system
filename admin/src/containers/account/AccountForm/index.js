@@ -17,7 +17,7 @@ import extractFormData from '../../../helpers/extractFormData';
 
 import defaultAccountImage from '../../../assets/img/account.svg';
 
-function AccountForm({ user, handleUpdate, handleSave }) {
+function AccountForm({ user, handleSave }) {
   const [formData, setFormData] = useState({
     photo: { value: user.photo ? user.photo : defaultAccountImage },
     username: { value: user.username, isValid: true, invalidFeedback: '' },
@@ -49,8 +49,6 @@ function AccountForm({ user, handleUpdate, handleSave }) {
       setShowAlert(true);
     } else {
       const data = extractFormData(formData);
-
-      handleUpdate(data);
       handleSave(data);
     }
   };
@@ -121,7 +119,6 @@ AccountForm.propTypes = {
     username: PropTypes.string,
     email: PropTypes.string
   }).isRequired,
-  handleUpdate: PropTypes.func.isRequired,
   handleSave: PropTypes.func.isRequired
 };
 

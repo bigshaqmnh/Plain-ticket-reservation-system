@@ -21,11 +21,11 @@ function AccountContainer({ history }) {
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
-  const { items: user, isLoading } = useFetchData(userApi.getUserInfo, setAlert, setShowAlert);
-
   const handleUpdateUser = async data => {
     try {
       await userApi.updateUser(data);
+
+      updateUser(data);
 
       setAlert({
         variant: componentStyles.success,
@@ -53,7 +53,7 @@ function AccountContainer({ history }) {
 
   return (
     <>
-      {!isLoading && <AccountForm user={user} handleUpdate={updateUser} handleSave={handleUpdateUser} />}
+      {user && <AccountForm user={user} handleSave={handleUpdateUser} />}
       <CustomButton variant={componentStyles.error} text="Log out" onClick={handleLogOut} />
       {showAlert && <CustomAlert {...alert} />}
     </>
