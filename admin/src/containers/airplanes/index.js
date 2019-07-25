@@ -20,6 +20,8 @@ import screen from '../../constants/screens';
 import getHandlers from '../../helpers/getHandlers';
 
 function AirplanesContainer() {
+  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+
   const {
     items,
     setItems,
@@ -29,9 +31,7 @@ function AirplanesContainer() {
     setSearchText,
     currentPage,
     setCurrentPage
-  } = useFetchData(airplaneApi.getAirplanes);
-
-  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+  } = useFetchData(airplaneApi.getAirplanes, setAlert, setShowAlert);
 
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -54,7 +54,7 @@ function AirplanesContainer() {
     try {
       handleBackAction();
 
-      const newAirplane = await airplaneApi.addAirplane(data);
+      const { data: newAirplane } = await airplaneApi.addAirplane(data);
       const maxPage = Math.ceil(itemsCount / resultsPerPageLimit);
 
       if (currentPage === maxPage) {

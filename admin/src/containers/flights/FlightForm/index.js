@@ -26,15 +26,21 @@ import extractFormData from '../../../helpers/extractFormData';
 import '../style.scss';
 
 function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
+  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+
   const searchParams = { field: 'name', limit: 5 };
 
   const { items: airports, searchText: airportSearchText, setSearchText: setAirportSearchText } = useFetchData(
     airportApi.getAirports,
+    setAlert,
+    setShowAlert,
     searchParams
   );
 
   const { items: airplanes, searchText: airplaneSearchText, setSearchText: setAirplaneSearchText } = useFetchData(
     airplaneApi.getAirplanes,
+    setAlert,
+    setShowAlert,
     searchParams
   );
 
@@ -71,8 +77,6 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
   });
 
   const [activeSearchInput, setActiveSearchInput] = useState('');
-
-  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;

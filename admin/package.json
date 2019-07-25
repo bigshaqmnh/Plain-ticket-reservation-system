@@ -4,9 +4,10 @@
   "description": "Task link: https://docs.google.com/document/d/1LN80rgA3JUvG6ZhF0FIgoh1mr86gi5x5B0fwEyE_yAQ/edit",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development --hot",
+    "start": "webpack-dev-server --mode production --hot",
+    "start-dev": "webpack-dev-server --mode development --hot",
     "dev-build": "webpack --mode development",
-    "build": "webpack --mode production",
+    "build": "webpack --mode production --env.mode=production",
     "lint": "eslint src -c .eslintrc --ext .js,.jsx",
     "lint-fix": "prettier --write src/**/*.{js,jsx,html,css}",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -7,6 +7,7 @@ import AuthContainer from './containers/auth';
 import AirplanesContainer from './containers/airplanes';
 import AirportsContainer from './containers/airports';
 import FlightsContainer from './containers/flights';
+import AccountContainer from './containers/account';
 import NotFound from './containers/notFound';
 
 import PrivateRoute from './helpers/privateRoute';
@@ -20,6 +21,7 @@ function App() {
         <PrivateRoute path="/airplanes" component={AirplanesContainer} />
         <PrivateRoute path="/airports" component={AirportsContainer} />
         <PrivateRoute path="/flights" component={FlightsContainer} />
+        <PrivateRoute path="/account" component={AccountContainer} />
         <Route component={NotFound} />
       </Switch>
     </Container>

@@ -1,28 +1,17 @@
 import axios from 'axios';
 
-import { getUserToken, deleteUserToken } from '../helpers/token';
+import * as config from '../config/config.json';
+import { getUserToken } from '../helpers/token';
 
-const redirectToLogIn = () => {
-  deleteUserToken();
-  window.location.assign('/auth');
-};
+const api = axios.create({
+  timeout: config.requestTimeout // 30 seconds timeout
+});
 
-const fetchData = async ({ needAuth, ...requestParams }) => {
-  try {
-    const { data } = await axios(
-      needAuth
-        ? { ...requestParams, headers: { ...requestParams.headers, Authorization: `Bearer ${getUserToken()}` } }
-        : requestParams
-    );
-
-    return data;
-  } catch (err) {
-    if (err.response.status === 401) {
-      redirectToLogIn();
-    }
-    console.error('Error: unable to fetch data.', err);
-    throw err;
-  }
-};
+const fetchData = ({ needAuth, ...requestParams }) =>
+  api(
+    needAuth
+      ? { ...requestParams, headers: { ...requestParams.headers, Authorization: `Bearer ${getUserToken()}` } }
+      : requestParams
+  );
 
 export default fetchData;

@@ -7,7 +7,15 @@ const getInfo = async (req, res, next) => {
     res.sendStatus(statusCode.NOT_FOUND);
   }
 
-  const data = await userController.getUserInfo(req.user);
+  const user = await userController.getUserInfo(req.user);
+  const photo = await userController.getUserPhoto(req.user.id);
+
+  const data = {
+    data: {
+      ...user,
+      photo
+    }
+  };
 
   res.status(statusCode.OK).json(data);
 };

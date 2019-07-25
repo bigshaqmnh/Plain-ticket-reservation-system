@@ -1,0 +1,33 @@
+.user-photo {
+  width: 128px;
+  height: 128px;
+  position: relative;
+
+  img {
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.3;
+    }
+  }
+
+  .input-photo {
+    display: none;
+  }
+
+  .img-text {
+    position: absolute;
+    visibility: hidden;
+    top: 40px;
+    color: #6c5ce7;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  &:hover .img-text {
+    visibility: visible;
+  }
+}

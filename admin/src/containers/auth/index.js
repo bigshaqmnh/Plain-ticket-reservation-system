@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Container } from 'react-bootstrap';
 import 'babel-polyfill';
 
@@ -43,24 +44,16 @@ function AuthContainer(props) {
 
   const logIn = async data => {
     try {
-      const token = await authApi.logIn(data);
+      const { data: token } = await authApi.logIn(data);
 
       saveUserToken(token);
 
       history.replace('/');
-      history.go();
-
-      setAlert({
-        variant: componentStyles.success,
-        heading: 'Log In',
-        mainText: 'You are logged in.',
-        isShown: setShowAlert
-      });
     } catch (err) {
       setAlert({
         variant: componentStyles.error,
-        heading: 'Log In',
-        mainText: 'An error occured while trying to log in.',
+        heading: 'Unable to Log In',
+        mainText: 'Please, check your credentials.',
         isShown: setShowAlert
       });
     } finally {
@@ -120,5 +113,9 @@ function AuthContainer(props) {
     </Container>
   );
 }
+
+AuthContainer.propTypes = {
+  history: PropTypes.shape({}).isRequired
+};
 
 export default AuthContainer;
