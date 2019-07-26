@@ -10,6 +10,13 @@ export default {
       params
     }),
 
+  getAirplane: ({ airplaneId }) =>
+    fetchData({
+      method: 'GET',
+      needAuth: true,
+      url: `${config.adminUrl}/airplanes/${airplaneId}`
+    }),
+
   addAirplane: airplane =>
     fetchData({
       method: 'POST',
