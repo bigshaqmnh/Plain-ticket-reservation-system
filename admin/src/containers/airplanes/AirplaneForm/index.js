@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+/* eslint-disable */
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Spinner } from 'react-bootstrap';
 
 import CustomInput from '../../../components/customInput';
 import CustomButton from '../../../components/customButton';
 import CustomAlert from '../../../components/customAlert';
 
+import useFetchData from '../../../hooks/useFetchData';
 import useAlert from '../../../hooks/useAlert';
+import useScreen from '../../../hooks/useScreen';
+
+import airplaneApi from '../../../api/airplane';
 
 import componentStyles from '../../../constants/componentStyles';
 import { airplaneValidationScheme } from '../../../constants/validation/schemes';
@@ -14,14 +20,44 @@ import formValidation from '../../../helpers/formValidation';
 import formatFromCamelCase from '../../../helpers/formatters/formatString';
 import extractFormData from '../../../helpers/extractFormData';
 
-function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
-  const [formData, setFormData] = useState({
-    name: { value: airplane.name || '', isValid: true, invalidFeedback: '' },
-    type: { value: airplane.type || '', isValid: true, invalidFeedback: '' },
-    maxLuggageCarryWeight: { value: airplane.maxLuggageCarryWeight || '', isValid: true, invalidFeedback: '' }
-  });
+function AirplaneForm({ history, match }) {
+  const { path, params } = match;
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+
+  // const { isShown, setIsShown, canEdit } = useScreen(path);
+
+  const canEdit = path.includes('add');
+
+  const [isShown, setIsShown] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: { value: '', isValid: true, invalidFeedback: '' },
+    type: { value: '', isValid: true, invalidFeedback: '' },
+    maxLuggageCarryWeight: { value: '', isValid: true, invalidFeedback: '' }
+  });
+
+  if (!canEdit) {
+    const airplaneId = +params.airplaneId;
+
+    const { items: airplane, isLoading } = useFetchData(airplaneApi.getAirplane, setAlert, setShowAlert, {
+      airplaneId
+    });
+
+    useEffect(() => {
+      if (!isLoading) {
+        setFormData({
+          name: { ...formData.name, value: airplane.name },
+          type: { ...formData.type, value: airplane.type },
+          maxLuggageCarryWeight: { ...formData.maxLuggageCarryWeight, value: airplane.maxLuggageCarryWeight }
+        });
+
+        setIsShown(true);
+      }
+    }, [isLoading]);
+  }
+
+  const handleBack = () => history.goBack();
 
   const handleChange = async event => {
     const { name: propName, value: propValue } = event.target;
@@ -36,8 +72,6 @@ function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
 
   const handleAddItem = async data => {
     try {
-      handleBack();
-
       const { data: newAirplane } = await airplaneApi.addAirplane(data);
       const maxPage = Math.ceil(itemsCount / resultsPerPageLimit);
 
@@ -62,6 +96,7 @@ function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
       });
     } finally {
       setShowAlert(true);
+      handleBack();
     }
   };
 
@@ -77,7 +112,7 @@ function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
     }
   };
 
-  return (
+  return isShown ? (
     <div className="form-container">
       {Object.keys(formData).map(key => (
         <CustomInput
@@ -98,24 +133,14 @@ function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
       </div>
       {showAlert && <CustomAlert {...alert} />}
     </div>
+  ) : (
+    <Spinner animation="border" />
   );
 }
 
 AirplaneForm.propTypes = {
-  airplane: PropTypes.shape({
-    name: PropTypes.string,
-    type: PropTypes.string,
-    maxLuggageCarryWeight: PropTypes.number
-  }),
-  canEdit: PropTypes.bool,
-  handleSave: PropTypes.func,
-  handleBack: PropTypes.func.isRequired
-};
-
-AirplaneForm.defaultProps = {
-  airplane: {},
-  canEdit: true,
-  handleSave: null
+  location: PropTypes.shape({}).isRequired,
+  history: PropTypes.shape({}).isRequired
 };
 
 export default AirplaneForm;

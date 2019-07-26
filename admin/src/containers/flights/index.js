@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { LinkContainer } from 'react-router-bootstrap';
 import { Spinner } from 'react-bootstrap';
 import Pagination from 'react-js-pagination';
 
@@ -20,7 +22,9 @@ import screen from '../../constants/screens';
 import formatFlights from '../../helpers/formatters/formatFlights';
 import getHandlers from '../../helpers/getHandlers';
 
-function FlightsContainer() {
+function FlightsContainer({ history, match }) {
+  const { path } = match;
+
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
   const {
@@ -45,18 +49,11 @@ function FlightsContainer() {
     [screen.EDIT]: renderEditScreen
   };
 
-  const [currentScreen, setCurrentScreen] = useState(screen.TABLE);
-
-  const {
-    handleClickItem,
-    handleSearchItem,
-    handleShowAddScreen,
-    handleShowEditScreen,
-    handleBackAction
-  } = getHandlers({
+  const { currentScreen, handleClickItem, handleSearchItem, handleBackAction } = getHandlers({
+    path,
+    history,
     items: flights,
     setSelectedItem,
-    setCurrentScreen,
     setSearchText
   });
 
@@ -133,7 +130,7 @@ function FlightsContainer() {
 
     return (
       <>
-        <CustomTable headers={Object.keys(items[0])} items={items} onClick={handleClickItem} />
+        <CustomTable headers={Object.keys(items[0])} items={items} linkPath={path} onClick={handleClickItem} />
         {itemsCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"
@@ -160,7 +157,9 @@ function FlightsContainer() {
             placeholder="Search flights"
             onChange={handleSearchItem}
           />
-          <CustomButton variant={componentStyles.success} text="Add flight" onClick={handleShowAddScreen} />
+          <LinkContainer to={`${path}/add`}>
+            <CustomButton variant={componentStyles.success} text="Add flight" />
+          </LinkContainer>
         </div>
         {isLoading ? <Spinner animation="border" /> : renderTable()}
         {showAlert && <CustomAlert {...alert} />}
@@ -169,25 +168,23 @@ function FlightsContainer() {
   }
 
   function renderDetailsScreen() {
-    return (
-      <FlightForm
-        flight={selectedItem}
-        canEdit={false}
-        handleBack={handleBackAction}
-        handleEdit={handleShowEditScreen}
-      />
-    );
+    return <FlightForm flight={selectedItem} canEdit={false} handleBack={handleBackAction} />;
   }
 
   function renderAddScreen() {
-    return <FlightForm handleBack={handleBackAction} handleSave={handleAddItem} />;
+    return <FlightForm handleSave={handleAddItem} handleBack={handleBackAction} />;
   }
 
   function renderEditScreen() {
-    return <FlightForm flight={selectedItem} handleBack={handleBackAction} handleSave={handleUpdateItem} />;
+    return <FlightForm flight={selectedItem} handleSave={handleUpdateItem} handleBack={handleBackAction} />;
   }
 
   return screens[currentScreen]();
 }
+
+FlightsContainer.propTypes = {
+  history: PropTypes.shape({}).isRequired,
+  match: PropTypes.shape({}).isRequired
+};
 
 export default FlightsContainer;

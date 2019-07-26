@@ -20,9 +20,7 @@ import passwordSvg from '../../assets/img/password.svg';
 
 import './style.scss';
 
-function AuthContainer(props) {
-  const { history } = props;
-
+function AuthContainer({ history }) {
   const [formData, setFormData] = useState({
     email: { value: '', isValid: true, invalidFeedback: '' },
     password: { value: '', isValid: true, invalidFeedback: '' }

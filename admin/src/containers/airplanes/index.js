@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Spinner } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import Pagination from 'react-js-pagination';
@@ -67,5 +68,9 @@ function AirplanesContainer({ location }) {
     </>
   );
 }
+
+AirplanesContainer.propTypes = {
+  location: PropTypes.shape({}).isRequired
+};
 
 export default AirplanesContainer;

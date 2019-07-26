@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { LinkContainer } from 'react-router-bootstrap';
 import { Spinner } from 'react-bootstrap';
 import Pagination from 'react-js-pagination';
 
@@ -19,7 +21,9 @@ import screen from '../../constants/screens';
 
 import getHandlers from '../../helpers/getHandlers';
 
-function AirportsContainer() {
+function AirportsContainer({ history, match }) {
+  const { path } = match;
+
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
   const {
@@ -41,12 +45,11 @@ function AirportsContainer() {
     [screen.ADD]: renderAddScreen
   };
 
-  const [currentScreen, setCurrentScreen] = useState(screen.TABLE);
-
-  const { handleClickItem, handleSearchItem, handleShowAddScreen, handleBackAction } = getHandlers({
+  const { currentScreen, handleClickItem, handleSearchItem, handleBackAction } = getHandlers({
+    path,
+    history,
     items,
     setSelectedItem,
-    setCurrentScreen,
     setSearchText
   });
 
@@ -84,7 +87,7 @@ function AirportsContainer() {
   const renderTable = () =>
     items && items.length ? (
       <>
-        <CustomTable headers={Object.keys(items[0])} items={items} onClick={handleClickItem} />
+        <CustomTable headers={Object.keys(items[0])} items={items} linkPath={path} onClick={handleClickItem} />
         {itemsCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"
@@ -111,7 +114,9 @@ function AirportsContainer() {
             placeholder="Search airports"
             onChange={handleSearchItem}
           />
-          <CustomButton variant={componentStyles.success} text="Add airport" onClick={handleShowAddScreen} />
+          <LinkContainer to={`${path}/add`}>
+            <CustomButton variant={componentStyles.success} text="Add airport" />
+          </LinkContainer>
         </div>
         {isLoading ? <Spinner animation="border" /> : renderTable()}
         {showAlert && <CustomAlert {...alert} />}
@@ -129,5 +134,10 @@ function AirportsContainer() {
 
   return screens[currentScreen]();
 }
+
+AirportsContainer.propTypes = {
+  history: PropTypes.shape({}).isRequired,
+  match: PropTypes.shape({}).isRequired
+};
 
 export default AirportsContainer;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { LinkContainer } from 'react-router-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -25,7 +26,7 @@ import extractFormData from '../../../helpers/extractFormData';
 
 import '../style.scss';
 
-function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
+function FlightForm({ flight, canEdit, handleSave, handleBack }) {
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
   const searchParams = { field: 'name', limit: 5 };
@@ -265,7 +266,9 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
         {canEdit ? (
           <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
         ) : (
-          <CustomButton variant={componentStyles.warning} text="Edit" onClick={handleEdit} />
+          <LinkContainer to={`/flights/${flight.id}/edit`}>
+            <CustomButton variant={componentStyles.warning} text="Edit" />
+          </LinkContainer>
         )}
       </div>
 
@@ -287,7 +290,6 @@ FlightForm.propTypes = {
   }),
   canEdit: PropTypes.bool,
   handleSave: PropTypes.func,
-  handleEdit: PropTypes.func,
   handleBack: PropTypes.func.isRequired
 };
 
@@ -298,8 +300,7 @@ FlightForm.defaultProps = {
     airplane: {}
   },
   canEdit: true,
-  handleSave: null,
-  handleEdit: null
+  handleSave: null
 };
 
 export default FlightForm;
