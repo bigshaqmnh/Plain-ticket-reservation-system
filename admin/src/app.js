@@ -28,11 +28,7 @@ function App() {
         <PrivateRoute exact path="/airports" component={AirportsContainer} />
         <PrivateRoute exact path={['/airports/:airportId/details', '/airports/add']} component={AirportForm} />
         <PrivateRoute exact path="/flights" component={FlightsContainer} />
-        <PrivateRoute
-          exact
-          path={['/flights/:flightId/details', '/flights/add', '/flights/:flightId/edit']}
-          component={FlightForm}
-        />
+        <PrivateRoute exact path={['/flights/:flightId/details', '/flights/add']} component={FlightForm} />
         <PrivateRoute exact path="/account" component={AccountContainer} />
         <Route component={NotFound} />
       </Switch>
