@@ -31,14 +31,14 @@ function FlightForm({ flight, canEdit, handleSave, handleBack }) {
 
   const searchParams = { field: 'name', limit: 5 };
 
-  const { items: airports, searchText: airportSearchText, setSearchText: setAirportSearchText } = useFetchData(
+  const { data: airports, searchText: airportSearchText, setSearchText: setAirportSearchText } = useFetchData(
     airportApi.getAirports,
     setAlert,
     setShowAlert,
     searchParams
   );
 
-  const { items: airplanes, searchText: airplaneSearchText, setSearchText: setAirplaneSearchText } = useFetchData(
+  const { data: airplanes, searchText: airplaneSearchText, setSearchText: setAirplaneSearchText } = useFetchData(
     airplaneApi.getAirplanes,
     setAlert,
     setShowAlert,
@@ -156,7 +156,7 @@ function FlightForm({ flight, canEdit, handleSave, handleBack }) {
     formData[propName].setSearchText(propValue);
   };
 
-  const handleListItemSelect = ({ target }) => {
+  const handleListdataelect = ({ target }) => {
     const propName = target.getAttribute('name');
     const propValue = +target.getAttribute('value');
 
@@ -204,10 +204,10 @@ function FlightForm({ flight, canEdit, handleSave, handleBack }) {
     />
   );
 
-  const renderList = (key, items) => (
+  const renderList = (key, data) => (
     <ListGroup>
-      {items.map(item => (
-        <ListGroup.Item className="list-item" key={item.id} name={key} value={item.id} onClick={handleListItemSelect}>
+      {data.map(item => (
+        <ListGroup.Item className="list-item" key={item.id} name={key} value={item.id} onClick={handleListdataelect}>
           {item.name}
         </ListGroup.Item>
       ))}
@@ -226,7 +226,7 @@ function FlightForm({ flight, canEdit, handleSave, handleBack }) {
           component = renderSelect(key, value ? 'Yes' : 'No');
         } else if (typeof value === 'number') {
           const showSearchResults = key === activeSearchInput && searchText && airplanes && airports;
-          const items = key === 'airplaneId' ? airplanes : airports;
+          const data = key === 'airplaneId' ? airplanes : airports;
 
           component = (
             <div key={key}>
@@ -239,7 +239,7 @@ function FlightForm({ flight, canEdit, handleSave, handleBack }) {
                 onChange={handleSearch}
                 disabled={!canEdit}
               />
-              {showSearchResults && renderList(key, items)}
+              {showSearchResults && renderList(key, data)}
             </div>
           );
         } else {

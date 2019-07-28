@@ -27,18 +27,13 @@ function FlightsContainer({ history, match }) {
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
-  const {
-    items,
-    setItems,
-    itemsCount,
-    isLoading,
-    searchText,
-    setSearchText,
-    currentPage,
-    setCurrentPage
-  } = useFetchData(flightApi.getFlights, setAlert, setShowAlert);
+  const { data, setData, dataCount, isLoading, searchText, setSearchText, currentPage, setCurrentPage } = useFetchData(
+    flightApi.getFlights,
+    setAlert,
+    setShowAlert
+  );
 
-  const flights = formatFlights(items);
+  const flights = formatFlights(data);
 
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -52,7 +47,7 @@ function FlightsContainer({ history, match }) {
   const { currentScreen, handleClickItem, handleSearchItem, handleBackAction } = getHandlers({
     path,
     history,
-    items: flights,
+    data: flights,
     setSelectedItem,
     setSearchText
   });
@@ -62,10 +57,10 @@ function FlightsContainer({ history, match }) {
       handleBackAction();
 
       const { data: newFlight } = await flightApi.addFlight(data);
-      const maxPage = Math.ceil(itemsCount / resultsPerPageLimit);
+      const maxPage = Math.ceil(dataCount / resultsPerPageLimit);
 
       if (currentPage === maxPage) {
-        items.length >= resultsPerPageLimit ? setCurrentPage(maxPage + 1) : setItems([...items, newFlight]);
+        data.length >= resultsPerPageLimit ? setCurrentPage(maxPage + 1) : setData([...data, newFlight]);
       } else {
         setCurrentPage(maxPage);
       }
@@ -96,7 +91,7 @@ function FlightsContainer({ history, match }) {
       await flightApi.updateFlight(flightId, data);
       const { data: updatedFlight } = await flightApi.getFlight(flightId);
 
-      setItems(items.map(flight => (flight.id === updatedFlight.id ? updatedFlight : flight)));
+      setData(data.map(flight => (flight.id === updatedFlight.id ? updatedFlight : flight)));
 
       setAlert({
         variant: componentStyles.success,
@@ -121,7 +116,7 @@ function FlightsContainer({ history, match }) {
       return <h1>No Data.</h1>;
     }
 
-    const items = flights.map(flight => ({
+    const data = flights.map(flight => ({
       ...flight,
       departureAirport: flight.departureAirport.name,
       arrivalAirport: flight.arrivalAirport.name,
@@ -130,13 +125,13 @@ function FlightsContainer({ history, match }) {
 
     return (
       <>
-        <CustomTable headers={Object.keys(items[0])} items={items} linkPath={path} onClick={handleClickItem} />
-        {itemsCount > resultsPerPageLimit && (
+        <CustomTable headers={Object.keys(data[0])} data={data} linkPath={path} onClick={handleClickItem} />
+        {dataCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"
             linkClass="page-link"
             activePage={currentPage}
-            totalItemsCount={itemsCount}
+            totaldataCount={dataCount}
             onChange={setCurrentPage}
             hideDisabled
           />

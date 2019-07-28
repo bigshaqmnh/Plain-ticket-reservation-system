@@ -13,9 +13,11 @@ import useScreen from '../../../hooks/useScreen';
 
 import airplaneApi from '../../../api/airplane';
 
+import { airplaneFormData } from '../../../constants/formDataSchemes';
 import componentStyles from '../../../constants/componentStyles';
 import { airplaneValidationScheme } from '../../../constants/validation/schemes';
 
+import getScreenProps from '../../../helpers/getScreenProps';
 import formValidation from '../../../helpers/formValidation';
 import formatFromCamelCase from '../../../helpers/formatters/formatString';
 import extractFormData from '../../../helpers/extractFormData';
@@ -25,9 +27,12 @@ function AirplaneForm({ history, match }) {
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
-  // const { isShown, setIsShown, canEdit } = useScreen(path);
-
-  const canEdit = path.includes('add');
+  const { formData, setFormData, isShown, canEdit } = useFormData({
+    path,
+    formDataScheme: airplaneFormData,
+    apiMethod: airplaneApi.getAirplane,
+    params: +params.airplaneId
+  });
 
   const [isShown, setIsShown] = useState(false);
 

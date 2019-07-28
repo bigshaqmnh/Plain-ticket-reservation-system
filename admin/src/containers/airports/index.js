@@ -26,16 +26,11 @@ function AirportsContainer({ history, match }) {
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
-  const {
-    items,
-    setItems,
-    itemsCount,
-    isLoading,
-    searchText,
-    setSearchText,
-    currentPage,
-    setCurrentPage
-  } = useFetchData(airportApi.getAirports, setAlert, setShowAlert);
+  const { data, setData, dataCount, isLoading, searchText, setSearchText, currentPage, setCurrentPage } = useFetchData(
+    airportApi.getAirports,
+    setAlert,
+    setShowAlert
+  );
 
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -48,7 +43,7 @@ function AirportsContainer({ history, match }) {
   const { currentScreen, handleClickItem, handleSearchItem, handleBackAction } = getHandlers({
     path,
     history,
-    items,
+    data,
     setSelectedItem,
     setSearchText
   });
@@ -58,10 +53,10 @@ function AirportsContainer({ history, match }) {
       handleBackAction();
 
       const { data: newAirport } = await airportApi.addAirport(data);
-      const maxPage = Math.ceil(itemsCount / resultsPerPageLimit);
+      const maxPage = Math.ceil(dataCount / resultsPerPageLimit);
 
       if (currentPage === maxPage) {
-        items.length >= resultsPerPageLimit ? setCurrentPage(maxPage + 1) : setItems([...items, newAirport]);
+        data.length >= resultsPerPageLimit ? setCurrentPage(maxPage + 1) : setData([...data, newAirport]);
       } else {
         setCurrentPage(maxPage);
       }
@@ -85,15 +80,15 @@ function AirportsContainer({ history, match }) {
   };
 
   const renderTable = () =>
-    items && items.length ? (
+    data && data.length ? (
       <>
-        <CustomTable headers={Object.keys(items[0])} items={items} linkPath={path} onClick={handleClickItem} />
-        {itemsCount > resultsPerPageLimit && (
+        <CustomTable headers={Object.keys(data[0])} data={data} linkPath={path} onClick={handleClickItem} />
+        {dataCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"
             linkClass="page-link"
             activePage={currentPage}
-            totalItemsCount={itemsCount}
+            totaldataCount={dataCount}
             onChange={setCurrentPage}
             hideDisabled
           />

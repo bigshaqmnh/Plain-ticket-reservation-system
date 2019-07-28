@@ -6,7 +6,7 @@ import userApi from '../api/user';
 export const UserContext = createContext(null);
 
 export const withUserContext = Component => () => {
-  const { items: user, isLoading } = useFetchData(userApi.getUserInfo);
+  const { data: user, isLoading } = useFetchData(userApi.getUserInfo);
 
   const [userInfo, setUserInfo] = useState(null);
 

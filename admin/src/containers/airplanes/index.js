@@ -20,7 +20,7 @@ import { resultsPerPageLimit } from '../../constants/common';
 function AirplanesContainer({ location }) {
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
-  const { items, itemsCount, isLoading, searchText, setSearchText, currentPage, setCurrentPage } = useFetchData(
+  const { data, dataCount, isLoading, searchText, setSearchText, currentPage, setCurrentPage } = useFetchData(
     airplaneApi.getAirplanes,
     setAlert,
     setShowAlert
@@ -31,15 +31,15 @@ function AirplanesContainer({ location }) {
   };
 
   const renderTable = () =>
-    items && items.length ? (
+    data && data.length ? (
       <>
-        <CustomTable headers={Object.keys(items[0])} items={items} linkPath={location.pathname} />
-        {itemsCount > resultsPerPageLimit && (
+        <CustomTable headers={Object.keys(data[0])} data={data} linkPath={location.pathname} />
+        {dataCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"
             linkClass="page-link"
             activePage={currentPage}
-            totalItemsCount={itemsCount}
+            totaldataCount={dataCount}
             onChange={setCurrentPage}
             hideDisabled
           />

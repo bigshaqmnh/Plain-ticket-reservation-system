@@ -11,8 +11,8 @@ const redirectToLogIn = () => {
 };
 
 function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
-  const [items, setItems] = useState(null);
-  const [itemsCount, setItemsCount] = useState(0);
+  const [data, setData] = useState(null);
+  const [dataCount, setDataCount] = useState(0);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -24,8 +24,8 @@ function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
     try {
       const { data } = await apiMethod(params);
 
-      setItems(data.data);
-      setItemsCount(data.count);
+      setData(data.data);
+      setDataCount(data.count);
       setIsLoading(false);
     } catch (err) {
       logger(err);
@@ -61,7 +61,7 @@ function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
     fetchData(params);
   }, [searchText, currentPage]);
 
-  return { items, setItems, itemsCount, isLoading, searchText, setSearchText, currentPage, setCurrentPage };
+  return { data, setData, dataCount, isLoading, searchText, setSearchText, currentPage, setCurrentPage };
 }
 
 export default useFetchData;
