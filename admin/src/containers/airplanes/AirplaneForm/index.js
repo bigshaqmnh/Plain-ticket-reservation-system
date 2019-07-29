@@ -1,15 +1,12 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Spinner } from 'react-bootstrap';
 
 import CustomInput from '../../../components/customInput';
 import CustomButton from '../../../components/customButton';
-import CustomAlert from '../../../components/customAlert';
 
-import useFetchData from '../../../hooks/useFetchData';
-import useAlert from '../../../hooks/useAlert';
-import useScreen from '../../../hooks/useScreen';
+import useFormData from '../../../hooks/useFormData';
 
 import airplaneApi from '../../../api/airplane';
 
@@ -17,105 +14,80 @@ import { airplaneFormData } from '../../../constants/formDataSchemes';
 import componentStyles from '../../../constants/componentStyles';
 import { airplaneValidationScheme } from '../../../constants/validation/schemes';
 
-import getScreenProps from '../../../helpers/getScreenProps';
+import { AlertContext } from '../../../context/alert';
+
 import formValidation from '../../../helpers/formValidation';
 import formatFromCamelCase from '../../../helpers/formatters/formatString';
 import extractFormData from '../../../helpers/extractFormData';
 
-function AirplaneForm({ history, match }) {
+function AirplaneForm(props) {
   const { path, params } = match;
 
-  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+  const { setAlert, setShowAlert } = useContext(AlertContext);
 
-  const { formData, setFormData, isShown, canEdit } = useFormData({
-    path,
+  const {
+    formData,
+    setFormData,
+    isShown,
+    canEdit,
+    handleBack,
+    handleChange,
+    handleAddItem,
+    handleSaveClick
+  } = useFormData({
+    props,
     formDataScheme: airplaneFormData,
-    apiMethod: airplaneApi.getAirplane,
-    params: +params.airplaneId
+    validationScheme: airplaneValidationScheme,
+    apiMethod: airplaneApi,
+    setAlert,
+    setShowAlert
   });
 
-  const [isShown, setIsShown] = useState(false);
+  // const handleBack = () => history.goBack();
 
-  const [formData, setFormData] = useState({
-    name: { value: '', isValid: true, invalidFeedback: '' },
-    type: { value: '', isValid: true, invalidFeedback: '' },
-    maxLuggageCarryWeight: { value: '', isValid: true, invalidFeedback: '' }
-  });
+  // const handleChange = async event => {
+  //   const { name: propName, value: propValue } = event.target;
 
-  if (!canEdit) {
-    const airplaneId = +params.airplaneId;
+  //   const validatedProp = await formValidation.validateOnChange(airplaneValidationScheme, propName, propValue);
 
-    const { items: airplane, isLoading } = useFetchData(airplaneApi.getAirplane, setAlert, setShowAlert, {
-      airplaneId
-    });
+  //   setFormData({
+  //     ...formData,
+  //     ...validatedProp
+  //   });
+  // };
 
-    useEffect(() => {
-      if (!isLoading) {
-        setFormData({
-          name: { ...formData.name, value: airplane.name },
-          type: { ...formData.type, value: airplane.type },
-          maxLuggageCarryWeight: { ...formData.maxLuggageCarryWeight, value: airplane.maxLuggageCarryWeight }
-        });
+  // const handleAddItem = async data => {
+  //   try {
+  //     await airplaneApi.addAirplane(data);
 
-        setIsShown(true);
-      }
-    }, [isLoading]);
-  }
+  //     setAlert({
+  //       variant: componentStyles.success,
+  //       heading: 'Added',
+  //       mainText: 'Airplane was successfully added.'
+  //     });
+  //   } catch (err) {
+  //     setAlert({
+  //       variant: componentStyles.error,
+  //       heading: 'Not Added',
+  //       mainText: 'An error occured while adding new airplane.'
+  //     });
+  //   } finally {
+  //     setShowAlert(true);
+  //     handleBack();
+  //   }
+  // };
 
-  const handleBack = () => history.goBack();
+  // const handleSaveClick = () => {
+  //   const validatedForm = formValidation.validateOnSubmit(formData);
 
-  const handleChange = async event => {
-    const { name: propName, value: propValue } = event.target;
-
-    const validatedProp = await formValidation.validateOnChange(airplaneValidationScheme, propName, propValue);
-
-    setFormData({
-      ...formData,
-      ...validatedProp
-    });
-  };
-
-  const handleAddItem = async data => {
-    try {
-      const { data: newAirplane } = await airplaneApi.addAirplane(data);
-      const maxPage = Math.ceil(itemsCount / resultsPerPageLimit);
-
-      if (currentPage === maxPage) {
-        items.length >= resultsPerPageLimit ? setCurrentPage(maxPage + 1) : setItems([...items, newAirplane]);
-      } else {
-        setCurrentPage(maxPage);
-      }
-
-      setAlert({
-        variant: componentStyles.success,
-        heading: 'Added',
-        mainText: 'Airplane was successfully added.',
-        isShown: setShowAlert
-      });
-    } catch (err) {
-      setAlert({
-        variant: componentStyles.error,
-        heading: 'Not Added',
-        mainText: 'An error occured while adding new airplane.',
-        isShown: setShowAlert
-      });
-    } finally {
-      setShowAlert(true);
-      handleBack();
-    }
-  };
-
-  const handleSaveClick = () => {
-    const validatedForm = formValidation.validateOnSubmit(formData);
-
-    if (!validatedForm.isValid) {
-      setAlert({ ...validatedForm.alertData, isShown: setShowAlert });
-      setShowAlert(true);
-    } else {
-      const data = extractFormData(formData);
-      handleAddItem(data);
-    }
-  };
+  //   if (!validatedForm.isValid) {
+  //     setAlert(validatedForm.alertData);
+  //     setShowAlert(true);
+  //   } else {
+  //     const data = extractFormData(formData);
+  //     handleAddItem(data);
+  //   }
+  // };
 
   return isShown ? (
     <div className="form-container">
@@ -136,7 +108,6 @@ function AirplaneForm({ history, match }) {
         <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
         {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />}
       </div>
-      {showAlert && <CustomAlert {...alert} />}
     </div>
   ) : (
     <Spinner animation="border" />

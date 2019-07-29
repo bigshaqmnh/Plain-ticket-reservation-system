@@ -35,18 +35,15 @@ function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
           variant: componentStyles.error,
           heading: 'Authorization Error',
           mainText: 'Failed to authorize. Try to log in again.',
-          isShown: isShown => {
-            setShowAlert(isShown);
-            redirectToLogIn();
-          },
-          autoClose: false
+          disableAutoClose: true
         });
+
+        redirectToLogIn();
       } else {
         setAlert({
           variant: componentStyles.error,
           heading: 'Network Error',
-          mainText: 'Failed to fetch data. Try again later',
-          isShown: setShowAlert
+          mainText: 'Failed to fetch data. Try again later'
         });
       }
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import { Container } from 'react-bootstrap';
 import { Route, Switch } from 'react-router-dom';
@@ -12,10 +13,14 @@ import FlightsContainer from './containers/flights';
 import FlightForm from './containers/flights/FlightForm';
 import AccountContainer from './containers/account';
 import NotFound from './containers/notFound';
+import CustomAlert from './components/customAlert';
 
-import { withUserContext } from './context/user';
+import { UserContext, withUserContext } from './context/user';
+import { AlertContext, withAlertContext } from './context/alert';
 
 import PrivateRoute from './helpers/privateRoute';
+
+import combineContexts from './helpers/combineContext';
 
 function App() {
   return (
@@ -32,8 +37,9 @@ function App() {
         <PrivateRoute exact path="/account" component={AccountContainer} />
         <Route component={NotFound} />
       </Switch>
+      <CustomAlert />
     </Container>
   );
 }
 
-export default withUserContext(App);
+export default combineContexts(withAlertContext, withUserContext)(App);

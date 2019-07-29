@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Spinner } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -10,7 +10,8 @@ import CustomButton from '../../components/customButton';
 import CustomAlert from '../../components/customAlert';
 
 import useFetchData from '../../hooks/useFetchData';
-import useAlert from '../../hooks/useAlert';
+
+import { AlertContext } from '../../context/alert';
 
 import airplaneApi from '../../api/airplane';
 
@@ -18,7 +19,7 @@ import componentStyles from '../../constants/componentStyles';
 import { resultsPerPageLimit } from '../../constants/common';
 
 function AirplanesContainer({ location }) {
-  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+  const { setAlert, showAlert, setShowAlert } = useContext(AlertContext);
 
   const { data, dataCount, isLoading, searchText, setSearchText, currentPage, setCurrentPage } = useFetchData(
     airplaneApi.getAirplanes,
@@ -33,13 +34,13 @@ function AirplanesContainer({ location }) {
   const renderTable = () =>
     data && data.length ? (
       <>
-        <CustomTable headers={Object.keys(data[0])} data={data} linkPath={location.pathname} />
+        <CustomTable headers={Object.keys(data[0])} items={data} linkPath={location.pathname} />
         {dataCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"
             linkClass="page-link"
             activePage={currentPage}
-            totaldataCount={dataCount}
+            totalItemsCount={dataCount}
             onChange={setCurrentPage}
             hideDisabled
           />
@@ -64,7 +65,7 @@ function AirplanesContainer({ location }) {
         </LinkContainer>
       </div>
       {isLoading ? <Spinner animation="border" /> : renderTable()}
-      {showAlert && <CustomAlert {...alert} />}
+      {showAlert && <CustomAlert />}
     </>
   );
 }

@@ -1,7 +1,8 @@
 export default (dataScheme, data = null) => {
   const formData = {};
+  const keys = Object.keys(dataScheme);
 
-  dataScheme.forEach(
+  keys.forEach(
     key =>
       (formData[key] = {
         value: data ? data[key] : dataScheme[key],
