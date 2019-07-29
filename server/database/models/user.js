@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     },
+    photoUrl: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      defaultValue: ''
+    },
     username: {
       allowNull: false,
       type: DataTypes.STRING

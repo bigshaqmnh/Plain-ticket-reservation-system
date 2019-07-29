@@ -10,15 +10,16 @@ import useAlert from '../../../hooks/useAlert';
 
 import componentStyles from '../../../constants/componentStyles';
 import { accountValidationScheme } from '../../../constants/validation/schemes';
+import { maxPhotoUploadSize } from '../../../constants/common';
 
 import formValidation from '../../../helpers/formValidation';
 import extractFormData from '../../../helpers/extractFormData';
 
-import defaultUserImage from '../../../assets/img/account.svg';
+import defaultAccountImage from '../../../assets/img/account.svg';
 
 function AccountForm({ user, handleSave }) {
   const [formData, setFormData] = useState({
-    photo: { value: user.photo ? `data:image/jpg;base64, ${user.photo}` : defaultUserImage },
+    photo: { value: user.photo ? user.photo : defaultAccountImage },
     username: { value: user.username, isValid: true, invalidFeedback: '' },
     email: { value: user.email }
   });
@@ -52,15 +53,28 @@ function AccountForm({ user, handleSave }) {
     }
   };
 
-  const handleImageChoose = ({ target }) => {
+  const handleImageChange = ({ target }) => {
     const chosenFile = target.files[0];
     const fileReader = new FileReader();
 
     fileReader.readAsDataURL(chosenFile);
 
-    fileReader.onload = () => setFormData({ ...formData, photo: { value: fileReader.result } });
+    fileReader.onload = () => {
+      const base64Image = fileReader.result;
 
-    setCanEdit(true);
+      if (base64Image.length > maxPhotoUploadSize) {
+        setAlert({
+          variant: componentStyles.error,
+          heading: 'Not Uploaded',
+          mainText: 'The image is too large. ',
+          isShown: setShowAlert
+        });
+        setShowAlert(true);
+      } else {
+        setFormData({ ...formData, photo: { value: fileReader.result } });
+        setCanEdit(true);
+      }
+    };
   };
 
   return (
@@ -74,9 +88,9 @@ function AccountForm({ user, handleSave }) {
             name="photo"
             id="photo"
             accept="image/*"
-            onChange={handleImageChoose}
+            onChange={handleImageChange}
           />
-          <p className="img-text">Choose Photo</p>
+          <p className="img-text">Change Photo</p>
         </label>
       </div>
 

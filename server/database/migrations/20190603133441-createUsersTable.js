@@ -8,6 +8,11 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
+      photoUrl: {
+        allowNull: true,
+        type: Sequelize.STRING,
+        defaultValue: ''
+      },
       username: {
         allowNull: false,
         type: Sequelize.STRING
