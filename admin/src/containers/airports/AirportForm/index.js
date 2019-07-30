@@ -1,60 +1,58 @@
-import React, { useState, useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import { Spinner } from 'react-bootstrap';
 
 import CustomInput from '../../../components/customInput';
 import CustomButton from '../../../components/customButton';
-import CustomAlert from '../../../components/customAlert';
 
-import useAlert from '../../../hooks/useAlert';
+import useFormData from '../../../hooks/useFormData';
 
+import airportApi from '../../../api/airport';
+
+import { airportFormData } from '../../../constants/formDataSchemes';
 import componentStyles from '../../../constants/componentStyles';
 import { airportValidationScheme } from '../../../constants/validation/schemes';
 
-import formValidation from '../../../helpers/formValidation';
+import { AlertContext } from '../../../context/alert';
+
 import formatFromCamelCase from '../../../helpers/formatters/formatString';
-import extractFormData from '../../../helpers/extractFormData';
 
 import '../style.scss';
 
-function AirportForm({ airport, canEdit, handleBack, handleSave }) {
-  const [formData, setFormData] = useState({
-    name: { value: airport.name || '' },
-    country: { value: airport.country || '', isValid: true, invalidFeedback: '' },
-    city: { value: airport.city || '', isValid: true, invalidFeedback: '' },
-    latitude: { value: airport.latitude || 0 },
-    longitude: { value: airport.longitude || 0 }
+function AirportForm(props) {
+  // const [formData, setFormData] = useState({
+  //   name: { value: airport.name || '' },
+  //   country: { value: airport.country || '', isValid: true, invalidFeedback: '' },
+  //   city: { value: airport.city || '', isValid: true, invalidFeedback: '' },
+  //   latitude: { value: airport.latitude || 0 },
+  //   longitude: { value: airport.longitude || 0 }
+  // });
+
+  // const formatFormData = formData => {
+  //   const { name, latitude, longitude } = formData;
+
+  //   return {
+  //     ...formData,
+  //     name: name || '',
+  //     latitude: latitude || 0,
+  //     longitude: longitude || 0
+  //   };
+  // };
+  const { setAlert, setShowAlert } = useContext(AlertContext);
+
+  const { formData, setFormData, isShown, canEdit, handleBack, handleChange, handleSave } = useFormData({
+    props,
+    formDataScheme: airportFormData,
+    validationScheme: airportValidationScheme,
+    api: airportApi,
+    setAlert,
+    setShowAlert
   });
-
-  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
-
-  const [showMap, setShowMap] = useState(formData.latitude.value && formData.longitude.value);
-
+  console.log('form data: ', formData);
+  const [showMap, setShowMap] = useState(false);
+  console.log('map: ', showMap);
   const airportSearchInput = useRef(null);
 
   const mapContainer = useRef(null);
-
-  const handleChange = async ({ target }) => {
-    const { name: propName, value: propValue } = target;
-
-    const validatedProp = await formValidation.validateOnChange(airportValidationScheme, propName, propValue);
-
-    setFormData({
-      ...formData,
-      ...validatedProp
-    });
-  };
-
-  const handleSaveClick = () => {
-    const validatedForm = formValidation.validateOnSubmit(formData);
-
-    if (!validatedForm.isValid) {
-      setAlert({ ...validatedForm.alertData, isShown: setShowAlert });
-      setShowAlert(true);
-    } else {
-      const data = extractFormData(formData);
-      handleSave(data);
-    }
-  };
 
   const setMapData = () => {
     const airportPosition = { lat: +formData.latitude.value, lng: +formData.longitude.value };
@@ -70,14 +68,16 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
     });
 
     marker.setMap(map);
-    mapContainer.current.classList.remove('hidden');
   };
 
   useEffect(() => {
+    if (isShown) {
+      setShowMap(!!(formData.latitude.value && formData.longitude.value));
+    }
     if (showMap) {
       setMapData();
     }
-  }, [showMap]);
+  }, [showMap, isShown]);
 
   const handleAirportChoose = searchResults => {
     const selectedAirport = searchResults.getPlace();
@@ -123,7 +123,7 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
     searchResults.addListener('place_changed', () => handleAirportChoose(searchResults));
   };
 
-  return (
+  return isShown ? (
     <div className="form-container">
       {Object.keys(formData).map(key => {
         const { value, isValid, invalidFeedback } = formData[key];
@@ -153,34 +153,16 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
           />
         );
       })}
-      <div id="map" className="map hidden" ref={mapContainer} />
+      {showMap && <div id="map" className="map" ref={mapContainer} />}
 
       <div className="buttons">
         <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
-        {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />}
+        {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={handleSave} />}
       </div>
-      {showAlert && <CustomAlert {...alert} />}
     </div>
+  ) : (
+    <Spinner animation="border" />
   );
 }
-
-AirportForm.propTypes = {
-  airport: PropTypes.shape({
-    name: PropTypes.string,
-    country: PropTypes.string,
-    city: PropTypes.string,
-    latitude: PropTypes.number,
-    longitude: PropTypes.number
-  }),
-  canEdit: PropTypes.bool,
-  handleSave: PropTypes.func,
-  handleBack: PropTypes.func.isRequired
-};
-
-AirportForm.defaultProps = {
-  airport: {},
-  canEdit: true,
-  handleSave: null
-};
 
 export default AirportForm;

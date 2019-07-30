@@ -7,7 +7,6 @@ import Pagination from 'react-js-pagination';
 import CustomInput from '../../components/customInput';
 import CustomTable from '../../components/customTable';
 import CustomButton from '../../components/customButton';
-import CustomAlert from '../../components/customAlert';
 
 import useFetchData from '../../hooks/useFetchData';
 
@@ -19,17 +18,13 @@ import componentStyles from '../../constants/componentStyles';
 import { resultsPerPageLimit } from '../../constants/common';
 
 function AirplanesContainer({ location }) {
-  const { setAlert, showAlert, setShowAlert } = useContext(AlertContext);
+  const { setAlert, setShowAlert } = useContext(AlertContext);
 
-  const { data, dataCount, isLoading, searchText, setSearchText, currentPage, setCurrentPage } = useFetchData(
-    airplaneApi.getAirplanes,
+  const { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch } = useFetchData(
+    airplaneApi.getAll,
     setAlert,
     setShowAlert
   );
-
-  const handleSearchItem = ({ target }) => {
-    setSearchText(target.value);
-  };
 
   const renderTable = () =>
     data && data.length ? (
@@ -57,15 +52,14 @@ function AirplanesContainer({ location }) {
           label="Search"
           name="airplane-search"
           value={searchText}
-          placeholder="Search airplanes"
-          onChange={handleSearchItem}
+          placeholder="Search by name or type"
+          onChange={handleSearch}
         />
         <LinkContainer to={`${location.pathname}/add`}>
           <CustomButton variant={componentStyles.success} text="Add airplane" />
         </LinkContainer>
       </div>
       {isLoading ? <Spinner animation="border" /> : renderTable()}
-      {showAlert && <CustomAlert />}
     </>
   );
 }

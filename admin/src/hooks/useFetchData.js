@@ -43,7 +43,8 @@ function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
         setAlert({
           variant: componentStyles.error,
           heading: 'Network Error',
-          mainText: 'Failed to fetch data. Try again later'
+          mainText: 'Failed to fetch data. Try again later',
+          disableAutoClose: true
         });
       }
 
@@ -58,7 +59,11 @@ function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
     fetchData(params);
   }, [searchText, currentPage]);
 
-  return { data, setData, dataCount, isLoading, searchText, setSearchText, currentPage, setCurrentPage };
+  const handleSearch = ({ target }) => {
+    setSearchText(target.value);
+  };
+
+  return { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch };
 }
 
 export default useFetchData;

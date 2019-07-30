@@ -26,6 +26,7 @@ const _genIncludeStatement = (model, as, where = {}, attributes = ['id', 'name']
 });
 
 const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
+  console.log('QUERY: ', inputString);
   const limit = resLimit || 10;
   const pageNum = +page || 1;
   const offset = pageNum * limit - limit;
@@ -38,7 +39,7 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
       include: [
         _genIncludeStatement(db.airport, 'departureAirport', _genWhereStatement.airportQuery(inputString)),
         _genIncludeStatement(db.airport, 'arrivalAirport'),
-        _genIncludeStatement(db.airplane, 'airplane', _genWhereStatement.airplaneQuery(inputString))
+        _genIncludeStatement(db.airplane, 'airplane')
       ],
       offset,
       attributes,
@@ -49,7 +50,7 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
       include: [
         _genIncludeStatement(db.airport, 'arrivalAirport', _genWhereStatement.airportQuery(inputString)),
         _genIncludeStatement(db.airport, 'departureAirport'),
-        _genIncludeStatement(db.airplane, 'airplane', _genWhereStatement.airplaneQuery(inputString))
+        _genIncludeStatement(db.airplane, 'airplane')
       ],
       offset,
       attributes,
@@ -75,6 +76,7 @@ const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
     });
 
     const data = rows.map(flight => flight.dataValues);
+
     flights = {
       data,
       count
@@ -166,7 +168,14 @@ const findById = async flightId => {
     attributes: ['id', 'departureTime', 'arrivalTime', 'luggageOverweightCost', 'isCancelled']
   });
 
-  return flight.dataValues;
+  const { departureAirport, arrivalAirport, airplane } = flight.dataValues;
+
+  return {
+    ...flight.dataValues,
+    departureAirportId: departureAirport,
+    arrivalAirportId: arrivalAirport,
+    airplaneId: airplane
+  };
 };
 
 const add = async flight => {

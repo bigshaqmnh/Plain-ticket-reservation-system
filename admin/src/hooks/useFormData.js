@@ -1,33 +1,114 @@
-/* eslint-disable */
 import { useState, useEffect } from 'react';
 
 import useFetchData from './useFetchData';
 
+import componentStyles from '../constants/componentStyles';
+
 import getScreenProps from '../helpers/getScreenProps';
 import generateFormData from '../helpers/generateFormData';
+import formValidation from '../helpers/formValidation';
+import extractFormData from '../helpers/extractFormData';
 
-function useFormData({ path, formDataScheme, apiMethod, params, setAlert, setShowAlert }) {
+function useFormData({ props, formDataScheme, formatter, validationScheme, api, setAlert, setShowAlert }) {
+  const { match, history } = props;
+  const { path, params } = match;
+
   const { isShownByDefault, canEdit } = getScreenProps(path);
 
   const [isShown, setIsShown] = useState(isShownByDefault);
 
-  const [formData, setFormData] = useState(generateFormData(formDataScheme));
+  const defaultFormData = generateFormData(formDataScheme);
+
+  const [formData, setFormData] = useState(formatter ? formatter(defaultFormData) : defaultFormData);
 
   if (!isShownByDefault) {
-    const { data, isLoading } = useFetchData(apiMethod, setAlert, setShowAlert, params);
+    const id = +params.id;
+    const { data, isLoading } = useFetchData(api.getById, setAlert, setShowAlert, { id });
 
     useEffect(() => {
       if (!isLoading) {
         const defaultFormData = generateFormData(formDataScheme, data);
 
-        setFormData(defaultFormData);
+        setFormData(formatter ? formatter(defaultFormData) : defaultFormData);
 
         setIsShown(true);
       }
     }, [isLoading]);
   }
 
-  return { formData, setFormData, isShown, canEdit };
+  const handleBack = () => history.goBack();
+
+  const handleChange = async ({ target }) => {
+    const { name: propName, value: propValue } = target;
+
+    const validatedProp = await formValidation.validateOnChange(validationScheme, propName, propValue);
+
+    setFormData({
+      ...formData,
+      ...validatedProp
+    });
+  };
+
+  const handleAddItem = async data => {
+    try {
+      await api.add(data);
+
+      setAlert({
+        variant: componentStyles.success,
+        heading: 'Added',
+        mainText: 'Item was successfully added.'
+      });
+    } catch (err) {
+      setAlert({
+        variant: componentStyles.error,
+        heading: 'Not Added',
+        mainText: 'An error occured while adding new item.'
+      });
+    } finally {
+      setShowAlert(true);
+      handleBack();
+    }
+  };
+
+  const handleUpdateItem = async (data, updateId) => {
+    try {
+      await api.update(data, updateId);
+
+      setAlert({
+        variant: componentStyles.success,
+        heading: 'Updated',
+        mainText: 'Item was successfully updated.'
+      });
+    } catch (err) {
+      setAlert({
+        variant: componentStyles.error,
+        heading: 'Not Updated',
+        mainText: 'An error occured while updating the item.'
+      });
+    } finally {
+      setShowAlert(true);
+      handleBack();
+    }
+  };
+
+  const handleSave = updateId => {
+    const validatedForm = formValidation.validateOnSubmit(formData);
+
+    if (!validatedForm.isValid) {
+      setAlert(validatedForm.alertData);
+      setShowAlert(true);
+    } else {
+      const data = extractFormData(formData);
+
+      if (updateId) {
+        handleUpdateItem(data, updateId);
+      } else {
+        handleAddItem(data);
+      }
+    }
+  };
+
+  return { formData, setFormData, isShown, canEdit, handleBack, handleChange, handleSave };
 }
 
 export default useFormData;

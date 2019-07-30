@@ -30,6 +30,7 @@ app.use(routes);
 app.use((req, res, next) => res.sendStatus(statusCode.NOT_FOUND));
 
 app.use((err, req, res, next) => {
+  console.log('ERROR: ', err);
   logger.error(err);
   res.sendStatus(statusCode.INTERNAL_SERVER_ERROR);
 });

@@ -1,6 +1,4 @@
-/* eslint-disable */
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import { Spinner } from 'react-bootstrap';
 
 import CustomInput from '../../../components/customInput';
@@ -16,78 +14,19 @@ import { airplaneValidationScheme } from '../../../constants/validation/schemes'
 
 import { AlertContext } from '../../../context/alert';
 
-import formValidation from '../../../helpers/formValidation';
 import formatFromCamelCase from '../../../helpers/formatters/formatString';
-import extractFormData from '../../../helpers/extractFormData';
 
 function AirplaneForm(props) {
-  const { path, params } = match;
-
   const { setAlert, setShowAlert } = useContext(AlertContext);
 
-  const {
-    formData,
-    setFormData,
-    isShown,
-    canEdit,
-    handleBack,
-    handleChange,
-    handleAddItem,
-    handleSaveClick
-  } = useFormData({
+  const { formData, isShown, canEdit, handleBack, handleChange, handleSave } = useFormData({
     props,
     formDataScheme: airplaneFormData,
     validationScheme: airplaneValidationScheme,
-    apiMethod: airplaneApi,
+    api: airplaneApi,
     setAlert,
     setShowAlert
   });
-
-  // const handleBack = () => history.goBack();
-
-  // const handleChange = async event => {
-  //   const { name: propName, value: propValue } = event.target;
-
-  //   const validatedProp = await formValidation.validateOnChange(airplaneValidationScheme, propName, propValue);
-
-  //   setFormData({
-  //     ...formData,
-  //     ...validatedProp
-  //   });
-  // };
-
-  // const handleAddItem = async data => {
-  //   try {
-  //     await airplaneApi.addAirplane(data);
-
-  //     setAlert({
-  //       variant: componentStyles.success,
-  //       heading: 'Added',
-  //       mainText: 'Airplane was successfully added.'
-  //     });
-  //   } catch (err) {
-  //     setAlert({
-  //       variant: componentStyles.error,
-  //       heading: 'Not Added',
-  //       mainText: 'An error occured while adding new airplane.'
-  //     });
-  //   } finally {
-  //     setShowAlert(true);
-  //     handleBack();
-  //   }
-  // };
-
-  // const handleSaveClick = () => {
-  //   const validatedForm = formValidation.validateOnSubmit(formData);
-
-  //   if (!validatedForm.isValid) {
-  //     setAlert(validatedForm.alertData);
-  //     setShowAlert(true);
-  //   } else {
-  //     const data = extractFormData(formData);
-  //     handleAddItem(data);
-  //   }
-  // };
 
   return isShown ? (
     <div className="form-container">
@@ -106,17 +45,12 @@ function AirplaneForm(props) {
       ))}
       <div className="buttons">
         <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
-        {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />}
+        {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={() => handleSave(false)} />}
       </div>
     </div>
   ) : (
     <Spinner animation="border" />
   );
 }
-
-AirplaneForm.propTypes = {
-  location: PropTypes.shape({}).isRequired,
-  history: PropTypes.shape({}).isRequired
-};
 
 export default AirplaneForm;
