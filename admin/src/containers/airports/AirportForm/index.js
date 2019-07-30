@@ -27,7 +27,7 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
 
   const { alert, setAlert, showAlert, setShowAlert } = useAlert();
 
-  const [showMap, setShowMap] = useState(formData.latitude.value && formData.longitude.value);
+  const [showMap, setShowMap] = useState(!!(formData.latitude.value && formData.longitude.value));
 
   const airportSearchInput = useRef(null);
 
@@ -70,7 +70,6 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
     });
 
     marker.setMap(map);
-    mapContainer.current.classList.remove('hidden');
   };
 
   useEffect(() => {
@@ -153,7 +152,7 @@ function AirportForm({ airport, canEdit, handleBack, handleSave }) {
           />
         );
       })}
-      <div id="map" className="map hidden" ref={mapContainer} />
+      {showMap && <div id="map" className="map" ref={mapContainer} />}
 
       <div className="buttons">
         <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
