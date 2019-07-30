@@ -16,7 +16,7 @@ const findByEmail = async email => {
 const findById = async id => {
   const user = await db.user.findOne({
     where: { id },
-    attributes: ['photo', 'username', 'email']
+    attributes: ['photoUrl', 'username', 'email']
   });
 
   if (!user) {

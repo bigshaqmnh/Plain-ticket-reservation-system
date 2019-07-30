@@ -8,7 +8,7 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      photo: {
+      photoUrl: {
         allowNull: true,
         type: Sequelize.STRING,
         defaultValue: ''
