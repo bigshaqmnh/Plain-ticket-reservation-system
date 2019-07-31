@@ -1,6 +1,5 @@
 import React, { useRef, useContext, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-// import PropTypes from 'prop-types';
 import { Alert } from 'react-bootstrap';
 
 import { AlertContext } from '../../context/alert';
@@ -35,17 +34,5 @@ function CustomAlert() {
     alertRef.current
   );
 }
-
-// CustomAlert.propTypes = {
-//   variant: PropTypes.string.isRequired,
-//   heading: PropTypes.string.isRequired,
-//   mainText: PropTypes.string.isRequired,
-//   isShown: PropTypes.func.isRequired,
-//   autoClose: PropTypes.bool
-// };
-
-// CustomAlert.defaultProps = {
-//   autoClose: true
-// };
 
 export default CustomAlert;
