@@ -21,13 +21,19 @@ const getUserInfo = async userId => {
     return;
   }
 
-  const filehandle = await fsPromises.open(user.photo, 'r');
-  const photo = await filehandle.readFile();
-  await filehandle.close();
+  let userPhoto = '';
 
-  const encodedPhoto = Buffer.from(photo).toString('base64');
+  if (user.photo) {
+    const filehandle = await fsPromises.open(user.photo, 'r');
+    const file = await filehandle.readFile();
+    await filehandle.close();
 
-  return { data: { ...user, photo: encodedPhoto } };
+    const encodedFile = Buffer.from(file).toString('base64');
+
+    userPhoto = `data:image/jpg;base64, ${encodedFile}`;
+  }
+
+  return { data: { ...user, photo: userPhoto } };
 };
 
 const update = async (id, user) => {
