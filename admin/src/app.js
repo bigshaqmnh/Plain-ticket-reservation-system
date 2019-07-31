@@ -12,10 +12,14 @@ import FlightsContainer from './containers/flights';
 import FlightForm from './containers/flights/FlightForm';
 import AccountContainer from './containers/account';
 import NotFound from './containers/notFound';
+import CustomAlert from './components/customAlert';
 
 import { withUserContext } from './context/user';
+import { withAlertContext } from './context/alert';
 
 import PrivateRoute from './helpers/privateRoute';
+
+import combineContexts from './helpers/combineContext';
 
 function App() {
   return (
@@ -24,16 +28,21 @@ function App() {
         <Route exact path="/auth" component={AuthContainer} />
         <PrivateRoute exact path={['/', '/home']} component={MainContainer} />
         <PrivateRoute exact path="/airplanes" component={AirplanesContainer} />
-        <PrivateRoute exact path={['/airplanes/:airplaneId/details', '/airplanes/add']} component={AirplaneForm} />
+        <PrivateRoute exact path={['/airplanes/:id/details', '/airplanes/add']} component={AirplaneForm} />
         <PrivateRoute exact path="/airports" component={AirportsContainer} />
-        <PrivateRoute exact path={['/airports/:airportId/details', '/airports/add']} component={AirportForm} />
+        <PrivateRoute exact path={['/airports/:id/details', '/airports/add']} component={AirportForm} />
         <PrivateRoute exact path="/flights" component={FlightsContainer} />
-        <PrivateRoute exact path={['/flights/:flightId/details', '/flights/add']} component={FlightForm} />
-        <PrivateRoute exact path="/account" component={AccountContainer} />
+        <PrivateRoute
+          exact
+          path={['/flights/:id/details', '/flights/add', '/flights/:id/edit']}
+          component={FlightForm}
+        />
+        <PrivateRoute exact path={['/account/details', '/account/edit']} component={AccountContainer} />
         <Route component={NotFound} />
       </Switch>
+      <CustomAlert />
     </Container>
   );
 }
 
-export default withUserContext(App);
+export default combineContexts(withAlertContext, withUserContext)(App);
