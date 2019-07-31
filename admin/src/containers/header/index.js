@@ -22,12 +22,12 @@ const links = [
 ];
 
 function HeaderContainer() {
-  const { data: user, isLoading } = useFetchData({ apiMethod: userApi.getInfo });
+  const { data, isLoading } = useFetchData({ apiMethod: userApi.getInfo });
 
-  const { updateUser } = useContext(UserContext);
+  const { user, updateUser } = useContext(UserContext);
 
   useEffect(() => {
-    !isLoading && updateUser(user);
+    !isLoading && updateUser(data);
   }, [isLoading]);
 
   return (

@@ -24,10 +24,6 @@ function useFetchData({ apiMethod, customParams, setAlert, setShowAlert }) {
     try {
       const { data } = await apiMethod(params);
 
-      if (!data) {
-        return;
-      }
-
       setData(data.data);
       setDataCount(data.count);
       setIsLoading(false);
