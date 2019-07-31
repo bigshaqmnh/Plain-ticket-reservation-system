@@ -10,9 +10,9 @@ const redirectToLogIn = () => {
   window.location.assign('/auth');
 };
 
-function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
-  const [items, setItems] = useState(null);
-  const [itemsCount, setItemsCount] = useState(0);
+function useFetchData({ apiMethod, customParams, setAlert, setShowAlert }) {
+  const [data, setData] = useState(null);
+  const [dataCount, setDataCount] = useState(0);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -24,8 +24,12 @@ function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
     try {
       const { data } = await apiMethod(params);
 
-      setItems(data.data);
-      setItemsCount(data.count);
+      if (!data) {
+        return;
+      }
+
+      setData(data.data);
+      setDataCount(data.count);
       setIsLoading(false);
     } catch (err) {
       logger(err);
@@ -35,18 +39,16 @@ function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
           variant: componentStyles.error,
           heading: 'Authorization Error',
           mainText: 'Failed to authorize. Try to log in again.',
-          isShown: isShown => {
-            setShowAlert(isShown);
-            redirectToLogIn();
-          },
-          autoClose: false
+          disableAutoClose: true
         });
+
+        redirectToLogIn();
       } else {
         setAlert({
           variant: componentStyles.error,
           heading: 'Network Error',
           mainText: 'Failed to fetch data. Try again later',
-          isShown: setShowAlert
+          disableAutoClose: true
         });
       }
 
@@ -61,7 +63,11 @@ function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
     fetchData(params);
   }, [searchText, currentPage]);
 
-  return { items, setItems, itemsCount, isLoading, searchText, setSearchText, currentPage, setCurrentPage };
+  const handleSearch = ({ target }) => {
+    setSearchText(target.value);
+  };
+
+  return { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch };
 }
 
 export default useFetchData;
