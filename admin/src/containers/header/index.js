@@ -5,6 +5,7 @@ import { Navbar, Nav, Image } from 'react-bootstrap';
 import { UserContext } from '../../context/user';
 
 import logo from '../../assets/img/logo.svg';
+import defaultAccountImage from '../../assets/img/account.svg';
 
 import './style.scss';
 
@@ -35,8 +36,8 @@ function HeaderContainer() {
             return (
               user && (
                 <div key={path} className="account-link">
-                  <Image height="30" width="30" src={user.photo} roundedCircle />
-                  <LinkContainer to="/account">
+                  <Image height="30" width="30" src={user.photo || defaultAccountImage} roundedCircle />
+                  <LinkContainer to="/account/details">
                     <Nav.Link className="link">{user.username}</Nav.Link>
                   </LinkContainer>
                 </div>

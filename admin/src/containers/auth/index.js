@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { LinkContainer } from 'react-router-bootstrap';
 import { Form, Container } from 'react-bootstrap';
 import 'babel-polyfill';
 
 import CustomButton from '../../components/customButton';
 import CustomInput from '../../components/customInput';
-import CustomAlert from '../../components/customAlert';
+
+import useFormData from '../../hooks/useFormData';
+
+import { AlertContext } from '../../context/alert';
 
 import authApi from '../../api/auth';
 
+import { authFormData } from '../../constants/formDataSchemes';
 import componentStyles from '../../constants/componentStyles';
 import { authValidationScheme } from '../../constants/validation/schemes';
+import handlerOption from '../../constants/handlerOptions';
 
-import formValidation from '../../helpers/formValidation';
 import { saveUserToken } from '../../helpers/token';
 
 import emailSvg from '../../assets/img/email.svg';
@@ -23,24 +28,15 @@ import './style.scss';
 function AuthContainer(props) {
   const { history } = props;
 
-  const [formData, setFormData] = useState({
-    email: { value: '', isValid: true, invalidFeedback: '' },
-    password: { value: '', isValid: true, invalidFeedback: '' }
+  const { setAlert, setShowAlert } = useContext(AlertContext);
+
+  const { formData, isShown, handleChange, handleSave: handleSubmit } = useFormData({
+    props,
+    formDataScheme: authFormData,
+    validationScheme: authValidationScheme,
+    setAlert,
+    setShowAlert
   });
-
-  const [alert, setAlert] = useState({});
-  const [showAlert, setShowAlert] = useState(false);
-
-  const handleChange = async event => {
-    const { name: propName, value: propValue } = event.target;
-
-    const validatedProp = await formValidation.validateOnChange(authValidationScheme, propName, propValue);
-
-    setFormData({
-      ...formData,
-      ...validatedProp
-    });
-  };
 
   const logIn = async data => {
     try {
@@ -53,64 +49,48 @@ function AuthContainer(props) {
       setAlert({
         variant: componentStyles.error,
         heading: 'Unable to Log In',
-        mainText: 'Please, check your credentials.',
-        isShown: setShowAlert
+        mainText: 'Please, check your credentials.'
       });
-    } finally {
       setShowAlert(true);
-    }
-  };
-
-  const handleSubmit = async event => {
-    event.preventDefault();
-    const validatedForm = formValidation.validateOnSubmit(formData);
-
-    if (!validatedForm.isValid) {
-      setAlert({ ...validatedForm.alertData, isShown: setShowAlert });
-      setShowAlert(true);
-    } else {
-      const data = {
-        email: formData.email.value,
-        password: formData.password.value
-      };
-      logIn(data);
     }
   };
 
   return (
-    <Container>
-      <Form onSubmit={handleSubmit} className="auth-form">
-        <h2>Please, Log In.</h2>
-        <div className="email-input">
-          <img src={emailSvg} alt="" />
-          <CustomInput
-            label="Email"
-            type="text"
-            name="email"
-            value={formData.email.value}
-            placeholder="Enter your email"
-            invalidFeedback={formData.email.invalidFeedback}
-            isValid={formData.email.isValid}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="password-input">
-          <img src={passwordSvg} alt="" />
-          <CustomInput
-            label="Password"
-            type="password"
-            name="password"
-            value={formData.password.value}
-            placeholder="Enter your password"
-            invalidFeedback={formData.password.invalidFeedback}
-            isValid={formData.password.isValid}
-            onChange={handleChange}
-          />
-        </div>
-        <CustomButton type="submit" text="Log in" />
-      </Form>
-      {showAlert && <CustomAlert {...alert} />}
-    </Container>
+    isShown && (
+      <Container>
+        <Form className="auth-form">
+          <h2>Please, Log In.</h2>
+          <div className="email-input">
+            <img src={emailSvg} alt="" />
+            <CustomInput
+              label="Email"
+              name="email"
+              value={formData.email.value}
+              placeholder="Enter your email"
+              invalidFeedback={formData.email.invalidFeedback}
+              isValid={formData.email.isValid}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="password-input">
+            <img src={passwordSvg} alt="" />
+            <CustomInput
+              label="Password"
+              type="password"
+              name="password"
+              value={formData.password.value}
+              placeholder="Enter your password"
+              invalidFeedback={formData.password.invalidFeedback}
+              isValid={formData.password.isValid}
+              onChange={handleChange}
+            />
+          </div>
+          <LinkContainer to="/">
+            <CustomButton text="Log in" onClick={() => handleSubmit(handlerOption.LOG_IN, logIn)} />
+          </LinkContainer>
+        </Form>
+      </Container>
+    )
   );
 }
 

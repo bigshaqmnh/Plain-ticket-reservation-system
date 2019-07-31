@@ -1,105 +1,93 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import { LinkContainer } from 'react-router-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ListGroup from 'react-bootstrap/ListGroup';
 
 import CustomInput from '../../../components/customInput';
 import CustomButton from '../../../components/customButton';
-import CustomAlert from '../../../components/customAlert';
 
 import useFetchData from '../../../hooks/useFetchData';
-import useAlert from '../../../hooks/useAlert';
+import useFormData from '../../../hooks/useFormData';
 
+import flightApi from '../../../api/flight';
 import airportApi from '../../../api/airport';
 import airplaneApi from '../../../api/airplane';
 
+import { flightFormData } from '../../../constants/formDataSchemes';
 import componentStyles from '../../../constants/componentStyles';
 import { flightValidationScheme } from '../../../constants/validation/schemes';
+import handlerOption from '../../../constants/handlerOptions';
 
-import formValidation from '../../../helpers/formValidation';
+import { AlertContext } from '../../../context/alert';
+
 import formatFromCamelCase from '../../../helpers/formatters/formatString';
 import formatDate from '../../../helpers/formatters/formatDate';
 import compare from '../../../helpers/compare';
-import extractFormData from '../../../helpers/extractFormData';
 
 import '../style.scss';
 
-function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
-  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+function FlightForm(props) {
+  const { match } = props;
+
+  const flightId = match.params.id;
+
+  const { setAlert, setShowAlert } = useContext(AlertContext);
 
   const searchParams = { field: 'name', limit: 5 };
 
-  const { items: airports, searchText: airportSearchText, setSearchText: setAirportSearchText } = useFetchData(
-    airportApi.getAirports,
+  const { data: airports, searchText: airportSearchText, handleSearch: handleAirportSearch } = useFetchData({
+    apiMethod: airportApi.getAll,
+    customParams: searchParams,
     setAlert,
-    setShowAlert,
-    searchParams
-  );
+    setShowAlert
+  });
 
-  const { items: airplanes, searchText: airplaneSearchText, setSearchText: setAirplaneSearchText } = useFetchData(
-    airplaneApi.getAirplanes,
+  const { data: airplanes, searchText: airplaneSearchText, handleSearch: handleAirplaneSearch } = useFetchData({
+    apiMethod: airplaneApi.getAll,
+    customParams: searchParams,
     setAlert,
-    setShowAlert,
-    searchParams
-  );
+    setShowAlert
+  });
 
-  const {
-    departureTime,
-    arrivalTime,
-    luggageOverweightCost,
-    isCancelled,
-    departureAirport,
-    arrivalAirport,
-    airplane
-  } = flight;
+  const formatFormData = formData => {
+    const { departureTime, arrivalTime, departureAirportId, arrivalAirportId, airplaneId } = formData;
 
-  const [formData, setFormData] = useState({
-    departureTime: { value: departureTime || new Date() },
-    arrivalTime: { value: arrivalTime || new Date() },
-    luggageOverweightCost: { value: luggageOverweightCost, isValid: true, invalidFeedback: '' },
-    isCancelled: { value: isCancelled || false },
-    departureAirportId: {
-      value: departureAirport.id || 0,
-      searchText: airportSearchText || departureAirport.name,
-      setSearchText: setAirportSearchText
-    },
-    arrivalAirportId: {
-      value: arrivalAirport.id || 0,
-      searchText: airportSearchText || arrivalAirport.name,
-      setSearchText: setAirportSearchText
-    },
-    airplaneId: {
-      value: airplane.id || 0,
-      searchText: airplaneSearchText || airplane.name,
-      setSearchText: setAirplaneSearchText
-    }
+    return {
+      ...formData,
+      departureTime: { value: new Date(departureTime.value) },
+      arrivalTime: { value: new Date(arrivalTime.value) },
+      departureAirportId: {
+        value: departureAirportId.value.id || 0,
+        searchText: departureAirportId.value.name || airportSearchText,
+        handleSearch: handleAirportSearch
+      },
+      arrivalAirportId: {
+        value: arrivalAirportId.value.id || 0,
+        searchText: arrivalAirportId.value.name || airportSearchText,
+        handleSearch: handleAirportSearch
+      },
+      airplaneId: {
+        value: airplaneId.value.id || 0,
+        searchText: airplaneId.value.name || airplaneSearchText,
+        handleSearch: handleAirplaneSearch
+      }
+    };
+  };
+
+  const { formData, setFormData, isShown, canEdit, handleBack, handleChange, handleSave } = useFormData({
+    props,
+    formDataScheme: flightFormData,
+    formatter: formatFormData,
+    validationScheme: flightValidationScheme,
+    api: flightApi,
+    setAlert,
+    setShowAlert
   });
 
   const [activeSearchInput, setActiveSearchInput] = useState('');
-
-  const handleChange = async event => {
-    const { name: propName, value: propValue } = event.target;
-
-    const validatedProp = await formValidation.validateOnChange(flightValidationScheme, propName, propValue);
-
-    setFormData({
-      ...formData,
-      ...validatedProp
-    });
-  };
-
-  const handleSaveClick = () => {
-    const validatedForm = formValidation.validateOnSubmit(formData);
-
-    if (!validatedForm.isValid) {
-      setAlert({ ...validatedForm.alertData, isShown: setShowAlert });
-      setShowAlert(true);
-    } else {
-      const data = extractFormData(formData);
-      handleSave(data);
-    }
-  };
 
   const getDateHandler = key => date => {
     setFormData({
@@ -152,7 +140,7 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
       [propName]: { ...formData[propName], searchText: propValue }
     });
 
-    formData[propName].setSearchText(propValue);
+    formData[propName].handleSearch({ target });
   };
 
   const handleListItemSelect = ({ target }) => {
@@ -203,9 +191,9 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
     />
   );
 
-  const renderList = (key, items) => (
+  const renderList = (key, data) => (
     <ListGroup>
-      {items.map(item => (
+      {data.map(item => (
         <ListGroup.Item className="list-item" key={item.id} name={key} value={item.id} onClick={handleListItemSelect}>
           {item.name}
         </ListGroup.Item>
@@ -213,7 +201,7 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
     </ListGroup>
   );
 
-  return (
+  return isShown ? (
     <div className="form-container">
       {Object.keys(formData).map(key => {
         const { value, searchText, isValid, invalidFeedback } = formData[key];
@@ -224,21 +212,22 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
         } else if (typeof value === 'boolean') {
           component = renderSelect(key, value ? 'Yes' : 'No');
         } else if (typeof value === 'number') {
+          const formattedKey = formatFromCamelCase(key.slice(0, -2));
           const showSearchResults = key === activeSearchInput && searchText && airplanes && airports;
-          const items = key === 'airplaneId' ? airplanes : airports;
+          const data = key === 'airplaneId' ? airplanes : airports;
 
           component = (
             <div key={key}>
               <CustomInput
                 type="search"
-                label={formatFromCamelCase(key.slice(0, -2))}
+                label={formattedKey}
                 name={key}
                 value={searchText}
-                placeholder={`Search ${formatFromCamelCase(key.slice(0, -2))}`}
+                placeholder={`Search ${formattedKey}`}
                 onChange={handleSearch}
                 disabled={!canEdit}
               />
-              {showSearchResults && renderList(key, items)}
+              {showSearchResults && renderList(key, data)}
             </div>
           );
         } else {
@@ -263,43 +252,25 @@ function FlightForm({ flight, canEdit, handleBack, handleEdit, handleSave }) {
       <div className="buttons">
         <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
         {canEdit ? (
-          <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />
+          <CustomButton
+            variant={componentStyles.success}
+            text="Save"
+            onClick={() => handleSave(handlerOption.UPDATE_ITEM, flightId)}
+          />
         ) : (
-          <CustomButton variant={componentStyles.warning} text="Edit" onClick={handleEdit} />
+          <LinkContainer to={`/flights/${flightId}/edit`}>
+            <CustomButton variant={componentStyles.warning} text="Edit" />
+          </LinkContainer>
         )}
       </div>
-
-      {showAlert && <CustomAlert {...alert} />}
     </div>
+  ) : (
+    <Spinner animation="border" />
   );
 }
 
 FlightForm.propTypes = {
-  flight: PropTypes.shape({
-    id: PropTypes.number,
-    departureTime: PropTypes.instanceOf(Date),
-    arrivalTime: PropTypes.instanceOf(Date),
-    luggageOverweightCost: PropTypes.string,
-    isCancelled: PropTypes.bool,
-    departureAirport: PropTypes.object,
-    arrivalAirport: PropTypes.object,
-    airplane: PropTypes.object
-  }),
-  canEdit: PropTypes.bool,
-  handleSave: PropTypes.func,
-  handleEdit: PropTypes.func,
-  handleBack: PropTypes.func.isRequired
-};
-
-FlightForm.defaultProps = {
-  flight: {
-    departureAirport: {},
-    arrivalAirport: {},
-    airplane: {}
-  },
-  canEdit: true,
-  handleSave: null,
-  handleEdit: null
+  match: PropTypes.shape({}).isRequired
 };
 
 export default FlightForm;
