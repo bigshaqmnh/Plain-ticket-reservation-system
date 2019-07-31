@@ -54,8 +54,8 @@ function СustomTable(props) {
       </thead>
       <tbody>
         {sortedItems.map(item => (
-          <LinkContainer to={`${linkPath}/${item.id}/details`}>
-            <tr key={item.id} id={item.id} onClick={onClick}>
+          <LinkContainer key={item.id} to={`${linkPath}/${item.id}/details`}>
+            <tr id={item.id} onClick={onClick}>
               {Object.keys(item).map(key => {
                 let value = item[key];
 
