@@ -6,12 +6,12 @@ import userApi from '../api/user';
 export const UserContext = createContext(null);
 
 export const withUserContext = Component => () => {
-  const { items: user, isLoading } = useFetchData(userApi.getUserInfo);
+  const { data: user, isLoading } = useFetchData({ apiMethod: userApi.getInfo });
 
   const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
-    !isLoading && setUserInfo({ ...user, photo: `data:image/jpg;base64, ${user.photo}` });
+    !isLoading && setUserInfo(user);
   }, [isLoading]);
 
   return (
