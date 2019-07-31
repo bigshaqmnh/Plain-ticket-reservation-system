@@ -41,9 +41,18 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
   return { data, count };
 };
 
+const findById = async airplaneId => {
+  const airplane = await db.airplane.findOne({
+    where: { id: airplaneId },
+    attributes: ['id', 'name', 'type', 'maxLuggageCarryWeight']
+  });
+
+  return airplane.dataValues;
+};
+
 const add = async airplane => {
   const added = await db.airplane.create(airplane);
   return added.dataValues;
 };
 
-module.exports = { find, add };
+module.exports = { find, findById, add };
