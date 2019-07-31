@@ -3,8 +3,8 @@
   "plugins": ["react", "prettier", "react-hooks"],
   "parser": "babel-eslint",
   "rules": {
-    "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "off",
+    "react-hooks/exhaustive-deps": "off",
     "no-plusplus": "off",
     "no-return-assign": "off",
     "no-param-reassign": "off",
