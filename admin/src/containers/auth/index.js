@@ -10,8 +10,10 @@ import CustomInput from '../../components/customInput';
 import useFormData from '../../hooks/useFormData';
 
 import { AlertContext } from '../../context/alert';
+import { UserContext } from '../../context/user';
 
 import authApi from '../../api/auth';
+import userApi from '../../api/user';
 
 import { authFormData } from '../../constants/formDataSchemes';
 import componentStyles from '../../constants/componentStyles';
@@ -30,6 +32,8 @@ function AuthContainer(props) {
 
   const { setAlert, setShowAlert } = useContext(AlertContext);
 
+  const { updateUser } = useContext(UserContext);
+
   const { formData, isShown, handleChange, handleSave: handleSubmit } = useFormData({
     props,
     formDataScheme: authFormData,
@@ -43,6 +47,10 @@ function AuthContainer(props) {
       const { data: token } = await authApi.logIn(data);
 
       saveUserToken(token);
+
+      const { data: user } = await userApi.getInfo();
+
+      updateUser(user);
 
       history.replace('/');
     } catch (err) {
