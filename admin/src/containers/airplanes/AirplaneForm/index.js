@@ -45,7 +45,7 @@ function AirplaneForm(props) {
       ))}
       <div className="buttons">
         <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
-        {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={() => handleSave(false)} />}
+        {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={handleSave} />}
       </div>
     </div>
   ) : (

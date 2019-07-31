@@ -10,7 +10,7 @@ const redirectToLogIn = () => {
   window.location.assign('/auth');
 };
 
-function useFetchData(apiMethod, setAlert, setShowAlert, customParams) {
+function useFetchData({ apiMethod, customParams, setAlert, setShowAlert }) {
   const [data, setData] = useState(null);
   const [dataCount, setDataCount] = useState(0);
 

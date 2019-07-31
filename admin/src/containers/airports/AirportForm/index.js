@@ -19,24 +19,6 @@ import formatFromCamelCase from '../../../helpers/formatters/formatString';
 import '../style.scss';
 
 function AirportForm(props) {
-  // const [formData, setFormData] = useState({
-  //   name: { value: airport.name || '' },
-  //   country: { value: airport.country || '', isValid: true, invalidFeedback: '' },
-  //   city: { value: airport.city || '', isValid: true, invalidFeedback: '' },
-  //   latitude: { value: airport.latitude || 0 },
-  //   longitude: { value: airport.longitude || 0 }
-  // });
-
-  // const formatFormData = formData => {
-  //   const { name, latitude, longitude } = formData;
-
-  //   return {
-  //     ...formData,
-  //     name: name || '',
-  //     latitude: latitude || 0,
-  //     longitude: longitude || 0
-  //   };
-  // };
   const { setAlert, setShowAlert } = useContext(AlertContext);
 
   const { formData, setFormData, isShown, canEdit, handleBack, handleChange, handleSave } = useFormData({
@@ -47,9 +29,9 @@ function AirportForm(props) {
     setAlert,
     setShowAlert
   });
-  console.log('form data: ', formData);
+
   const [showMap, setShowMap] = useState(false);
-  console.log('map: ', showMap);
+
   const airportSearchInput = useRef(null);
 
   const mapContainer = useRef(null);
@@ -77,7 +59,7 @@ function AirportForm(props) {
     if (showMap) {
       setMapData();
     }
-  }, [showMap, isShown]);
+  }, [isShown, showMap]);
 
   const handleAirportChoose = searchResults => {
     const selectedAirport = searchResults.getPlace();
@@ -105,7 +87,7 @@ function AirportForm(props) {
       longitude: { value: longitude.l.toFixed(6) }
     });
 
-    setShowMap(true);
+    setShowMap(!showMap);
   };
 
   const handleAirportSearch = async ({ target }) => {
@@ -113,7 +95,6 @@ function AirportForm(props) {
       ...formData,
       name: { value: target.value }
     });
-    setShowMap(false);
 
     const searchResults = new google.maps.places.Autocomplete(airportSearchInput.current, {
       language: 'en',

@@ -1,3 +1,5 @@
+import defaultAccountImage from '../assets/img/account.svg';
+
 export const airplaneFormData = {
   name: '',
   type: '',
@@ -20,4 +22,10 @@ export const flightFormData = {
   departureAirportId: 0,
   arrivalAirportId: 0,
   airplaneId: 0
+};
+
+export const accountFormData = {
+  photo: defaultAccountImage,
+  username: '',
+  email: ''
 };

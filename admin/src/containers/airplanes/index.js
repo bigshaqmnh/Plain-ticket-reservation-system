@@ -20,11 +20,11 @@ import { resultsPerPageLimit } from '../../constants/common';
 function AirplanesContainer({ location }) {
   const { setAlert, setShowAlert } = useContext(AlertContext);
 
-  const { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch } = useFetchData(
-    airplaneApi.getAll,
+  const { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch } = useFetchData({
+    apiMethod: airplaneApi.getAll,
     setAlert,
     setShowAlert
-  );
+  });
 
   const renderTable = () =>
     data && data.length ? (

@@ -26,7 +26,6 @@ const _genIncludeStatement = (model, as, where = {}, attributes = ['id', 'name']
 });
 
 const find = async ({ page, query: inputString, limit: resLimit } = {}) => {
-  console.log('QUERY: ', inputString);
   const limit = resLimit || 10;
   const pageNum = +page || 1;
   const offset = pageNum * limit - limit;

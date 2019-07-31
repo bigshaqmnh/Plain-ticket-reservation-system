@@ -37,19 +37,19 @@ function FlightForm(props) {
 
   const searchParams = { field: 'name', limit: 5 };
 
-  const { data: airports, searchText: airportSearchText, handleSearch: handleAirportSearch } = useFetchData(
-    airportApi.getAll,
+  const { data: airports, searchText: airportSearchText, handleSearch: handleAirportSearch } = useFetchData({
+    apiMethod: airportApi.getAll,
+    customParams: searchParams,
     setAlert,
-    setShowAlert,
-    searchParams
-  );
+    setShowAlert
+  });
 
-  const { data: airplanes, searchText: airplaneSearchText, handleSearch: handleAirplaneSearch } = useFetchData(
-    airplaneApi.getAll,
+  const { data: airplanes, searchText: airplaneSearchText, handleSearch: handleAirplaneSearch } = useFetchData({
+    apiMethod: airplaneApi.getAll,
+    customParams: searchParams,
     setAlert,
-    setShowAlert,
-    searchParams
-  );
+    setShowAlert
+  });
 
   const formatFormData = formData => {
     const { departureTime, arrivalTime, departureAirportId, arrivalAirportId, airplaneId } = formData;
@@ -138,7 +138,7 @@ function FlightForm(props) {
       ...formData,
       [propName]: { ...formData[propName], searchText: propValue }
     });
-    console.log('pizdeeec: ', formData[propName]);
+
     formData[propName].handleSearch({ target });
   };
 

@@ -37,7 +37,7 @@ function App() {
           path={['/flights/:id/details', '/flights/add', '/flights/:id/edit']}
           component={FlightForm}
         />
-        <PrivateRoute exact path="/account" component={AccountContainer} />
+        <PrivateRoute exact path={['/account/details', '/account/edit']} component={AccountContainer} />
         <Route component={NotFound} />
       </Switch>
       <CustomAlert />

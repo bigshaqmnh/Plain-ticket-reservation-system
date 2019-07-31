@@ -22,11 +22,11 @@ import formatFlights from '../../helpers/formatters/formatFlights';
 function FlightsContainer({ location }) {
   const { setAlert, setShowAlert } = useContext(AlertContext);
 
-  const { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch } = useFetchData(
-    flightApi.getAll,
+  const { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch } = useFetchData({
+    apiMethod: flightApi.getAll,
     setAlert,
     setShowAlert
-  );
+  });
 
   const flights = formatFlights(data);
 

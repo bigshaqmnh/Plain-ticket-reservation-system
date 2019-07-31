@@ -5,7 +5,7 @@ export default (dataScheme, data = null) => {
   keys.forEach(
     key =>
       (formData[key] = {
-        value: data ? data[key] : dataScheme[key],
+        value: (data && data[key]) || dataScheme[key],
         isValid: true,
         invalidFeedback: ''
       })

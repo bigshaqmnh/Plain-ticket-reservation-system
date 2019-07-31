@@ -23,7 +23,8 @@ function useFormData({ props, formDataScheme, formatter, validationScheme, api, 
 
   if (!isShownByDefault) {
     const id = +params.id;
-    const { data, isLoading } = useFetchData(api.getById, setAlert, setShowAlert, { id });
+    const fetchParams = id ? { apiMethod: api.getById, customParams: { id } } : { apiMethod: api.getInfo };
+    const { data, isLoading } = useFetchData({ ...fetchParams, setAlert, setShowAlert });
 
     useEffect(() => {
       if (!isLoading) {
@@ -91,7 +92,7 @@ function useFormData({ props, formDataScheme, formatter, validationScheme, api, 
     }
   };
 
-  const handleSave = updateId => {
+  const handleSave = param => {
     const validatedForm = formValidation.validateOnSubmit(formData);
 
     if (!validatedForm.isValid) {
@@ -99,11 +100,21 @@ function useFormData({ props, formDataScheme, formatter, validationScheme, api, 
       setShowAlert(true);
     } else {
       const data = extractFormData(formData);
+      const paramType = typeof param;
 
-      if (updateId) {
-        handleUpdateItem(data, updateId);
-      } else {
-        handleAddItem(data);
+      switch (paramType) {
+        case 'function': {
+          handleUpdateItem(data);
+          param(data);
+          break;
+        }
+        case 'number': {
+          handleUpdateItem(data, param);
+          break;
+        }
+        default: {
+          handleAddItem(data);
+        }
       }
     }
   };
