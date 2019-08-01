@@ -1,0 +1,17 @@
+{
+  "plugins": ["react"],
+  "parser": "babel-eslint",
+  "rules": {
+    "linebreak-style": 0
+  },
+  "env": {
+    "browser": true
+  },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./webpack.config.js"
+      }
+    }
+  }
+}
