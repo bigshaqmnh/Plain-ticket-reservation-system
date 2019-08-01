@@ -1,5 +1,5 @@
 const find = async ({ page, query: inputString, field, limit: resLimit } = {}) => {
-  const limit = resLimit || 20;
+  const limit = resLimit || 10;
   const pageNum = +page || 1;
   const offset = pageNum * limit - limit;
   let searchParam = {};
@@ -44,6 +44,9 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
   return { data, count };
 };
 
-const add = async airport => await db.airport.create(airport);
+const add = async airport => {
+  const added = await db.airport.create(airport);
+  return added.dataValues;
+};
 
 module.exports = { find, add };

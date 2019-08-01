@@ -13,6 +13,7 @@
     "no-unused-expressions": "off",
     "no-use-before-define": "off",
     "import/prefer-default-export": "off",
+    "no-undef": "off",
     "react/jsx-filename-extension": [
       1,
       {

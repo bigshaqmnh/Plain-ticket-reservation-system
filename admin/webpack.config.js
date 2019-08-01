@@ -1,11 +1,14 @@
 const path = require('path');
+const webpack = require('webpack');
+require('dotenv').config({ path: '.env.development' });
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -38,6 +41,9 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: '../public/index.html'
+    }),
+    new webpack.DefinePlugin({
+      MAPS_API_KEY: JSON.stringify(process.env.MAPS_API_KEY)
     })
   ]
 };

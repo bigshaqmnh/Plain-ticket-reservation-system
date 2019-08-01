@@ -81,8 +81,12 @@ function AirplanesContainer() {
     }
   };
 
-  const renderTable = () =>
-    items && items.length ? (
+  const renderTable = () => {
+    if (!items || !items.length) {
+      return <h1>No Data.</h1>;
+    }
+
+    return (
       <>
         <CustomTable headers={Object.keys(items[0])} items={items} onClick={handleClickItem} />
         {itemsCount > resultsPerPageLimit && (
@@ -96,9 +100,8 @@ function AirplanesContainer() {
           />
         )}
       </>
-    ) : (
-      <h1>No Data.</h1>
     );
+  };
 
   function renderTableScreen() {
     return (
@@ -120,7 +123,7 @@ function AirplanesContainer() {
   }
 
   function renderDetailsScreen() {
-    return <AirplaneForm airplane={selectedItem} handleBack={handleBackAction} />;
+    return <AirplaneForm airplane={selectedItem} canEdit={false} handleBack={handleBackAction} />;
   }
 
   function renderAddScreen() {

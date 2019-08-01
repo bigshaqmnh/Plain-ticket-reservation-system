@@ -5,7 +5,20 @@ import { Form } from 'react-bootstrap';
 import './style.scss';
 
 function CustomInput(props) {
-  const { label, as, options, type, name, value, placeholder, invalidFeedback, isValid, onChange, disabled } = props;
+  const {
+    label,
+    refElement,
+    as,
+    options,
+    type,
+    name,
+    value,
+    placeholder,
+    invalidFeedback,
+    isValid,
+    onChange,
+    disabled
+  } = props;
 
   return (
     <Form.Group className="input">
@@ -13,6 +26,7 @@ function CustomInput(props) {
 
       <Form.Control
         as={as}
+        ref={refElement}
         type={type}
         name={name}
         value={value}
@@ -35,6 +49,7 @@ function CustomInput(props) {
 
 CustomInput.propTypes = {
   label: PropTypes.string.isRequired,
+  refElement: PropTypes.shape({}),
   as: PropTypes.string,
   options: PropTypes.arrayOf(PropTypes.string),
   type: PropTypes.string,
@@ -48,6 +63,7 @@ CustomInput.propTypes = {
 };
 
 CustomInput.defaultProps = {
+  refElement: null,
   as: 'input',
   options: null,
   type: 'text',

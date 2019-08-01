@@ -34,7 +34,7 @@ function HeaderContainer() {
           if (path === '/account') {
             return (
               user && (
-                <div className="account-link">
+                <div key={path} className="account-link">
                   <Image height="30" width="30" src={user.photo} roundedCircle />
                   <LinkContainer to="/account">
                     <Nav.Link className="link">{user.username}</Nav.Link>
