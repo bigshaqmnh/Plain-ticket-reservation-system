@@ -26,8 +26,12 @@ function AirportsContainer({ location }) {
     setShowAlert
   });
 
-  const renderTable = () =>
-    data && data.length ? (
+  const renderTable = () => {
+    if (!data || !data.length) {
+      return <h1>No Data.</h1>;
+    }
+
+    return (
       <>
         <CustomTable headers={Object.keys(data[0])} items={data} linkPath={location.pathname} />
         {dataCount > resultsPerPageLimit && (
@@ -41,9 +45,8 @@ function AirportsContainer({ location }) {
           />
         )}
       </>
-    ) : (
-      <h1>No Data.</h1>
     );
+  };
 
   return (
     <>
