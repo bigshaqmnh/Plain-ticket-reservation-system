@@ -40,7 +40,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: '../public/index.html'
+      template: 'index.html'
     }),
     new webpack.DefinePlugin({
       MAPS_API_KEY: JSON.stringify(process.env.MAPS_API_KEY)
