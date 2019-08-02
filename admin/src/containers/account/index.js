@@ -103,7 +103,7 @@ function AccountContainer(props) {
         <CustomButton
           variant={componentStyles.success}
           text="Save"
-          onClick={() => handleSave(handlerOption.UPDATE_USER, updateUser)}
+          onClick={() => handleSave(handlerOption.UPDATE_USER, { updateUserContext: updateUser })}
         />
       ) : (
         <LinkContainer to="/account/edit">

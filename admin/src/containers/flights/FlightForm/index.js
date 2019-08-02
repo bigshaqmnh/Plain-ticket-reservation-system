@@ -255,7 +255,7 @@ function FlightForm(props) {
           <CustomButton
             variant={componentStyles.success}
             text="Save"
-            onClick={() => handleSave(handlerOption.UPDATE_ITEM, flightId)}
+            onClick={() => (flightId ? handleSave(handlerOption.UPDATE_ITEM, { itemId: flightId }) : handleSave())}
           />
         ) : (
           <LinkContainer to={`/flights/${flightId}/edit`}>

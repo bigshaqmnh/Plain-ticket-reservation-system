@@ -93,7 +93,7 @@ function useFormData({ props, formDataScheme, formatter, validationScheme, api, 
     }
   };
 
-  const handleSave = (option, param) => {
+  const handleSave = (option, { itemId, logIn, updateUserContext } = {}) => {
     const validatedForm = formValidation.validateOnSubmit(formData);
 
     if (!validatedForm.isValid) {
@@ -105,15 +105,15 @@ function useFormData({ props, formDataScheme, formatter, validationScheme, api, 
       switch (option) {
         case handlerOption.UPDATE_USER: {
           handleUpdateItem(data);
-          param(data);
+          updateUserContext(data);
           break;
         }
         case handlerOption.UPDATE_ITEM: {
-          handleUpdateItem(data, param);
+          handleUpdateItem(data, itemId);
           break;
         }
         case handlerOption.LOG_IN: {
-          param(data);
+          logIn(data);
           break;
         }
         default: {

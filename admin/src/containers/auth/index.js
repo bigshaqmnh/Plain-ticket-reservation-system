@@ -94,7 +94,7 @@ function AuthContainer(props) {
             />
           </div>
           <LinkContainer to="/">
-            <CustomButton text="Log in" onClick={() => handleSubmit(handlerOption.LOG_IN, logIn)} />
+            <CustomButton text="Log in" onClick={() => handleSubmit(handlerOption.LOG_IN, { logIn })} />
           </LinkContainer>
         </Form>
       </Container>
