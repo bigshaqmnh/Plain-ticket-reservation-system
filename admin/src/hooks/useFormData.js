@@ -51,7 +51,7 @@ function useFormData({ props, formDataScheme, formatter, validationScheme, api, 
     });
   };
 
-  const handleAddItem = async data => {
+  const handleAdd = async data => {
     try {
       await api.add(data);
 
@@ -72,7 +72,7 @@ function useFormData({ props, formDataScheme, formatter, validationScheme, api, 
     }
   };
 
-  const handleUpdateItem = async (data, updateId) => {
+  const handleUpdate = async (data, updateId) => {
     try {
       await api.update(data, updateId);
 
@@ -104,12 +104,12 @@ function useFormData({ props, formDataScheme, formatter, validationScheme, api, 
 
       switch (option) {
         case handlerOption.UPDATE_USER: {
-          handleUpdateItem(data);
+          handleUpdate(data);
           updateUserContext(data);
           break;
         }
         case handlerOption.UPDATE_ITEM: {
-          handleUpdateItem(data, itemId);
+          handleUpdate(data, itemId);
           break;
         }
         case handlerOption.LOG_IN: {
@@ -117,7 +117,7 @@ function useFormData({ props, formDataScheme, formatter, validationScheme, api, 
           break;
         }
         default: {
-          handleAddItem(data);
+          handleAdd(data);
         }
       }
     }
