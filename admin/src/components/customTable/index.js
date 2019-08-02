@@ -10,7 +10,9 @@ import formatFromCamelCase from '../../helpers/formatters/formatString';
 import formatDate from '../../helpers/formatters/formatDate';
 
 function СustomTable(props) {
-  const { headers, items, linkPath, onClick } = props;
+  const { items, linkPath, onClick } = props;
+
+  const headers = Object.keys(items[0]);
 
   const [sortedItems, setSortedItems] = useState([...items]);
   const [sortOption, setSortOption] = useState({});
@@ -76,7 +78,6 @@ function СustomTable(props) {
 }
 
 СustomTable.propTypes = {
-  headers: PropTypes.instanceOf(Array).isRequired,
   items: PropTypes.instanceOf(Array).isRequired,
   linkPath: PropTypes.string.isRequired,
   onClick: PropTypes.func
