@@ -31,9 +31,11 @@ function AirplanesContainer({ location }) {
       return <h1>No Data.</h1>;
     }
 
+    const tableHeaders = Object.keys(data[0]);
+
     return (
       <>
-        <CustomTable headers={Object.keys(data[0])} items={data} linkPath={location.pathname} />
+        <CustomTable headers={tableHeaders} items={data} linkPath={location.pathname} />
         {dataCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"
