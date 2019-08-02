@@ -22,7 +22,7 @@ const links = [
 ];
 
 function HeaderContainer() {
-  const { data, isLoading } = useFetchData({ apiMethod: userApi.getInfo });
+  const { data, isLoading } = useFetchData(userApi.getInfo);
 
   const { user, updateUser } = useContext(UserContext);
 

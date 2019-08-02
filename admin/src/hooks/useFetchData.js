@@ -12,7 +12,7 @@ const redirectToLogIn = () => {
   history.replace('/auth');
 };
 
-function useFetchData({ apiMethod, customParams, setAlert, setShowAlert }) {
+function useFetchData(apiMethod, setAlert, setShowAlert, customParams, needFetch = true) {
   const [data, setData] = useState(null);
   const [dataCount, setDataCount] = useState(0);
 
@@ -55,10 +55,14 @@ function useFetchData({ apiMethod, customParams, setAlert, setShowAlert }) {
   };
 
   useEffect(() => {
-    const params = searchText ? { ...customParams, query: searchText } : { ...customParams, page: currentPage };
-    setIsLoading(true);
+    if (!needFetch) {
+      setIsLoading(false);
+    } else {
+      const params = searchText ? { ...customParams, query: searchText } : { ...customParams, page: currentPage };
+      setIsLoading(true);
 
-    fetchData(params);
+      fetchData(params);
+    }
   }, [searchText, currentPage]);
 
   const handleSearch = ({ target }) => {

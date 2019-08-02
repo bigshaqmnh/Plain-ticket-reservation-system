@@ -20,22 +20,20 @@ import { resultsPerPageLimit } from '../../constants/common';
 function AirportsContainer({ location }) {
   const { setAlert, setShowAlert } = useContext(AlertContext);
 
-  const { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch } = useFetchData({
-    apiMethod: airportApi.getAll,
+  const { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch } = useFetchData(
+    airportApi.getAll,
     setAlert,
     setShowAlert
-  });
+  );
 
   const renderTable = () => {
     if (!data || !data.length) {
       return <h1>No Data.</h1>;
     }
 
-    const tableHeaders = Object.keys(data[0]);
-
     return (
       <>
-        <CustomTable headers={tableHeaders} items={data} linkPath={location.pathname} />
+        <CustomTable items={data} linkPath={location.pathname} />
         {dataCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"

@@ -22,11 +22,11 @@ import formatFlights from '../../helpers/formatters/formatFlights';
 function FlightsContainer({ location }) {
   const { setAlert, setShowAlert } = useContext(AlertContext);
 
-  const { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch } = useFetchData({
-    apiMethod: flightApi.getAll,
+  const { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch } = useFetchData(
+    flightApi.getAll,
     setAlert,
     setShowAlert
-  });
+  );
 
   const flights = formatFlights(data);
 
@@ -42,11 +42,9 @@ function FlightsContainer({ location }) {
       airplane: flight.airplane.name
     }));
 
-    const tableHeaders = Object.keys(data[0]);
-
     return (
       <>
-        <CustomTable headers={tableHeaders} items={data} linkPath={location.pathname} />
+        <CustomTable items={data} linkPath={location.pathname} />
         {dataCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"

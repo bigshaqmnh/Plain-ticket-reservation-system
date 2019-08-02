@@ -38,19 +38,19 @@ function FlightForm(props) {
 
   const searchParams = { field: 'name', limit: 5 };
 
-  const { data: airports, searchText: airportSearchText, handleSearch: handleAirportSearch } = useFetchData({
-    apiMethod: airportApi.getAll,
-    customParams: searchParams,
+  const { data: airports, searchText: airportSearchText, handleSearch: handleAirportSearch } = useFetchData(
+    airportApi.getAll,
     setAlert,
-    setShowAlert
-  });
+    setShowAlert,
+    searchParams
+  );
 
-  const { data: airplanes, searchText: airplaneSearchText, handleSearch: handleAirplaneSearch } = useFetchData({
-    apiMethod: airplaneApi.getAll,
-    customParams: searchParams,
+  const { data: airplanes, searchText: airplaneSearchText, handleSearch: handleAirplaneSearch } = useFetchData(
+    airplaneApi.getAll,
     setAlert,
-    setShowAlert
-  });
+    setShowAlert,
+    searchParams
+  );
 
   const formatFormData = formData => {
     const { departureTime, arrivalTime, departureAirportId, arrivalAirportId, airplaneId } = formData;
