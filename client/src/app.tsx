@@ -1,6 +1,6 @@
-import React from 'react';
+import * as React from 'react';
 import { Container } from '@material-ui/core';
-import { Route } from 'react-router-dom';
+import * as Route from 'react-router-dom/Route';
 
 import MainScreen from './screens/main';
 
