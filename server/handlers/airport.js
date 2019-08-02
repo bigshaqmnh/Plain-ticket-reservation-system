@@ -12,10 +12,21 @@ const getAll = async (req, res, next) => {
   }
 };
 
+const getById = async (req, res, next) => {
+  const airportId = +req.params.airportId;
+  const data = await airportController.getById(airportId);
+
+  if (!data) {
+    res.sendStatus(statusCode.NOT_FOUND);
+  } else {
+    res.status(statusCode.OK).json(data);
+  }
+};
+
 const add = async (req, res, next) => {
   const created = await airportController.add(req.body);
 
   res.status(statusCode.CREATED).json(created);
 };
 
-module.exports = { getAll, add };
+module.exports = { getAll, getById, add };

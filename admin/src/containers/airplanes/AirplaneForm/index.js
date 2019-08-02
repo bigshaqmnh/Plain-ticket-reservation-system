@@ -1,52 +1,34 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
+import { Spinner } from 'react-bootstrap';
 
 import CustomInput from '../../../components/customInput';
 import CustomButton from '../../../components/customButton';
-import CustomAlert from '../../../components/customAlert';
 
-import useAlert from '../../../hooks/useAlert';
+import useFormData from '../../../hooks/useFormData';
 
+import airplaneApi from '../../../api/airplane';
+
+import { airplaneFormData } from '../../../constants/formDataSchemes';
 import componentStyles from '../../../constants/componentStyles';
 import { airplaneValidationScheme } from '../../../constants/validation/schemes';
 
-import formValidation from '../../../helpers/formValidation';
-import formatFromCamelCase from '../../../helpers/formatters/formatString';
-import extractFormData from '../../../helpers/extractFormData';
+import { AlertContext } from '../../../context/alert';
 
-function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
-  const [formData, setFormData] = useState({
-    name: { value: airplane.name || '', isValid: true, invalidFeedback: '' },
-    type: { value: airplane.type || '', isValid: true, invalidFeedback: '' },
-    maxLuggageCarryWeight: { value: airplane.maxLuggageCarryWeight || '', isValid: true, invalidFeedback: '' }
+import formatFromCamelCase from '../../../helpers/formatters/formatString';
+
+function AirplaneForm(props) {
+  const { setAlert, setShowAlert } = useContext(AlertContext);
+
+  const { formData, isShown, canEdit, handleBack, handleChange, handleSave } = useFormData({
+    props,
+    formDataScheme: airplaneFormData,
+    validationScheme: airplaneValidationScheme,
+    api: airplaneApi,
+    setAlert,
+    setShowAlert
   });
 
-  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
-
-  const handleChange = async event => {
-    const { name: propName, value: propValue } = event.target;
-
-    const validatedProp = await formValidation.validateOnChange(airplaneValidationScheme, propName, propValue);
-
-    setFormData({
-      ...formData,
-      ...validatedProp
-    });
-  };
-
-  const handleSaveClick = () => {
-    const validatedForm = formValidation.validateOnSubmit(formData);
-
-    if (!validatedForm.isValid) {
-      setAlert({ ...validatedForm.alertData, isShown: setShowAlert });
-      setShowAlert(true);
-    } else {
-      const data = extractFormData(formData);
-      handleSave(data);
-    }
-  };
-
-  return (
+  return isShown ? (
     <div className="form-container">
       {Object.keys(formData).map(key => (
         <CustomInput
@@ -63,28 +45,12 @@ function AirplaneForm({ airplane, canEdit, handleBack, handleSave }) {
       ))}
       <div className="buttons">
         <CustomButton variant={componentStyles.default} text="Back" onClick={handleBack} />
-        {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={handleSaveClick} />}
+        {canEdit && <CustomButton variant={componentStyles.success} text="Save" onClick={handleSave} />}
       </div>
-      {showAlert && <CustomAlert {...alert} />}
     </div>
+  ) : (
+    <Spinner animation="border" />
   );
 }
-
-AirplaneForm.propTypes = {
-  airplane: PropTypes.shape({
-    name: PropTypes.string,
-    type: PropTypes.string,
-    maxLuggageCarryWeight: PropTypes.number
-  }),
-  canEdit: PropTypes.bool,
-  handleSave: PropTypes.func,
-  handleBack: PropTypes.func.isRequired
-};
-
-AirplaneForm.defaultProps = {
-  airplane: {},
-  canEdit: true,
-  handleSave: null
-};
 
 export default AirplaneForm;

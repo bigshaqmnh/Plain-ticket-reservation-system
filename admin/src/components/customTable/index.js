@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 import './style.scss';
 
@@ -9,7 +10,9 @@ import formatFromCamelCase from '../../helpers/formatters/formatString';
 import formatDate from '../../helpers/formatters/formatDate';
 
 function СustomTable(props) {
-  const { headers, items, onClick } = props;
+  const { items, linkPath, onClick } = props;
+
+  const headers = Object.keys(items[0]);
 
   const [sortedItems, setSortedItems] = useState([...items]);
   const [sortOption, setSortOption] = useState({});
@@ -53,19 +56,21 @@ function СustomTable(props) {
       </thead>
       <tbody>
         {sortedItems.map(item => (
-          <tr key={item.id} id={item.id} onClick={onClick}>
-            {Object.keys(item).map(key => {
-              let value = item[key];
+          <LinkContainer key={item.id} to={`${linkPath}/${item.id}/details`}>
+            <tr id={item.id} onClick={onClick}>
+              {Object.keys(item).map(key => {
+                let value = item[key];
 
-              if (value instanceof Date) {
-                value = formatDate(value);
-              } else if (typeof value === 'boolean') {
-                value = value ? '\u2714' : '\u274c';
-              }
+                if (value instanceof Date) {
+                  value = formatDate(value);
+                } else if (typeof value === 'boolean') {
+                  value = value ? '\u2714' : '\u274c';
+                }
 
-              return <td key={key}>{value}</td>;
-            })}
-          </tr>
+                return <td key={key}>{value}</td>;
+              })}
+            </tr>
+          </LinkContainer>
         ))}
       </tbody>
     </Table>
@@ -73,8 +78,8 @@ function СustomTable(props) {
 }
 
 СustomTable.propTypes = {
-  headers: PropTypes.instanceOf(Array).isRequired,
   items: PropTypes.instanceOf(Array).isRequired,
+  linkPath: PropTypes.string.isRequired,
   onClick: PropTypes.func
 };
 

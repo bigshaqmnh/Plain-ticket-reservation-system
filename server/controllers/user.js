@@ -21,13 +21,20 @@ const getUserInfo = async userId => {
     return;
   }
 
-  const filehandle = await fsPromises.open(user.photo, 'r');
-  const photo = await filehandle.readFile();
-  await filehandle.close();
+  const { username, email } = user;
+  let userPhoto = '';
 
-  const encodedPhoto = Buffer.from(photo).toString('base64');
+  if (user.photoUrl) {
+    const filehandle = await fsPromises.open(user.photoUrl, 'r');
+    const file = await filehandle.readFile();
+    await filehandle.close();
 
-  return { data: { ...user, photo: encodedPhoto } };
+    const encodedFile = Buffer.from(file).toString('base64');
+
+    userPhoto = `data:image/jpg;base64, ${encodedFile}`;
+  }
+
+  return { data: { username, email, photo: userPhoto } };
 };
 
 const update = async (id, user) => {
@@ -41,7 +48,7 @@ const update = async (id, user) => {
 
   await fsPromises.writeFile(photoFilePath, fileData, 'base64');
 
-  userService.update(id, { ...user, photo: photoFilePath });
+  userService.update(id, { ...user, photoUrl: photoFilePath });
 };
 
 module.exports = { getUserInfo, update };

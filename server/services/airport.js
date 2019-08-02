@@ -3,7 +3,7 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
   const pageNum = +page || 1;
   const offset = pageNum * limit - limit;
   let searchParam = {};
-  const attributes = field ? ['id', field] : ['id', 'name', 'country', 'city', 'latitude', 'longitude'];
+  const attributes = field ? ['id', field] : ['id', 'name', 'country', 'city'];
 
   if (field && inputString) {
     searchParam = {
@@ -44,9 +44,18 @@ const find = async ({ page, query: inputString, field, limit: resLimit } = {}) =
   return { data, count };
 };
 
+const findById = async airportId => {
+  const airport = await db.airport.findOne({
+    where: { id: airportId },
+    attributes: ['id', 'name', 'city', 'country', 'latitude', 'longitude']
+  });
+
+  return airport.dataValues;
+};
+
 const add = async airport => {
   const added = await db.airport.create(airport);
   return added.dataValues;
 };
 
-module.exports = { find, add };
+module.exports = { find, findById, add };
