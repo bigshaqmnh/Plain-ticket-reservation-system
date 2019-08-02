@@ -4,7 +4,11 @@ const costService = require('../services/cost');
 
 const getAll = params => flightService.find(params);
 
-const getById = flightId => flightService.findById(flightId);
+const getById = async flightId => {
+  const flight = await flightService.findById(flightId);
+
+  return { data: flight };
+};
 
 const getByParams = async params => {
   const { data: flights, nextPage } = await flightService.findByParams(params);

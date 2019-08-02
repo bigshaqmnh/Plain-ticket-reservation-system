@@ -2,7 +2,7 @@ import fetchData from './fetchData';
 import * as config from '../config/config.json';
 
 export default {
-  getFlights: params =>
+  getAll: params =>
     fetchData({
       method: 'GET',
       needAuth: true,
@@ -10,14 +10,14 @@ export default {
       params
     }),
 
-  getFlight: flightId =>
+  getById: ({ id }) =>
     fetchData({
       method: 'GET',
       needAuth: true,
-      url: `${config.adminUrl}/flights/${flightId}`
+      url: `${config.adminUrl}/flights/${id}`
     }),
 
-  addFlight: flight =>
+  add: flight =>
     fetchData({
       method: 'POST',
       needAuth: true,
@@ -25,7 +25,7 @@ export default {
       data: flight
     }),
 
-  updateFlight: async (flightId, flight) =>
+  update: async (flight, flightId) =>
     fetchData({
       method: 'PUT',
       needAuth: true,

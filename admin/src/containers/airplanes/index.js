@@ -1,133 +1,74 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { Spinner } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 import Pagination from 'react-js-pagination';
 
-import AirplaneForm from './AirplaneForm';
 import CustomInput from '../../components/customInput';
 import CustomTable from '../../components/customTable';
 import CustomButton from '../../components/customButton';
-import CustomAlert from '../../components/customAlert';
 
 import useFetchData from '../../hooks/useFetchData';
-import useAlert from '../../hooks/useAlert';
+
+import { AlertContext } from '../../context/alert';
 
 import airplaneApi from '../../api/airplane';
 
 import componentStyles from '../../constants/componentStyles';
 import { resultsPerPageLimit } from '../../constants/common';
-import screen from '../../constants/screens';
 
-import getHandlers from '../../helpers/getHandlers';
+function AirplanesContainer({ location }) {
+  const { setAlert, setShowAlert } = useContext(AlertContext);
 
-function AirplanesContainer() {
-  const { alert, setAlert, showAlert, setShowAlert } = useAlert();
+  const { data, dataCount, isLoading, searchText, currentPage, setCurrentPage, handleSearch } = useFetchData(
+    airplaneApi.getAll,
+    setAlert,
+    setShowAlert
+  );
 
-  const {
-    items,
-    setItems,
-    itemsCount,
-    isLoading,
-    searchText,
-    setSearchText,
-    currentPage,
-    setCurrentPage
-  } = useFetchData(airplaneApi.getAirplanes, setAlert, setShowAlert);
-
-  const [selectedItem, setSelectedItem] = useState(null);
-
-  const screens = {
-    [screen.TABLE]: renderTableScreen,
-    [screen.DETAILS]: renderDetailsScreen,
-    [screen.ADD]: renderAddScreen
-  };
-
-  const [currentScreen, setCurrentScreen] = useState(screen.TABLE);
-
-  const { handleClickItem, handleSearchItem, handleShowAddScreen, handleBackAction } = getHandlers({
-    items,
-    setSelectedItem,
-    setCurrentScreen,
-    setSearchText
-  });
-
-  const handleAddItem = async data => {
-    try {
-      handleBackAction();
-
-      const { data: newAirplane } = await airplaneApi.addAirplane(data);
-      const maxPage = Math.ceil(itemsCount / resultsPerPageLimit);
-
-      if (currentPage === maxPage) {
-        items.length >= resultsPerPageLimit ? setCurrentPage(maxPage + 1) : setItems([...items, newAirplane]);
-      } else {
-        setCurrentPage(maxPage);
-      }
-
-      setAlert({
-        variant: componentStyles.success,
-        heading: 'Added',
-        mainText: 'Airplane was successfully added.',
-        isShown: setShowAlert
-      });
-    } catch (err) {
-      setAlert({
-        variant: componentStyles.error,
-        heading: 'Not Added',
-        mainText: 'An error occured while adding new airplane.',
-        isShown: setShowAlert
-      });
-    } finally {
-      setShowAlert(true);
+  const renderTable = () => {
+    if (!data || !data.length) {
+      return <h1>No Data.</h1>;
     }
-  };
 
-  const renderTable = () =>
-    items && items.length ? (
+    return (
       <>
-        <CustomTable headers={Object.keys(items[0])} items={items} onClick={handleClickItem} />
-        {itemsCount > resultsPerPageLimit && (
+        <CustomTable items={data} linkPath={location.pathname} />
+        {dataCount > resultsPerPageLimit && (
           <Pagination
             itemClass="page-item"
             linkClass="page-link"
             activePage={currentPage}
-            totalItemsCount={itemsCount}
+            totalItemsCount={dataCount}
             onChange={setCurrentPage}
             hideDisabled
           />
         )}
       </>
-    ) : (
-      <h1>No Data.</h1>
     );
+  };
 
-  function renderTableScreen() {
-    return (
-      <>
-        <div className="above-table">
-          <CustomInput
-            label="Search"
-            name="airplane-search"
-            value={searchText}
-            placeholder="Search airplanes"
-            onChange={handleSearchItem}
-          />
-          <CustomButton variant={componentStyles.success} text="Add airplane" onClick={handleShowAddScreen} />
-        </div>
-        {isLoading ? <Spinner animation="border" /> : renderTable()}
-        {showAlert && <CustomAlert {...alert} />}
-      </>
-    );
-  }
-
-  function renderDetailsScreen() {
-    return <AirplaneForm airplane={selectedItem} canEdit={false} handleBack={handleBackAction} />;
-  }
-
-  function renderAddScreen() {
-    return <AirplaneForm handleSave={handleAddItem} handleBack={handleBackAction} />;
-  }
-
-  return screens[currentScreen]();
+  return (
+    <>
+      <div className="above-table">
+        <CustomInput
+          label="Search"
+          name="airplane-search"
+          value={searchText}
+          placeholder="Search by name or type"
+          onChange={handleSearch}
+        />
+        <LinkContainer to={`${location.pathname}/add`}>
+          <CustomButton variant={componentStyles.success} text="Add airplane" />
+        </LinkContainer>
+      </div>
+      {isLoading ? <Spinner animation="border" /> : renderTable()}
+    </>
+  );
 }
+
+AirplanesContainer.propTypes = {
+  location: PropTypes.shape({}).isRequired
+};
 
 export default AirplanesContainer;
