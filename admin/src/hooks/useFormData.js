@@ -16,27 +16,23 @@ function useFormData({ props, formDataScheme, formatter, validationScheme, api, 
 
   const { isShownByDefault, canEdit } = getScreenProps(path);
 
-  const [isShown, setIsShown] = useState(isShownByDefault);
+  const [isShown, setIsShown] = useState(false);
 
-  const defaultFormData = generateFormData(formDataScheme);
+  const [formData, setFormData] = useState({});
 
-  const [formData, setFormData] = useState(formatter ? formatter(defaultFormData) : defaultFormData);
+  const id = +params.id;
+  const apiMethod = id ? api.getById : api.getInfo;
+  const { data, isLoading } = useFetchData(apiMethod, setAlert, setShowAlert, { id }, !isShownByDefault);
 
-  if (!isShownByDefault) {
-    const id = +params.id;
-    const fetchParams = id ? { apiMethod: api.getById, customParams: { id } } : { apiMethod: api.getInfo };
-    const { data, isLoading } = useFetchData({ ...fetchParams, setAlert, setShowAlert });
+  useEffect(() => {
+    if (!isLoading) {
+      const defaultFormData = data ? generateFormData(formDataScheme, data) : generateFormData(formDataScheme);
 
-    useEffect(() => {
-      if (!isLoading) {
-        const defaultFormData = generateFormData(formDataScheme, data);
+      setFormData(formatter ? formatter(defaultFormData) : defaultFormData);
 
-        setFormData(formatter ? formatter(defaultFormData) : defaultFormData);
-
-        setIsShown(true);
-      }
-    }, [isLoading]);
-  }
+      setIsShown(true);
+    }
+  }, [isLoading]);
 
   const handleBack = () => history.goBack();
 
