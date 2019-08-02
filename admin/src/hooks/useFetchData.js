@@ -5,9 +5,11 @@ import logger from '../helpers/logger';
 
 import componentStyles from '../constants/componentStyles';
 
+import history from '../history';
+
 const redirectToLogIn = () => {
   deleteUserToken();
-  window.location.assign('/auth');
+  history.replace('/auth');
 };
 
 function useFetchData({ apiMethod, customParams, setAlert, setShowAlert }) {
