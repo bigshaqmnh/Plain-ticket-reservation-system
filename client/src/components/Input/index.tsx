@@ -1,7 +1,7 @@
 import * as React from 'react';
 import TextField from '@material-ui/core/TextField';
 
-interface InputProps {
+interface IInputProps {
   label: string;
   name: string;
   type?: string;
@@ -19,7 +19,7 @@ function Input({
   placeholder = 'Input value',
   required = false,
   onChange
-}: InputProps): JSX.Element {
+}: IInputProps): JSX.Element {
   return (
     <TextField
       label={label}
