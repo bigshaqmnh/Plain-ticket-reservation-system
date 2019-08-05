@@ -2,7 +2,7 @@ import React from 'react';
 
 import Input from '../../../../components/Input';
 
-interface InputAutoCompleteProps {
+interface IInputAutoCompleteProps {
   label: string;
   name: string;
   type?: string;
@@ -16,12 +16,21 @@ function InputAutoComplete({
   label,
   name,
   type,
+  value,
   placeholder,
   required,
   onChange
-}: InputAutoCompleteProps): JSX.Element {
+}: IInputAutoCompleteProps): JSX.Element {
   return (
-    <Input label={label} name={name} type={type} placeholder={placeholder} required={required} onChange={onChange} />
+    <Input
+      label={label}
+      name={name}
+      type={type}
+      value={value}
+      placeholder={placeholder}
+      required={required}
+      onChange={onChange}
+    />
   );
 }
 
