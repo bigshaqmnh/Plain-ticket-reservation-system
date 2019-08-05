@@ -24,7 +24,8 @@ module.exports = {
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: ['awesome-typescript-loader']
+        enforce: 'pre',
+        use: ['awesome-typescript-loader', 'tslint-loader']
       }
     ]
   },
