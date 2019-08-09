@@ -1,4 +1,10 @@
-import { IMainScreenForm } from '../interfaces/IMainScreenForm';
+interface IMainScreenForm {
+  from: string;
+  to: string;
+  flyOut: Date;
+  flyBack: Date;
+  ammountOfPassengers: number;
+}
 
 class MainScreenForm implements IMainScreenForm {
   [key: string]: any;
