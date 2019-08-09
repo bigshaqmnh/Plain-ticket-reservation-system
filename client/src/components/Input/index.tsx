@@ -2,26 +2,35 @@ import * as React from 'react';
 import TextField from '@material-ui/core/TextField';
 
 interface IInputProps {
+  key?: string | number;
   label: string;
-  name: string;
+  name?: string;
   type?: string;
-  value?: string;
+  value: string;
   placeholder?: string;
   required?: boolean;
-  onChange: any;
+  onChange: (event: React.ChangeEvent) => void;
+  error?: boolean;
+  helperText?: string;
+  disabled?: boolean;
 }
 
 function Input({
+  key,
   label,
   name,
   type = 'text',
   value = '',
   placeholder = 'Input value',
   required = false,
-  onChange
+  onChange,
+  error,
+  helperText,
+  disabled
 }: IInputProps): JSX.Element {
   return (
     <TextField
+      key={key}
       label={label}
       name={name}
       type={type}
@@ -29,6 +38,9 @@ function Input({
       placeholder={placeholder}
       required={required}
       onChange={onChange}
+      error={error}
+      helperText={helperText}
+      disabled={disabled}
     />
   );
 }
