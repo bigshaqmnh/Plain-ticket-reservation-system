@@ -1,45 +1,68 @@
 import * as React from 'react';
 
-import InputAutoComplete from './components/InputAutoComplete';
+import {
+  DateTimePicker
+} from '@material-ui/pickers';
 
-import { mainFormData } from '../../constants/formDataSchemes';
+import MainScreenForm from '../../classes/MainScreenForm';
+
+import { mainScreenFormData } from '../../constants/formData';
+
+import MainScreenFormComponent from './components/MainScreenForm';
 
 import { IMainScreenProps, IMainScreenState } from './interface';
+
+import { Moment } from 'moment';
 
 class MainScreen extends React.PureComponent<IMainScreenProps, IMainScreenState> {
   public constructor(props: IMainScreenProps) {
     super(props);
+    const formData = new MainScreenForm();
+
     this.state = {
-      formData: mainFormData
+      formData
     };
   }
 
-  private handleChange = ({ currentTarget }: React.FormEvent<HTMLInputElement>) => {
-    const { name, value } = currentTarget;
 
-    this.setState((prevState: IMainScreenState) => ({
+  private getDateHandler = (name: string) => (date: Moment) => {
+    this.setState((prevState) => ({
       ...prevState,
-      formData: { ...prevState.formData, [name]: { ...prevState.formData[name], value } }
+      formData: { ...prevState.formData, [name]: { ...prevState.formData[name], date } }
     }));
   }
 
-  public render() {
-    const formFields: string[] = Object.keys(this.state.formData);
+  private DateTimePicker = (props: any) => {
+    const {
+      input: { name, onChange, value, ...restInput },
+      meta,
+      ...rest
+    } = props;
 
-    return (
-      formFields.map((field) => {
-        const { formData } = this.state;
+    const showError =
+      ((meta.submitError && !meta.dirtySinceLastSubmit) || meta.error) &&
+      meta.touched;
 
+    return <DateTimePicker
+      variant="inline"
+      value={value}
+      onChange={this.getDateHandler(name)}
+      showTodayButton={true}
+      format="yyyy/MM/dd HH:mm"
+      error={showError}
+    />
+  }
 
-        return <InputAutoComplete
-          label={formData[field].label}
-          name={field}
-          value={formData[field].value}
-          placeholder={formData[field].placeholder}
-          onChange={this.handleChange}
-        />;
-      })
-    );
+  private handleDateChange = (date: Date) => console.log('recieved date: ', date);
+
+  public render(): React.ReactNode {
+    const { formData } = this.state;
+
+    return <MainScreenFormComponent
+      {...formData}
+      handleDateChange={this.handleDateChange}
+    />;
+
   }
 }
 
