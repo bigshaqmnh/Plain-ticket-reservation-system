@@ -1,26 +1,20 @@
-interface IMainScreenForm {
-  from: string;
-  to: string;
-  flyOut: Date;
-  flyBack: Date;
-  ammountOfPassengers: number;
-}
+import moment = require('moment');
 
-class MainScreenForm implements IMainScreenForm {
+class MainScreenForm {
   [key: string]: any;
 
   public from: string;
   public to: string;
-  public flyOut: Date;
-  public flyBack: Date;
+  public flyOut: moment.Moment;
+  public flyBack: moment.Moment;
   public ammountOfPassengers: number;
 
   constructor() {
     this.from = '';
     this.to = '';
-    this.flyOut = new Date();
-    this.flyBack = new Date();
-    this.ammountOfPassengers = 0;
+    this.flyOut = moment();
+    this.flyBack = moment();
+    this.ammountOfPassengers = 1;
   }
 }
 
