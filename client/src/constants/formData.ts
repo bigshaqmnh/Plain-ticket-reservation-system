@@ -1,4 +1,5 @@
 interface MainScreenFormData {
+  initValue: any;
   label: string;
   placeholder: string;
 }
@@ -8,9 +9,9 @@ interface IMainScreenFormData<MainScreenFormData> {
 }
 
 export const mainScreenFormData: IMainScreenFormData<MainScreenFormData> = {
-  from: { label: 'From', placeholder: 'Departure airport' },
-  to: { label: 'To', placeholder: 'Destination airport' },
-  flyOut: { label: 'Fly out', placeholder: 'DD/MM/YYYY' },
-  flyBack: { label: 'Fly back', placeholder: 'DD/MM/YYYY' },
-  ammountOfPassengers: { label: 'Passengers', placeholder: 'Enter ammount of passengers' }
+  from: { initValue: '', label: 'From', placeholder: 'Departure airport' },
+  to: { initValue: '', label: 'To', placeholder: 'Destination airport' },
+  flyOut: { initValue: null, label: 'Fly out', placeholder: 'DD/MM/YYYY' },
+  flyBack: { initValue: null, label: 'Fly back', placeholder: 'DD/MM/YYYY' },
+  ammountOfPassengers: { initValue: 1, label: 'Passengers', placeholder: 'Enter ammount of passengers' }
 };
