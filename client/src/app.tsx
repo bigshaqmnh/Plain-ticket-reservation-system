@@ -1,15 +1,14 @@
 import * as React from 'react';
-import { Container } from '@material-ui/core';
-import { Route } from 'react-router-dom';
+import Container from '@material-ui/core/Container';
+import Route from 'react-router-dom/Route';
 
 import MainScreen from './screens/main';
 
-function App() {
-  return (
-    <Container>
-      <Route exact path={['/', '/main']} component={MainScreen} />
-    </Container>
-  );
-}
+import './style.scss';
+
+const App = (): JSX.Element =>
+  <Container maxWidth={false} className="root-container" >
+    <Route exact path={['/', '/main']} component={MainScreen} />
+  </Container>;
 
 export default App;
