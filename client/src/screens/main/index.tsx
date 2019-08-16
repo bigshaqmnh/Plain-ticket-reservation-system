@@ -1,13 +1,14 @@
 import * as React from 'react';
 import Grid from '@material-ui/core/Grid';
+import { connect } from 'react-redux';
 
 import MainScreenFormComponent from './components/MainScreenForm';
 
 import './style.scss';
 
-const MainScreen = (): JSX.Element =>
+const MainScreen = (props): JSX.Element =>
   <Grid container className="container">
-    <MainScreenFormComponent />
+    <MainScreenFormComponent {...props} />
   </Grid>;
 
-export default MainScreen;
+export default connect()(MainScreen);

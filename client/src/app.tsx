@@ -1,14 +1,28 @@
 import * as React from 'react';
-import Container from '@material-ui/core/Container';
 import Route from 'react-router-dom/Route';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import createSagaMiddleware from 'redux-saga';
 
 import MainScreen from './screens/main';
 
+import rootReducer from './rootReducer';
+import rootSaga from './rootSaga';
+
 import './style.scss';
 
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore(
+  rootReducer,
+  applyMiddleware(sagaMiddleware)
+);
+
+sagaMiddleware.run(rootSaga);
+
 const App = (): JSX.Element =>
-  <Container maxWidth={false} className="root-container" >
+  <Provider store={store}>
     <Route exact path={['/', '/main']} component={MainScreen} />
-  </Container>;
+  </Provider>;
 
 export default App;

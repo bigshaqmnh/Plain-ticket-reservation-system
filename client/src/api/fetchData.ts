@@ -1,7 +1,13 @@
 import { getUserToken } from '../helpers/token';
 
-const fetchData = async ({ url, needAuth, ...requestParams }) => {
-  const params = needAuth
+interface IFetchData {
+  url: string;
+  needAuth: boolean;
+  requestParams: any;
+}
+
+const fetchData = async ({ url, needAuth, ...requestParams }: IFetchData) => {
+  const params: RequestInit = needAuth
     ? { ...requestParams, headers: { ...requestParams.headers, Authorization: `Bearer ${getUserToken()}` } }
     : requestParams;
 

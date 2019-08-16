@@ -1,15 +1,19 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import { DatePicker } from '@material-ui/pickers';
 import * as Yup from 'yup';
 import { withFormik, FormikProps, Form } from 'formik';
 import { Moment } from 'moment';
+import moment = require('moment');
 
 import { mainScreenFormData } from '../../../../constants/formData';
+import { locationInputRegexp } from '../../../../constants/validationRegexp';
 import Input from '../../../../components/Input';
 
-import { DatePicker } from '@material-ui/pickers';
-import moment = require('moment');
+import { fetchFlights } from '../../actions';
+
+import { parseCountry, parseCity } from '../../../../helpers/parseLocation';
 
 import './style.scss';
 
@@ -25,16 +29,16 @@ const InnerForm = (props: FormikProps<IFormValues>) => {
   const { values, setValues, touched, errors, handleChange, handleBlur, isSubmitting, isValid } = props;
 
   const fields: string[] = Object.keys(values);
+  console.log('values: ', values);
 
   return (
     <Form >
       <Grid container spacing={8} className="main-form">
         {fields.map((field: string) => {
           let component: JSX.Element = null;
+          const handleDateChange = (date: Moment) => setValues({ ...values, [field]: date });
 
           if ((field === 'flyOut') || (field === 'flyBack')) {
-            const handleDateChange = (date: Moment) => setValues({ ...values, [field]: date });
-
             component =
               <DatePicker
                 name={field}
@@ -45,7 +49,7 @@ const InnerForm = (props: FormikProps<IFormValues>) => {
                 onChange={handleDateChange}
                 format="DD-MM-YYYY"
                 autoOk={true}
-                minDate={field === 'flyOut' ? moment() : values.flyOut}
+                minDate={field === 'flyBack' ? values.flyOut : moment()}
                 disablePast
                 disabled={field === 'flyBack' && !values.flyOut}
               />;
@@ -81,7 +85,7 @@ const InnerForm = (props: FormikProps<IFormValues>) => {
       </Grid>
     </Form>
   );
-}
+};
 
 interface IFormProps {
   from?: string;
@@ -89,21 +93,29 @@ interface IFormProps {
   flyOut?: Moment;
   flyBack?: Moment;
   ammountOfPassengers?: number;
+  dispatch: (action: object) => void;
 }
 
+
 const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
-  mapPropsToValues: () => ({
-    from: mainScreenFormData.from.initValue,
-    to: mainScreenFormData.to.initValue,
-    flyOut: mainScreenFormData.flyOut.initValue,
-    flyBack: mainScreenFormData.flyBack.initValue,
-    ammountOfPassengers: mainScreenFormData.ammountOfPassengers.initValue,
-  }),
+  mapPropsToValues: (props) => {
+    console.log('recieved props: ', props);
+
+    return {
+      from: mainScreenFormData.from.initValue,
+      to: mainScreenFormData.to.initValue,
+      flyOut: mainScreenFormData.flyOut.initValue,
+      flyBack: mainScreenFormData.flyBack.initValue,
+      ammountOfPassengers: mainScreenFormData.ammountOfPassengers.initValue
+    };
+  },
 
   validationSchema: Yup.object().shape({
     from: Yup.string()
+      .matches(locationInputRegexp, `Input should be in form 'Country, city'`)
       .required('Departure airport is required'),
     to: Yup.string()
+      .matches(locationInputRegexp, `Input should be in form 'Country, city'`)
       .required('Destination airport is required'),
     ammountOfPassengers: Yup.number()
       .typeError('Only positive numbers are possible')
@@ -111,8 +123,20 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
       .required('Ammount of Passengers is required')
   }),
 
-  handleSubmit: (values: IFormValues) => {
+  handleSubmit: (values: IFormValues, { props }) => {
+    const { dispatch } = props;
+    const { from, to } = values;
+    console.log('has dispatch: ', dispatch);
     console.log('form values: ', values);
+    const params = {
+      ...values,
+      depCountry: parseCountry(from),
+      depCity: parseCity(from),
+      arrCountry: parseCountry(to),
+      arrCity: parseCity(to)
+    };
+
+    dispatch(fetchFlights(params));
   }
 })(InnerForm);
 
