@@ -5,8 +5,7 @@ export default {
   getAll: params =>
     fetchData({
       method: 'GET',
-      needAuth: true,
-      url: `${config.adminUrl}/airports`,
+      url: `${config.baseUrl}/airports`,
       params
     }),
 
