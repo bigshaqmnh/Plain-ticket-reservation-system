@@ -64,6 +64,11 @@ function AuthContainer(props) {
     }
   };
 
+  const handleLogIn = event => {
+    event.preventDefault();
+    handleSubmit(handlerOption.LOG_IN, { logIn });
+  };
+
   return (
     isShown && (
       <Container>
@@ -95,7 +100,7 @@ function AuthContainer(props) {
             />
           </div>
           <LinkContainer to="/">
-            <CustomButton text="Log in" onClick={() => handleSubmit(handlerOption.LOG_IN, { logIn })} />
+            <CustomButton type="submit" text="Log in" onClick={handleLogIn} />
           </LinkContainer>
         </Form>
       </Container>
