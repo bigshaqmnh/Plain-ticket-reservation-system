@@ -38,6 +38,7 @@ function AuthContainer(props) {
     props,
     formDataScheme: authFormData,
     validationScheme: authValidationScheme,
+    api: userApi,
     setAlert,
     setShowAlert
   });
