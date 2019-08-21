@@ -22,7 +22,7 @@ class MainScreen extends React.PureComponent<IMainScreenProps> {
   public render(): JSX.Element {
     return (
       <Grid container className="container">
-        <MainScreenFormComponent/>
+        <MainScreenFormComponent />
       </Grid>
     );
   }

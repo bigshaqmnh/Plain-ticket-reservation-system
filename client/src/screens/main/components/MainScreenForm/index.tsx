@@ -51,6 +51,7 @@ const InnerForm = (props: FormikProps<IFormValues>) => {
     setValues({ ...values, [field]: value });
 
   const fields: string[] = Object.keys(values);
+  console.log('values: ', values);
 
   return (
     <Form>
@@ -146,6 +147,7 @@ interface IFormProps {
   twoWays?: boolean;
   dispatch?: (action: object) => void;
 }
+
 
 const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
   mapPropsToValues: () => ({

@@ -9,6 +9,9 @@ import MainScreen from './screens/Main';
 import rootReducer from './rootReducer';
 import rootSaga from './rootSaga';
 
+import rootReducer from './rootReducer';
+import rootSaga from './rootSaga';
+
 import './style.scss';
 
 const sagaMiddleware = createSagaMiddleware();
