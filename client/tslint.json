@@ -16,6 +16,9 @@
     "object-literal-sort-keys": false,
     "no-console": {
       "severity": "warning"
+    },
+    "no-shadowed-variable": {
+      "severity": "warning"
     }
   },
   "linterOptions": {
