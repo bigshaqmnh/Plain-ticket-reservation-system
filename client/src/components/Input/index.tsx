@@ -12,26 +12,28 @@ interface IInputProps {
   required?: boolean;
   onChange: (event: React.ChangeEvent) => void;
   onBlur?: (event: React.FocusEvent) => void;
+  onFocus?: (event: React.FocusEvent) => void;
   error?: boolean;
   helperText?: string;
   disabled?: boolean;
 }
 
 function Input({
-  key,
-  label,
-  name,
-  className = 'input',
-  type = 'text',
-  value = '',
-  placeholder = 'Input value',
-  required = false,
-  onChange,
-  onBlur,
-  error,
-  helperText,
-  disabled
-}: IInputProps): JSX.Element {
+                 key,
+                 label,
+                 name,
+                 className = 'input',
+                 type = 'text',
+                 value = '',
+                 placeholder = 'Input value',
+                 required = false,
+                 onChange,
+                 onBlur,
+                 onFocus,
+                 error,
+                 helperText,
+                 disabled
+               }: IInputProps): JSX.Element {
   return (
     <TextField
       key={key}
@@ -44,9 +46,11 @@ function Input({
       required={required}
       onChange={onChange}
       onBlur={onBlur}
+      onFocus={onFocus}
       error={error}
       helperText={helperText}
       disabled={disabled}
+      autoComplete="off"
     />
   );
 }
