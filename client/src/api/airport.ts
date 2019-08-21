@@ -2,10 +2,11 @@ import fetchData from './fetchData';
 import * as config from '../config/config.json';
 
 export default {
-  findByParams: params =>
+  getAll: () =>
     fetchData({
-      method: 'GET',
-      url: `${config.adminUrl}/flights`,
-      params
+      url: `${config.baseUrl}/airports?groupBy=country`,
+      requestParams: {
+        method: 'GET'
+      }
     })
 };

@@ -56,6 +56,24 @@ module.exports = {
         longitude: 139.784075,
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        name: 'John F. Kennedy International Airport',
+        country: 'USA',
+        city: 'New York',
+        latitude: 40.714534,
+        longitude: -74.286152,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'San Diego International Airport',
+        country: 'USA',
+        city: 'San Diego',
+        latitude: 32.733805,
+        longitude: -117.195492,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ]);
   },
