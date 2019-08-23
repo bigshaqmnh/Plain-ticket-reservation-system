@@ -1,5 +1,6 @@
 import {
   FETCH_AIRPORTS_REQUESTED,
+  SET_SELECTED_ITEM,
   FETCH_AIRPORTS_SUCCEEDED,
   FETCH_AIRPORTS_FAILED,
   FETCH_FLIGHTS_REQUESTED,
@@ -7,21 +8,27 @@ import {
   FETCH_FLIGHTS_FAILED
 } from './actions';
 
-import { IAirportAction, IFlightAction, IState } from './interface';
+import { IAction, IState } from './interface';
 
 const initialState: IState = {
   fetchParams: null,
   isFetching: true,
   data: [],
+  selectedItem: null,
   error: null
 };
 
-export const airports = (state: IState = initialState, action: IAirportAction) => {
+export const airports = (state: IState = initialState, action: IAction) => {
   switch (action.type) {
     case FETCH_AIRPORTS_REQUESTED:
       return {
         ...state,
         isFetching: true
+      };
+    case SET_SELECTED_ITEM:
+      return {
+        ...state,
+        selectedItem: action.payload
       };
     case FETCH_AIRPORTS_SUCCEEDED:
       return {
@@ -40,7 +47,7 @@ export const airports = (state: IState = initialState, action: IAirportAction) =
   }
 };
 
-export const flights = (state: IState = initialState, action: IFlightAction) => {
+export const flights = (state: IState = initialState, action: IAction) => {
   switch (action.type) {
     case FETCH_FLIGHTS_REQUESTED:
       return {
@@ -52,7 +59,7 @@ export const flights = (state: IState = initialState, action: IFlightAction) => 
       return {
         ...state,
         isFetching: false,
-        data: action.payload
+        data: [...state.data, action.payload]
       };
     case FETCH_FLIGHTS_FAILED:
       return {

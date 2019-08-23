@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import { DatePicker } from '@material-ui/pickers';
-import * as Yup from 'yup';
 import { withFormik, FormikProps, Form } from 'formik';
 import { Moment } from 'moment';
-import moment = require('moment');
 
-import { mainScreenFormData } from '../../../../constants/formData';
-import { locationInputRegexp } from '../../../../constants/validationRegexp';
-import Input from '../../../../components/Input';
-import AutocompleteList from '../AutocompleteList';
+import { IAirport, IAirportData } from '../../interface';
 
 import { fetchFlights } from '../../actions';
+
+import AutocompleteList from '../AutocompleteList';
+
+import Input from '../../../../components/Input';
+
+import { mainScreenFormData } from '../../../../constants/formData';
 
 import { parseCountry, parseCity } from '../../../../helpers/parseLocation';
 
 import './style.scss';
-import value = require('*.jpg');
-import { Simulate } from 'react-dom/test-utils';
-import error = Simulate.error;
+import moment = require('moment');
 
 interface IFormValues {
   from: string;
@@ -32,18 +32,9 @@ interface IFormValues {
   twoWays: boolean;
 }
 
-const counter = (() => {
-  let value = 0;
-
-  const plus = () => ++value;
-  const count = () => value;
-
-  return { plus, count };
-})();
-
 const InnerForm = (props: FormikProps<IFormValues>) => {
   const { values, setValues, touched, errors, handleChange, handleBlur, isSubmitting, isValid } = props;
-  console.log('RECIEVES: ', errors);
+
   const handleDateChange = (field: string) => (date: Moment) => setValues({ ...values, [field]: date });
   const handleSwitchChange = ({ currentTarget }: React.ChangeEvent<HTMLInputElement>) =>
     setValues({ ...values, twoWays: currentTarget.checked });
@@ -51,11 +42,10 @@ const InnerForm = (props: FormikProps<IFormValues>) => {
     setValues({ ...values, [field]: value });
 
   const fields: string[] = Object.keys(values);
-  console.log('values: ', values);
 
   return (
-    <Form>
-      <Grid container spacing={8} className="main-form">
+    <Form className="main-form">
+      <Grid className="form-container">
         {fields.map((field: string) => {
           if (field === 'twoWays') {
             return;
@@ -64,7 +54,9 @@ const InnerForm = (props: FormikProps<IFormValues>) => {
           const value = values[field];
 
           if ((field === 'flyOut') || (field === 'flyBack')) {
-            component =
+            const isDisabled = field === 'flyBack' && (!values.twoWays || !values.flyOut);
+
+            component = !isDisabled &&
               <DatePicker
                 name={field}
                 className="main-form-date-picker"
@@ -76,7 +68,7 @@ const InnerForm = (props: FormikProps<IFormValues>) => {
                 autoOk={true}
                 minDate={field === 'flyBack' ? values.flyOut : moment()}
                 disablePast
-                disabled={field === 'flyBack' && !values.flyOut}
+                disableToolbar
               />;
           } else {
             const renderAutocomplete = (field === 'from' || field === 'to') && value.length >= 2;
@@ -92,7 +84,6 @@ const InnerForm = (props: FormikProps<IFormValues>) => {
                   placeholder={mainScreenFormData[field].placeholder}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  onFocus={handleBlur}
                   error={touched[field] && !!errors[field]}
                   helperText={touched[field] ? errors[field] : ''}
                 />
@@ -108,32 +99,32 @@ const InnerForm = (props: FormikProps<IFormValues>) => {
               </>;
           }
 
-          return (
+          return component && (
             <Grid key={field} item className="main-form-item">
               {component}
             </Grid>
           );
         })}
-
-        <FormControlLabel
-          control={
-            <Switch
-              checked={values.twoWays}
-              onChange={handleSwitchChange}
-              value={values.twoWays}
-            />
-          }
-          label="Two-way"
-        />
-
-        <Button
-          type="submit"
-          className="main-form-btn"
-          disabled={isSubmitting || !isValid}
-        >
-          Find flights
-        </Button>
       </Grid>
+      <FormControlLabel
+        className="main-form-switch"
+        control={
+          <Switch
+            checked={values.twoWays}
+            onChange={handleSwitchChange}
+            value={values.twoWays}
+          />
+        }
+        label="Two-way"
+      />
+
+      <Button
+        type="submit"
+        className="main-form-btn"
+        disabled={isSubmitting || !isValid}
+      >
+        Find flights
+      </Button>
     </Form>
   );
 };
@@ -146,8 +137,15 @@ interface IFormProps {
   amountOfPassengers?: number;
   twoWays?: boolean;
   dispatch?: (action: object) => void;
+  changePage: () => void;
+  locations: string[];
 }
 
+interface IValidationErrors {
+  from?: string;
+  to?: string;
+  amountOfPassengers?: string;
+}
 
 const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
   mapPropsToValues: () => ({
@@ -159,69 +157,105 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
     twoWays: false
   }),
 
-  validate: ((values: IFormValues) => {
-
+  validate: (values: IFormValues, props: IFormProps): IValidationErrors => {
+    const { locations } = props;
     const { from, to, amountOfPassengers } = values;
-    const errors = {};
 
-    const validateLocationField = (field: string, value: string) => {
-      console.log('FIELD: ', field, 'VALUE: ', value);
-      console.log('CHECK: ', !locationInputRegexp.test(value));
+    const validationErrors: IValidationErrors = {};
+
+    const validateLocation = (field: string, value: string) => {
+      let invalidText: string = null;
+
       if (!value) {
-        errors[field] = `${field} field is required.`;
-      } else if (!locationInputRegexp.test(value)) {
+        invalidText = 'Location is required';
+      } else {
+        const validationRegExp: RegExp = new RegExp(`^${value}$`, 'i');
+        invalidText = 'Invalid location name';
 
-        errors[field] = `Input should be in form 'Country, city'`;
+        for (const location of locations) {
+          if (validationRegExp.test(location)) {
+            invalidText = null;
+            break;
+          }
+        }
       }
+
+      validationErrors[field] = invalidText;
     };
 
+    const validateAmountOfPassengers = () => {
+      let invalidText: string = null;
 
-    validateLocationField('from', from);
-    // validateLocationField('to', to);
+      if (!amountOfPassengers) {
+        invalidText = 'Amount of passengers is required';
+      } else if (
+        !+amountOfPassengers
+        ||
+        +amountOfPassengers <= 0
+      ) {
+        invalidText = 'Must be a positive number';
+      }
 
+      validationErrors.amountOfPassengers = invalidText;
+    };
 
-    return errors;
-  }),
+    validateLocation('from', from);
+    validateLocation('to', to);
+    validateAmountOfPassengers();
 
-  validationSchema: Yup.object().shape({
-    from: Yup.string()
-      .matches(locationInputRegexp, `Input should be in form 'Country, city'`)
-      .required('Departure airport is required'),
-    to: Yup.string()
-      .matches(locationInputRegexp, `Input should be in form 'Country, city'`)
-      .required('Destination airport is required'),
-    amountOfPassengers: Yup.number()
-      .typeError('Only positive numbers are possible')
-      .min(1, 'Must be a positive number')
-      .required('Amount of Passengers is required')
-  }),
+    const hasErrors = Object.values(validationErrors).some((value) => value);
+
+    return hasErrors && validationErrors;
+  },
 
   handleSubmit: (values: IFormValues, { props }) => {
-    const { dispatch } = props;
-    const { from, to, flyOut, flyBack, amountOfPassengers } = values;
+    const { dispatch, changePage } = props;
+    const { from, to, flyOut, flyBack, amountOfPassengers, twoWays } = values;
 
     const flyOutParams = {
       depCountry: parseCountry(from),
       depCity: parseCity(from),
       arrCountry: parseCountry(to),
       arrCity: parseCity(to),
-      departureTime: flyOut,
+      departureTime: flyOut.toISOString(),
       amountOfPassengers
     };
 
     dispatch(fetchFlights(flyOutParams));
 
-    const flyBackParams = {
-      depCountry: parseCountry(to),
-      depCity: parseCity(to),
-      arrCountry: parseCountry(from),
-      arrCity: parseCity(from),
-      departureTime: flyBack,
-      amountOfPassengers
-    };
+    if (twoWays) {
+      const flyBackParams = {
+        depCountry: parseCountry(to),
+        depCity: parseCity(to),
+        arrCountry: parseCountry(from),
+        arrCity: parseCity(from),
+        departureTime: flyBack.toISOString(),
+        amountOfPassengers
+      };
 
-    dispatch(fetchFlights(flyBackParams));
+      dispatch(fetchFlights(flyBackParams));
+    }
+
+    changePage();
   }
 })(InnerForm);
 
-export default MainScreenFormComponent;
+const parseLocations = (airports: IAirportData) => {
+  const parsed = [];
+
+  for (const country in airports) {
+    if (airports.hasOwnProperty(country)) {
+      airports[country].forEach((airport: IAirport) =>
+        parsed.push(`${country}, ${airport.city}`)
+      );
+    }
+  }
+
+  return parsed;
+};
+
+const mapStateToProps = (state) => ({
+  locations: parseLocations(state.airports.data)
+});
+
+export default connect(mapStateToProps)(MainScreenFormComponent);

@@ -7,12 +7,12 @@ import {
   fetchFlightsFail
 } from './actions';
 
-import { IAirportAction, IFlightAction, IAirportData, IFlightData } from './interface';
+import { IAction, IAirportData, IFlightData } from './interface';
 
 import airportApi from '../../api/airport';
 import flightApi from '../../api/flight';
 
-export function* fetchAirportsSaga(action: IAirportAction) {
+export function* fetchAirportsSaga() {
   try {
     const airports: IAirportData = yield call(airportApi.getAll);
     yield put(fetchAirportsSuccess(airports));
@@ -21,7 +21,7 @@ export function* fetchAirportsSaga(action: IAirportAction) {
   }
 }
 
-export function* fetchFlightsSaga(action: IFlightAction) {
+export function* fetchFlightsSaga(action: IAction) {
   try {
     const flights: IFlightData = yield call(flightApi.findByParams, action.payload);
     yield put(fetchFlightsSuccess(flights.data));

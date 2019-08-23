@@ -6,27 +6,29 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 import LocationIcon from '@material-ui/icons/LocationOn';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import ExpandLess from '@material-ui/icons/KeyboardArrowLeft';
+import ExpandMore from '@material-ui/icons/KeyboardArrowDown';
 
 import { IAirportData, IAirport } from '../../interface';
 
-import { parseCountry, parseCity } from '../../../../helpers/parseLocation';
+import { setSelectedItem } from '../../actions';
+
+import { parseCountry } from '../../../../helpers/parseLocation';
 
 interface IProps {
   isLoading: boolean;
   airports: IAirportData;
+  selected: number;
   inputValue: string;
   isShown: boolean;
   handleChange: (value: string) => void;
+  dispatch?: (action: object) => void;
 }
 
 interface IState {
   showAutocomplete: boolean;
   expendedItem: string;
 }
-
-const parseLocation = (airport: IAirport) => `${airport.country}, ${airport.city}`;
 
 class AutocompleteList extends React.PureComponent<IProps, IState> {
   private component: React.RefObject<any> = React.createRef();
@@ -61,51 +63,39 @@ class AutocompleteList extends React.PureComponent<IProps, IState> {
   }
 
   public componentDidUpdate(prevProps: Readonly<IProps>): void {
-    const { inputValue: nextInput, airports, handleChange } = this.props;
+    const { inputValue: nextInput, airports } = this.props;
     const { inputValue: prevInput } = prevProps;
     const countryReg: RegExp = new RegExp(parseCountry(nextInput), 'ig');
-    const cityReg: RegExp = new RegExp(parseCity(nextInput), 'ig');
-    let expendedItem = '';
-    let prediction = '';
 
-    if (nextInput.length > prevInput.length) {
-      outerLoop: for (const country in airports) {
+    if (nextInput.length !== prevInput.length) {
+      for (const country in airports) {
         if (!countryReg.test(country)) {
           continue;
         }
 
-        expendedItem = country;
-        prediction = parseLocation(airports[country][0]);
-
-        for (const airport of airports[country]) {
-          if (cityReg.test(airport.city)) {
-            prediction = parseLocation(airport);
-
-            break outerLoop;
-          }
-        }
+        this.setState({
+          showAutocomplete: true,
+          expendedItem: country
+        });
       }
-
-      handleChange(prediction);
-
-      this.setState({
-        showAutocomplete: true,
-        expendedItem
-      });
     }
   }
 
   private handleCountryClick = (country: string) => {
     this.props.handleChange(`${country}, `);
 
-    this.setState({
+    this.setState((prevState) => ({
       showAutocomplete: true,
-      expendedItem: country
-    });
+      expendedItem: prevState.expendedItem ? null : country
+    }));
   };
 
-  private handleCityClick = (event, airport) => {
-    this.props.handleChange(parseLocation(airport));
+  private handleCityClick = (event, airport: IAirport) => {
+    const location = `${airport.country}, ${airport.city}`;
+    const { dispatch, handleChange } = this.props;
+
+    handleChange(location);
+    dispatch(setSelectedItem(airport.id));
 
     this.setState({
       showAutocomplete: false,
@@ -116,10 +106,9 @@ class AutocompleteList extends React.PureComponent<IProps, IState> {
   };
 
   public render(): JSX.Element {
-    const { isLoading, airports, inputValue } = this.props;
+    const { isLoading, airports, selected, inputValue } = this.props;
     const { expendedItem } = this.state;
     const isShown = !isLoading && this.state.showAutocomplete;
-    // console.log('state: ', this.state);
 
     const countries: string[] = Object.keys(airports);
     const countryReg: RegExp = new RegExp(parseCountry(inputValue), 'ig');
@@ -137,12 +126,20 @@ class AutocompleteList extends React.PureComponent<IProps, IState> {
 
             <Collapse in={country === expendedItem} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                {airports[country].map((airport, innerIndex) =>
-                  <ListItem key={innerIndex} button className="nested"
-                            onClick={(event) => this.handleCityClick(event, airport)}>
+                {airports[country].map((airport, innerIndex) => {
+                  if (airport.id === selected) {
+                    return null;
+                  }
+
+                  return <ListItem
+                    key={innerIndex}
+                    button
+                    className="nested"
+                    onClick={(event) => this.handleCityClick(event, airport)}
+                  >
                     <ListItemText primary={airport.city} secondary={airport.name}/>
-                  </ListItem>
-                )}
+                  </ListItem>;
+                })}
               </List>
             </Collapse>
           </ListItem>)}
@@ -152,7 +149,8 @@ class AutocompleteList extends React.PureComponent<IProps, IState> {
 
 const mapStateToProps = (state) => ({
   isLoading: state.airports.isFetching,
-  airports: state.airports.data
+  airports: state.airports.data,
+  selected: state.airports.selectedItem
 });
 
 export default connect(mapStateToProps)(AutocompleteList);

@@ -6,7 +6,7 @@ import { fetchAirportsSaga, fetchFlightsSaga } from './screens/Main/sagas';
 
 function* rootSaga() {
   yield all([
-    yield takeLatest(FETCH_AIRPORTS_REQUESTED, fetchAirportsSaga),
+    yield takeEvery(FETCH_AIRPORTS_REQUESTED, fetchAirportsSaga),
     yield takeEvery(FETCH_FLIGHTS_REQUESTED, fetchFlightsSaga)
   ]);
 }

@@ -36,7 +36,7 @@ export interface IFlightFetchRequest {
   depCity: string;
   arrCountry: string;
   arrCity: string;
-  departureTime: Moment;
+  departureTime: string;
   amountOfPassengers: number;
   page?: number;
   limit?: number;
@@ -46,24 +46,15 @@ export interface IAirportData {
   [key: string]: IAirport[];
 }
 
-export interface IAirportAction {
+export interface IAction {
   type: string;
-  payload: IAirport[] | Error;
-}
-
-// export interface IFlightAction {
-//   type: string;
-//   payload: IFlight[] | IFlightFetchRequest | Error;
-// }
-
-export interface IFlightAction {
-  type: string;
-  payload: BodyInit;
+  payload: any;
 }
 
 export interface IState {
   fetchParams?: IFlightFetchRequest;
   isFetching: boolean;
   data: IAirport[];
+  selectedItem?: number;
   error: Error;
 }

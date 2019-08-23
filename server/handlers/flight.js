@@ -24,6 +24,7 @@ const getById = async (req, res, next) => {
 };
 
 const getByParams = async (req, res, next) => {
+  console.log('got query: ', req.query);
   const data = await flightController.getByParams(req.query);
 
   if (!data) {

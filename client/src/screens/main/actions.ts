@@ -1,6 +1,7 @@
 import { IAirportData, IFlight, IFlightFetchRequest } from './interface';
 
 export const FETCH_AIRPORTS_REQUESTED = 'FETCH_AIRPORTS_REQUESTED';
+export const SET_SELECTED_ITEM = 'SET_SELECTED_ITEM';
 export const FETCH_AIRPORTS_SUCCEEDED = 'FETCH_AIRPORTS_SUCCEEDED';
 export const FETCH_AIRPORTS_FAILED = 'FETCH_AIRPORTS_FAILED';
 
@@ -10,6 +11,11 @@ export const FETCH_FLIGHTS_FAILED = 'FETCH_FLIGHTS_FAILED';
 
 export const fetchAirports = () => ({
   type: FETCH_AIRPORTS_REQUESTED
+});
+
+export const setSelectedItem = (item: number) => ({
+  type: SET_SELECTED_ITEM,
+  payload: item
 });
 
 export const fetchAirportsSuccess = (airports: IAirportData) => ({
