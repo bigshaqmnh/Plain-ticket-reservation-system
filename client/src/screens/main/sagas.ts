@@ -1,31 +1,42 @@
 import { call, put } from 'redux-saga/effects';
 
 import {
-    fetchAirportsSuccess,
-    fetchAirportsFail,
-    fetchFlightsSuccess,
-    fetchFlightsFail
+  fetchAirportsSuccess,
+  fetchAirportsFail,
+  fetchForwardFlightsSuccess,
+  fetchForwardFlightsFail,
+  fetchBackwardFlightsSuccess,
+  fetchBackwardFlightsFail
 } from './actions';
 
-import { IAirportAction, IFlightAction, IFetchedData, IAirport, IFlight } from './interface';
+import { IAction, IAirportData, IFlightData } from './interface';
 
 import airportApi from '../../api/airport';
 import flightApi from '../../api/flight';
 
-export function* fetchAirportsSaga(action: IAirportAction) {
-    try {
-        const airports: IFetchedData<IAirport> = yield call(airportApi.getAll);
-        yield put(fetchAirportsSuccess(airports.data));
-    } catch (err) {
-        yield put(fetchAirportsFail(err));
-    }
+export function* fetchAirportsSaga() {
+  try {
+    const airports: IAirportData = yield call(airportApi.getAll);
+    yield put(fetchAirportsSuccess(airports));
+  } catch (err) {
+    yield put(fetchAirportsFail(err));
+  }
 }
 
-export function* fetchFlightsSaga(action: IFlightAction) {
-    try {
-        const flights: IFetchedData<IFlight> = yield call(flightApi.findByParams, action.payload);
-        yield put(fetchFlightsSuccess(flights.data));
-    } catch (err) {
-        yield put(fetchFlightsFail(err));
-    }
+export function* fetchForwardFlightsSaga(action: IAction) {
+  try {
+    const flights: IFlightData = yield call(flightApi.findByParams, action.payload);
+    yield put(fetchForwardFlightsSuccess({forward: flights.data}));
+  } catch (err) {
+    yield put(fetchForwardFlightsFail(err));
+  }
+}
+
+export function* fetchBackwardFlightsSaga(action: IAction) {
+  try {
+    const flights: IFlightData = yield call(flightApi.findByParams, action.payload);
+    yield put(fetchBackwardFlightsSuccess({backward: flights.data}));
+  } catch (err) {
+    yield put(fetchBackwardFlightsFail(err));
+  }
 }
