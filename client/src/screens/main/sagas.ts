@@ -26,7 +26,7 @@ export function* fetchAirportsSaga() {
 export function* fetchForwardFlightsSaga(action: IAction) {
   try {
     const flights: IFlightData = yield call(flightApi.findByParams, action.payload);
-    yield put(fetchForwardFlightsSuccess({forward: flights.data}));
+    yield put(fetchForwardFlightsSuccess({ forward: flights.data }));
   } catch (err) {
     yield put(fetchForwardFlightsFail(err));
   }
@@ -35,7 +35,7 @@ export function* fetchForwardFlightsSaga(action: IAction) {
 export function* fetchBackwardFlightsSaga(action: IAction) {
   try {
     const flights: IFlightData = yield call(flightApi.findByParams, action.payload);
-    yield put(fetchBackwardFlightsSuccess({backward: flights.data}));
+    yield put(fetchBackwardFlightsSuccess({ backward: flights.data }));
   } catch (err) {
     yield put(fetchBackwardFlightsFail(err));
   }

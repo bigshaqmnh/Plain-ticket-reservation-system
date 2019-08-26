@@ -6,20 +6,20 @@ function FlightsFeed(props) {
 
   return !isLoading && <>
     <h1>Flights Feed</h1>
-    <br/>
+    <br />
     <h3>Forward flights:</h3>
     <ol>
       {flights.forward && flights.forward.map((flight) =>
         <li>{`From ${flight.departureAirport.name}, at ${new Date(flight.departureTime)} -> ` +
-        `To ${flight.arrivalAirport.name}, at ${new Date(flight.arrivalTime)}`}</li>)
+          `To ${flight.arrivalAirport.name}, at ${new Date(flight.arrivalTime)}`}</li>)
       }
     </ol>
-    <br/>
+    <br />
     <h3>Backward flights:</h3>
     <ol>
       {flights.backward && flights.backward.map((flight) =>
         <li>{`From ${flight.departureAirport.name}, at ${new Date(flight.departureTime)} -> ` +
-        `To ${flight.arrivalAirport.name}, at ${new Date(flight.arrivalTime)}`}</li>)
+          `To ${flight.arrivalAirport.name}, at ${new Date(flight.arrivalTime)}`}</li>)
       }
     </ol>
   </>;
