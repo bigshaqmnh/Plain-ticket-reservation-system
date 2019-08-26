@@ -112,10 +112,6 @@ const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departur
     attributes: ['id', 'departureTime', 'arrivalTime', 'luggageOverweightCost', 'isCancelled', 'airplaneId']
   });
 
-  if (!flights.length) {
-    return;
-  }
-
   const data = flights.map(flight => ({
     ...flight.dataValues,
     departureAirport: flight.departureAirport.dataValues,
@@ -125,9 +121,9 @@ const findByParams = async ({ depCountry, depCity, arrCountry, arrCity, departur
 
   return data.length > limit
     ? {
-        data,
-        nextPage: pageNum + 1
-      }
+      data,
+      nextPage: pageNum + 1
+    }
     : { data };
 };
 

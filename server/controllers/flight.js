@@ -13,7 +13,7 @@ const getById = async flightId => {
 const getByParams = async params => {
   const { data: flights, nextPage } = await flightService.findByParams(params);
 
-  if (!flights) {
+  if (!flights.length) {
     return;
   }
 
@@ -24,9 +24,9 @@ const getByParams = async params => {
   const suitableFlights = [];
 
   for (const airplane of airplanesWithUnbookedSeats) {
-    const numOfPeople = params.numOfPeople || 1;
+    const amountOfPassengers = params.amountOfPassengers || 1;
 
-    if (airplane.numberOfUnbookedSeats >= numOfPeople) {
+    if (airplane.numberOfUnbookedSeats >= amountOfPassengers) {
       const suitableFlight = flights.find(flight => flight.airplaneId === airplane.airplaneId);
       const minCost = await costService.findMinCostByFlightId(suitableFlight.id);
 
@@ -35,6 +35,10 @@ const getByParams = async params => {
         minCost
       });
     }
+  }
+
+  if (!suitableFlights.length) {
+    return;
   }
 
   return nextPage ? { data: suitableFlights, nextPage } : { data: suitableFlights };
