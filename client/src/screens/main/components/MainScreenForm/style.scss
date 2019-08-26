@@ -1,23 +1,52 @@
+@import '../../../../variables';
+
 .main-form {
-  justify-content: center;
+  height: 35%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10%;
+
+  .form-container {
+    width: 80%;
+    min-height: 170px;
+    display: flex;
+    justify-content: center;
+    background: $transparent-gray;
+    border-radius: 10px;
+  }
 
   .main-form-input,
   .main-form-date-picker {
     transform: scale(1.3);
+    margin: 50px 50px 10px 50px;
+  }
+
+  .main-form-switch {
+    .MuiSwitch-colorSecondary.Mui-checked {
+      color: $dark-violet;
+    }
+
+    .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
+      background: $violet;
+    }
   }
 
   .main-form-btn {
     height: 50px;
     width: 150px;
-    position: absolute;
-    margin: 0 auto;
-    bottom: 20%;
-    border: #303f9f dashed;
+    border: $dark-violet dashed;
     font-size: 1.1em;
     font-weight: 600;
 
     &:hover {
-      background-color: #303f9f;
+      background-color: $dark-violet;
+    }
+
+    &:disabled {
+      color: $dark-gray
     }
   }
 }
