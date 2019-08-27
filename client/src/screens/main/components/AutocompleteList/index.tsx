@@ -11,7 +11,7 @@ import ExpandMore from '@material-ui/icons/KeyboardArrowDown';
 
 import { IAirportData, IAirport, IState } from '../../../../interfaces';
 
-import { setSelectedItem } from '../../actions';
+import { setSelectedItem } from '../../actionCreators';
 
 import { parseCountry } from '../../../../helpers/parseLocation';
 

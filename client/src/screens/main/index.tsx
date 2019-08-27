@@ -5,7 +5,7 @@ import { History } from 'history';
 
 import MainScreenFormComponent from './components/MainScreenForm';
 
-import { fetchAirports } from './actions';
+import { fetchAirports } from './actionCreators';
 
 import './style.scss';
 

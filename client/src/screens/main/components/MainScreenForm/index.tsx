@@ -10,7 +10,7 @@ import { Moment } from 'moment';
 
 import { IAirport, IAirportData, IState } from '../../../../interfaces';
 
-import { fetchForwardFlights, fetchBackwardFlights } from '../../actions';
+import { fetchForwardFlights, fetchBackwardFlights } from '../../actionCreators';
 
 import AutocompleteList from '../AutocompleteList';
 

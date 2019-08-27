@@ -7,7 +7,7 @@ import {
   fetchForwardFlightsFail,
   fetchBackwardFlightsSuccess,
   fetchBackwardFlightsFail
-} from './actions';
+} from './actionCreators';
 
 import { IAction, IAirportData, IFlightData } from '../../interfaces';
 
