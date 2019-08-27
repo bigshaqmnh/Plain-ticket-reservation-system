@@ -19,7 +19,6 @@ interface IInputProps {
 }
 
 function Input({
-                 key,
                  label,
                  name,
                  className = 'input',
@@ -36,7 +35,6 @@ function Input({
                }: IInputProps): JSX.Element {
   return (
     <TextField
-      key={key}
       label={label}
       name={name}
       className={className}
