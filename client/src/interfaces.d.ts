@@ -52,7 +52,7 @@ export interface IFlightState {
 
 export interface IAction {
   type: string;
-  payload: any;
+  payload?: any;
 }
 
 export interface IInitialState {
@@ -67,3 +67,5 @@ export interface IState {
   airports: IInitialState;
   flights: IInitialState;
 }
+
+export type IDispatch = (actionCreator: IAction) => void;
