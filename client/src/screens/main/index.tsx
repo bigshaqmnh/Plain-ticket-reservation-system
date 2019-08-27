@@ -3,6 +3,8 @@ import Grid from '@material-ui/core/Grid';
 import { connect } from 'react-redux';
 import { History } from 'history';
 
+import { IDispatch } from '../../interfaces';
+
 import MainScreenFormComponent from './components/MainScreenForm';
 
 import { fetchAirports } from './actionCreators';
@@ -11,12 +13,13 @@ import './style.scss';
 
 interface IMainScreenProps {
   readonly history: History;
-  readonly dispatch: (action: object) => void;
+  fetchAirports: () => void;
+  readonly dispatch: IDispatch;
 }
 
 class MainScreen extends React.PureComponent<IMainScreenProps> {
   public componentDidMount() {
-    this.props.dispatch(fetchAirports());
+    this.props.fetchAirports();
   }
 
   private handlePageChange = () => this.props.history.replace('/feed');
@@ -30,4 +33,8 @@ class MainScreen extends React.PureComponent<IMainScreenProps> {
   }
 }
 
-export default connect()(MainScreen);
+const mapDispatchToProps = (dispatch: IDispatch) => ({
+  fetchAirports: () => dispatch(fetchAirports())
+});
+
+export default connect(null, mapDispatchToProps)(MainScreen);
