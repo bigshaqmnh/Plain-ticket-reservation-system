@@ -13,5 +13,5 @@ export const mainScreenFormData: IMainScreenFormData<IFormData> = {
   to: { initValue: '', label: 'To', placeholder: 'Country, city' },
   flyOut: { initValue: null, label: 'Fly out', placeholder: 'DD/MM/YYYY' },
   flyBack: { initValue: null, label: 'Fly back', placeholder: 'DD/MM/YYYY' },
-  amountOfPassengers: { initValue: 1, label: 'Passengers', placeholder: '1' }
+  numberOfPassengers: { initValue: 1, label: 'Passengers', placeholder: '1' }
 };

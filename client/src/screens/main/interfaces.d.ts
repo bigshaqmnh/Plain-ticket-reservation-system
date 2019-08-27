@@ -32,7 +32,7 @@ export interface IFlightFetchRequest {
   arrCountry: string;
   arrCity: string;
   departureTime: string;
-  amountOfPassengers: number;
+  numberOfPassengers: number;
   page?: number;
   limit?: number;
 }

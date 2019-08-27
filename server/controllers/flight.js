@@ -24,9 +24,9 @@ const getByParams = async params => {
   const suitableFlights = [];
 
   for (const airplane of airplanesWithUnbookedSeats) {
-    const amountOfPassengers = params.amountOfPassengers || 1;
+    const numberOfPassengers = params.numberOfPassengers || 1;
 
-    if (airplane.numberOfUnbookedSeats >= amountOfPassengers) {
+    if (airplane.numberOfUnbookedSeats >= numberOfPassengers) {
       const suitableFlight = flights.find(flight => flight.airplaneId === airplane.airplaneId);
       const minCost = await costService.findMinCostByFlightId(suitableFlight.id);
 

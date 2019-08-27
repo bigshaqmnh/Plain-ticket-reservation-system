@@ -28,7 +28,7 @@ interface IFormValues {
   to: string;
   flyOut: Moment;
   flyBack: Moment;
-  amountOfPassengers: number;
+  numberOfPassengers: number;
   twoWays: boolean;
 }
 
@@ -135,7 +135,7 @@ interface IFormProps {
   to?: string;
   flyOut?: Moment;
   flyBack?: Moment;
-  amountOfPassengers?: number;
+  numberOfPassengers?: number;
   twoWays?: boolean;
   dispatch?: (action: object) => void;
   changePage: () => void;
@@ -145,7 +145,7 @@ interface IFormProps {
 interface IValidationErrors {
   from?: string;
   to?: string;
-  amountOfPassengers?: string;
+  numberOfPassengers?: string;
 }
 
 const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
@@ -154,13 +154,13 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
     to: mainScreenFormData.to.initValue,
     flyOut: mainScreenFormData.flyOut.initValue,
     flyBack: mainScreenFormData.flyBack.initValue,
-    amountOfPassengers: mainScreenFormData.amountOfPassengers.initValue,
+    numberOfPassengers: mainScreenFormData.numberOfPassengers.initValue,
     twoWays: false
   }),
 
   validate: (values: IFormValues, props: IFormProps): IValidationErrors => {
     const { locations } = props;
-    const { from, to, amountOfPassengers } = values;
+    const { from, to, numberOfPassengers } = values;
 
     const validationErrors: IValidationErrors = {};
 
@@ -184,25 +184,25 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
       validationErrors[field] = invalidText;
     };
 
-    const validateAmountOfPassengers = () => {
+    const validateNumberOfPassengers = () => {
       let invalidText: string = null;
 
-      if (!amountOfPassengers) {
-        invalidText = 'Amount of passengers is required';
+      if (!numberOfPassengers) {
+        invalidText = 'Number of passengers is required';
       } else if (
-        !+amountOfPassengers
+        !+numberOfPassengers
         ||
-        +amountOfPassengers <= 0
+        +numberOfPassengers <= 0
       ) {
         invalidText = 'Must be a positive number';
       }
 
-      validationErrors.amountOfPassengers = invalidText;
+      validationErrors.numberOfPassengers = invalidText;
     };
 
     validateLocation('from', from);
     validateLocation('to', to);
-    validateAmountOfPassengers();
+    validateNumberOfPassengers();
 
     const hasErrors = Object.values(validationErrors).some((value) => value);
 
@@ -211,7 +211,7 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
 
   handleSubmit: (values: IFormValues, { props }) => {
     const { dispatch, changePage } = props;
-    const { from, to, flyOut, flyBack, amountOfPassengers, twoWays } = values;
+    const { from, to, flyOut, flyBack, numberOfPassengers, twoWays } = values;
 
     const flyOutParams = {
       depCountry: parseCountry(from),
@@ -219,7 +219,7 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
       arrCountry: parseCountry(to),
       arrCity: parseCity(to),
       departureTime: flyOut.startOf('day').toISOString(),
-      amountOfPassengers
+      numberOfPassengers: numberOfPassengers
     };
 
     dispatch(fetchForwardFlights(flyOutParams));
@@ -231,7 +231,7 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
         arrCountry: parseCountry(from),
         arrCity: parseCity(from),
         departureTime: flyBack.startOf('day').toISOString(),
-        amountOfPassengers
+        numberOfPassengers: numberOfPassengers
       };
 
       dispatch(fetchBackwardFlights(flyBackParams));
