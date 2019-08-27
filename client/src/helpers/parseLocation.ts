@@ -1,3 +1,8 @@
-export const parseCountry = (str: string) => str.slice(0, str.indexOf(','));
+export default (str: string) => {
+  const splitLocation = str.split(', ');
 
-export const parseCity = (str: string) => str.slice(str.indexOf(', ') + 2);
+  return {
+    country: splitLocation[0],
+    city: splitLocation[1]
+  };
+};

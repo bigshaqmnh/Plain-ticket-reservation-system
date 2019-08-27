@@ -13,7 +13,7 @@ import { IAirportData, IAirport, IState, IDispatch } from '../../../../interface
 
 import { setSelectedItem } from '../../actionCreators';
 
-import { parseCountry } from '../../../../helpers/parseLocation';
+import parseLocation from '../../../../helpers/parseLocation';
 
 interface IAutocompleteListProps {
   isLoading: boolean;
@@ -65,7 +65,8 @@ class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAuto
   public componentDidUpdate(prevProps: Readonly<IAutocompleteListProps>): void {
     const { inputValue: nextInput, airports } = this.props;
     const { inputValue: prevInput } = prevProps;
-    const countryReg: RegExp = new RegExp(parseCountry(nextInput), 'ig');
+    const { country: parsedCountry } = parseLocation(nextInput);
+    const countryReg: RegExp = new RegExp(parsedCountry, 'ig');
 
     if (nextInput.length !== prevInput.length) {
       for (const country in airports) {
@@ -111,7 +112,8 @@ class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAuto
     const isShown = !isLoading && this.state.showAutocomplete;
 
     const countries: string[] = Object.keys(airports);
-    const countryReg: RegExp = new RegExp(parseCountry(inputValue), 'ig');
+    const { country: parsedCountry } = parseLocation(inputValue);
+    const countryReg: RegExp = new RegExp(parsedCountry, 'ig');
     const shownCountries = countries.filter((country: string) => countryReg.test(country));
 
     return isShown && (

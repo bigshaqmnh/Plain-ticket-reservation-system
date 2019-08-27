@@ -12,7 +12,7 @@ import { fetchForwardFlights, fetchBackwardFlights } from '../../actionCreators'
 
 import { mainScreenFormData } from '../../../../constants/formData';
 
-import { parseCountry, parseCity } from '../../../../helpers/parseLocation';
+import parseLocation from '../../../../helpers/parseLocation';
 
 import './style.scss';
 
@@ -80,12 +80,14 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
   handleSubmit: (values: IFormValues, { props }) => {
     const { fetchForwardFlights, fetchBackwardFlights, changePage } = props;
     const { from, to, flyOut, flyBack, numberOfPassengers, twoWays } = values;
+    const {country: depCountry, city: depCity} = parseLocation(from);
+    const {country: arrCountry, city: arrCity} = parseLocation(to);
 
     const flyOutParams: IFlightFetchRequest = {
-      depCountry: parseCountry(from),
-      depCity: parseCity(from),
-      arrCountry: parseCountry(to),
-      arrCity: parseCity(to),
+      depCountry,
+      depCity,
+      arrCountry,
+      arrCity,
       departureTime: flyOut.startOf('day').toISOString(),
       numberOfPassengers
     };
@@ -94,10 +96,10 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
 
     if (twoWays) {
       const flyBackParams: IFlightFetchRequest = {
-        depCountry: parseCountry(to),
-        depCity: parseCity(to),
-        arrCountry: parseCountry(from),
-        arrCity: parseCity(from),
+        depCountry,
+        depCity,
+        arrCountry,
+        arrCity,
         departureTime: flyBack.startOf('day').toISOString(),
         numberOfPassengers
       };
