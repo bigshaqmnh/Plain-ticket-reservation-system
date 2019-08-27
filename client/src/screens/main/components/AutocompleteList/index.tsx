@@ -9,7 +9,7 @@ import LocationIcon from '@material-ui/icons/LocationOn';
 import ExpandLess from '@material-ui/icons/KeyboardArrowLeft';
 import ExpandMore from '@material-ui/icons/KeyboardArrowDown';
 
-import { IAirportData, IAirport, IState } from '../../../../interfaces';
+import { IAirportData, IAirport, IState, IDispatch } from '../../../../interfaces';
 
 import { setSelectedItem } from '../../actionCreators';
 
@@ -22,12 +22,12 @@ interface IAutocompleteListProps {
   inputValue: string;
   isShown: boolean;
   handleChange: (value: string) => void;
-  dispatch?: (action: object) => void;
+  setSelectedItem: (item: number) => void;
 }
 
 interface IAutocompleteListState {
   showAutocomplete: boolean;
-  expendedItem: string;
+  expandedItem: string;
 }
 
 class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAutocompleteListState> {
@@ -37,7 +37,7 @@ class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAuto
     super(props);
     this.state = {
       showAutocomplete: true,
-      expendedItem: null
+      expandedItem: null
     };
   }
 
@@ -75,7 +75,7 @@ class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAuto
 
         this.setState({
           showAutocomplete: true,
-          expendedItem: country
+          expandedItem: country
         });
       }
     }
@@ -86,20 +86,20 @@ class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAuto
 
     this.setState((prevState) => ({
       showAutocomplete: true,
-      expendedItem: prevState.expendedItem ? null : country
+      expandedItem: prevState.expandedItem ? null : country
     }));
   };
 
   private handleCityClick = (event, airport: IAirport) => {
     const location = `${airport.country}, ${airport.city}`;
-    const { dispatch, handleChange } = this.props;
+    const { setSelectedItem, handleChange } = this.props;
 
     handleChange(location);
-    dispatch(setSelectedItem(airport.id));
+    setSelectedItem(airport.id);
 
     this.setState({
       showAutocomplete: false,
-      expendedItem: null
+      expandedItem: null
     });
 
     event.stopPropagation();
@@ -107,7 +107,7 @@ class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAuto
 
   public render(): JSX.Element {
     const { isLoading, airports, selected, inputValue } = this.props;
-    const { expendedItem } = this.state;
+    const { expandedItem } = this.state;
     const isShown = !isLoading && this.state.showAutocomplete;
 
     const countries: string[] = Object.keys(airports);
@@ -122,9 +122,9 @@ class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAuto
               <LocationIcon/>
             </ListItemIcon>
             <ListItemText primary={country}/>
-            {country === expendedItem ? <ExpandLess/> : <ExpandMore/>}
+            {country === expandedItem ? <ExpandLess/> : <ExpandMore/>}
 
-            <Collapse in={country === expendedItem} timeout="auto" unmountOnExit>
+            <Collapse in={country === expandedItem} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {airports[country].map((airport, innerIndex) => {
                   if (airport.id === selected) {
@@ -153,4 +153,8 @@ const mapStateToProps = (state: IState) => ({
   selected: state.airports.selectedItem
 });
 
-export default connect(mapStateToProps)(AutocompleteList);
+const mapDispatchToProps = (dispatch: IDispatch) => ({
+  setSelectedItem: (item: number) => dispatch(setSelectedItem(item))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AutocompleteList);
