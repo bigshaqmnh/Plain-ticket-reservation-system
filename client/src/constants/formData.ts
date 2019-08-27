@@ -1,5 +1,5 @@
 interface IFormData {
-  initValue: any;
+  initValue: string | number;
   label: string;
   placeholder: string;
 }
