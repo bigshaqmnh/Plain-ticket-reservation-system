@@ -1,12 +1,14 @@
 import { getUserToken } from '../helpers/token';
 
+import {IAirportData, IFlightData} from '../interfaces';
+
 interface IFetchData {
   url: string;
   needAuth?: boolean;
   requestParams: any;
 }
 
-const fetchData = async ({ url, needAuth, requestParams }: IFetchData) => {
+const fetchData = async ({ url, needAuth, requestParams }: IFetchData): Promise<IAirportData | IFlightData> => {
   const params: RequestInit = needAuth
     ? { ...requestParams, headers: { ...requestParams.headers, Authorization: `Bearer ${getUserToken()}` } }
     : requestParams;

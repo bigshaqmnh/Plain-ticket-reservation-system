@@ -1,5 +1,7 @@
+import { Moment } from 'moment';
+
 interface IFormData {
-  initValue: string | number;
+  initValue: string | number | Moment;
   label: string;
   placeholder: string;
 }

@@ -8,7 +8,7 @@ import { DatePicker } from '@material-ui/pickers';
 import { withFormik, FormikProps, Form } from 'formik';
 import { Moment } from 'moment';
 
-import { IAirport, IAirportData } from '../../interfaces';
+import { IAirport, IAirportData } from '../../../../interfaces';
 
 import { fetchForwardFlights, fetchBackwardFlights } from '../../actions';
 
@@ -150,11 +150,11 @@ interface IValidationErrors {
 
 const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
   mapPropsToValues: () => ({
-    from: mainScreenFormData.from.initValue,
-    to: mainScreenFormData.to.initValue,
-    flyOut: mainScreenFormData.flyOut.initValue,
-    flyBack: mainScreenFormData.flyBack.initValue,
-    numberOfPassengers: mainScreenFormData.numberOfPassengers.initValue,
+    from: mainScreenFormData.from.initValue as string,
+    to: mainScreenFormData.to.initValue as string,
+    flyOut: mainScreenFormData.flyOut.initValue as Moment,
+    flyBack: mainScreenFormData.flyBack.initValue as Moment,
+    numberOfPassengers: mainScreenFormData.numberOfPassengers.initValue as number,
     twoWays: false
   }),
 
@@ -219,7 +219,7 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
       arrCountry: parseCountry(to),
       arrCity: parseCity(to),
       departureTime: flyOut.startOf('day').toISOString(),
-      numberOfPassengers: numberOfPassengers
+      numberOfPassengers
     };
 
     dispatch(fetchForwardFlights(flyOutParams));
@@ -231,7 +231,7 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
         arrCountry: parseCountry(from),
         arrCity: parseCity(from),
         departureTime: flyBack.startOf('day').toISOString(),
-        numberOfPassengers: numberOfPassengers
+        numberOfPassengers
       };
 
       dispatch(fetchBackwardFlights(flyBackParams));
