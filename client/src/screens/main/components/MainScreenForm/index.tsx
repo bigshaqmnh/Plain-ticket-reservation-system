@@ -8,7 +8,7 @@ import { DatePicker } from '@material-ui/pickers';
 import { withFormik, FormikProps, Form } from 'formik';
 import { Moment } from 'moment';
 
-import { IAirport, IAirportData } from '../../../../interfaces';
+import { IAirport, IAirportData, IState } from '../../../../interfaces';
 
 import { fetchForwardFlights, fetchBackwardFlights } from '../../actions';
 
@@ -255,8 +255,8 @@ const parseLocations = (airports: IAirportData) => {
   return parsed;
 };
 
-const mapStateToProps = (state) => ({
-  locations: parseLocations(state.airports.data)
+const mapStateToProps = (state: IState) => ({
+  locations: parseLocations(state.airports.data as IAirportData)
 });
 
 export default connect(mapStateToProps)(MainScreenFormComponent);

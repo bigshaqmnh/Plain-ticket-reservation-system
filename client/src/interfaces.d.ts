@@ -62,3 +62,8 @@ export interface IInitialState {
   selectedItem?: number;
   error: Error;
 }
+
+export interface IState {
+  airports: IInitialState;
+  flights: IInitialState;
+}

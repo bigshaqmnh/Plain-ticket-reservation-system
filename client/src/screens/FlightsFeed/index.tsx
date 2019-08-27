@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { History } from 'history';
 
-import { IFlightState } from '../../interfaces';
+import { IFlightState, IFlight, IState } from '../../interfaces';
 
 interface IFlightsFeedProps {
   readonly history: History;
@@ -19,7 +19,7 @@ function FlightsFeed(props: IFlightsFeedProps) {
     <br/>
     <h3>Forward flights:</h3>
     <ol>
-      {flights.forward && flights.forward.map((flight) =>
+      {flights.forward && flights.forward.map((flight: IFlight) =>
         <li>{`From ${flight.departureAirport.name}, at ${flight.departureTime.toString()} -> ` +
         `To ${flight.arrivalAirport.name}, at ${flight.arrivalTime.toString()}`}</li>)
       }
@@ -27,7 +27,7 @@ function FlightsFeed(props: IFlightsFeedProps) {
     <br/>
     <h3>Backward flights:</h3>
     <ol>
-      {flights.backward && flights.backward.map((flight) =>
+      {flights.backward && flights.backward.map((flight: IFlight) =>
         <li>{`From ${flight.departureAirport.name}, at ${flight.departureTime.toString()} -> ` +
         `To ${flight.arrivalAirport.name}, at ${flight.arrivalTime.toString()}`}</li>)
       }
@@ -35,7 +35,7 @@ function FlightsFeed(props: IFlightsFeedProps) {
   </>;
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: IState) => ({
   isLoading: state.flights.isFetching,
   flights: state.flights.data
 });

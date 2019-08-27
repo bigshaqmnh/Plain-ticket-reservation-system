@@ -9,13 +9,13 @@ import LocationIcon from '@material-ui/icons/LocationOn';
 import ExpandLess from '@material-ui/icons/KeyboardArrowLeft';
 import ExpandMore from '@material-ui/icons/KeyboardArrowDown';
 
-import { IAirportData, IAirport } from '../../../../interfaces';
+import { IAirportData, IAirport, IState } from '../../../../interfaces';
 
 import { setSelectedItem } from '../../actions';
 
 import { parseCountry } from '../../../../helpers/parseLocation';
 
-interface IProps {
+interface IAutocompleteListProps {
   isLoading: boolean;
   airports: IAirportData;
   selected: number;
@@ -25,15 +25,15 @@ interface IProps {
   dispatch?: (action: object) => void;
 }
 
-interface IState {
+interface IAutocompleteListState {
   showAutocomplete: boolean;
   expendedItem: string;
 }
 
-class AutocompleteList extends React.PureComponent<IProps, IState> {
+class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAutocompleteListState> {
   private component: React.RefObject<any> = React.createRef();
 
-  constructor(props: IProps) {
+  constructor(props: IAutocompleteListProps) {
     super(props);
     this.state = {
       showAutocomplete: true,
@@ -62,7 +62,7 @@ class AutocompleteList extends React.PureComponent<IProps, IState> {
     document.removeEventListener('click', this.handleOutsideClick);
   }
 
-  public componentDidUpdate(prevProps: Readonly<IProps>): void {
+  public componentDidUpdate(prevProps: Readonly<IAutocompleteListProps>): void {
     const { inputValue: nextInput, airports } = this.props;
     const { inputValue: prevInput } = prevProps;
     const countryReg: RegExp = new RegExp(parseCountry(nextInput), 'ig');
@@ -147,7 +147,7 @@ class AutocompleteList extends React.PureComponent<IProps, IState> {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: IState) => ({
   isLoading: state.airports.isFetching,
   airports: state.airports.data,
   selected: state.airports.selectedItem
