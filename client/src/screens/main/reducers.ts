@@ -11,7 +11,7 @@ import {
   FETCH_BACKWARD_FLIGHTS_FAILED
 } from './actions';
 
-import { IAction, IInitialState } from './interface';
+import { IAction, IInitialState } from './interfaces';
 
 const initialState: IInitialState = {
   fetchParams: null,

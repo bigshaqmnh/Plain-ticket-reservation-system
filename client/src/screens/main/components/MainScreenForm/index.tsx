@@ -8,7 +8,7 @@ import { DatePicker } from '@material-ui/pickers';
 import { withFormik, FormikProps, Form } from 'formik';
 import { Moment } from 'moment';
 
-import { IAirport, IAirportData } from '../../interface';
+import { IAirport, IAirportData } from '../../interfaces';
 
 import { fetchForwardFlights, fetchBackwardFlights } from '../../actions';
 

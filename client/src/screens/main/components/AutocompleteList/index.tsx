@@ -9,7 +9,7 @@ import LocationIcon from '@material-ui/icons/LocationOn';
 import ExpandLess from '@material-ui/icons/KeyboardArrowLeft';
 import ExpandMore from '@material-ui/icons/KeyboardArrowDown';
 
-import { IAirportData, IAirport } from '../../interface';
+import { IAirportData, IAirport } from '../../interfaces';
 
 import { setSelectedItem } from '../../actions';
 

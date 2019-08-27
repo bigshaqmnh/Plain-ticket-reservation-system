@@ -9,7 +9,7 @@ import {
   fetchBackwardFlightsFail
 } from './actions';
 
-import { IAction, IAirportData, IFlightData } from './interface';
+import { IAction, IAirportData, IFlightData } from './interfaces';
 
 import airportApi from '../../api/airport';
 import flightApi from '../../api/flight';
