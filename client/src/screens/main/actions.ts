@@ -1,4 +1,4 @@
-import { IAirportData, IFlightState, IFlightFetchRequest } from './interfaces';
+import { IAirportData, IFlightState, IFlightFetchRequest } from '../../interfaces';
 
 export const FETCH_AIRPORTS_REQUESTED = 'FETCH_AIRPORTS_REQUESTED';
 export const SET_SELECTED_ITEM = 'SET_SELECTED_ITEM';
