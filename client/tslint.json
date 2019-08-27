@@ -17,6 +17,9 @@
     "no-shadowed-variable": false,
     "no-console": {
       "severity": "warning"
+    },
+    "semicolon": {
+      "severity": "warning"
     }
   },
   "linterOptions": {
