@@ -31,7 +31,7 @@ interface IAutocompleteListState {
 }
 
 class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAutocompleteListState> {
-  private component: React.RefObject<any> = React.createRef();
+  private component: React.RefObject<HTMLUListElement> = React.createRef<HTMLUListElement>();
 
   constructor(props: IAutocompleteListProps) {
     super(props);
@@ -46,7 +46,7 @@ class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAuto
 
     if (current
       &&
-      !current.contains(event.target)
+      !current.contains(event.target as Node)
     ) {
       this.setState({
         showAutocomplete: false
