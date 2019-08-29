@@ -38,6 +38,7 @@ function AuthContainer(props) {
     props,
     formDataScheme: authFormData,
     validationScheme: authValidationScheme,
+    api: userApi,
     setAlert,
     setShowAlert
   });
@@ -61,6 +62,11 @@ function AuthContainer(props) {
       });
       setShowAlert(true);
     }
+  };
+
+  const handleLogIn = event => {
+    event.preventDefault();
+    handleSubmit(handlerOption.LOG_IN, { logIn });
   };
 
   return (
@@ -94,7 +100,7 @@ function AuthContainer(props) {
             />
           </div>
           <LinkContainer to="/">
-            <CustomButton text="Log in" onClick={() => handleSubmit(handlerOption.LOG_IN, { logIn })} />
+            <CustomButton type="submit" text="Log in" onClick={handleLogIn} />
           </LinkContainer>
         </Form>
       </Container>

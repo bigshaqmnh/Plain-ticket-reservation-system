@@ -38,11 +38,10 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
       if (!value) {
         invalidText = 'Location is required';
       } else {
-        const validationRegExp: RegExp = new RegExp(`^${value}$`, 'i');
         invalidText = 'Invalid location name';
 
         for (const location of locations) {
-          if (validationRegExp.test(location)) {
+          if (location.toLowerCase() === value.toLowerCase()) {
             invalidText = null;
             break;
           }
@@ -59,8 +58,7 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
         invalidText = 'Number of passengers is required';
       } else if (
         !+numberOfPassengers
-        ||
-        +numberOfPassengers <= 0
+        || +numberOfPassengers <= 0
       ) {
         invalidText = 'Must be a positive number';
       }

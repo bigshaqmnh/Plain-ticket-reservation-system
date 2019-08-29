@@ -5,11 +5,11 @@ const groupByParam = {
     const groupedByCountries = {};
 
     for (const airport of airports) {
-      Array.isArray(groupedByCountries[airport.country])
-        ?
-        groupedByCountries[airport.country].push(airport)
-        :
+      if (Array.isArray(groupedByCountries[airport.country])) {
+        groupedByCountries[airport.country].push(airport);
+      } else {
         groupedByCountries[airport.country] = [airport];
+      }
     }
 
     return groupedByCountries;
