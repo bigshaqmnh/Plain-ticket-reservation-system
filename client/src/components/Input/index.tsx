@@ -19,20 +19,20 @@ interface IInputProps {
 }
 
 function Input({
-                 label,
-                 name,
-                 className = 'input',
-                 type = 'text',
-                 value = '',
-                 placeholder = 'Input value',
-                 required = false,
-                 onChange,
-                 onBlur,
-                 onFocus,
-                 error,
-                 helperText,
-                 disabled
-               }: IInputProps): JSX.Element {
+  label,
+  name,
+  className = 'input',
+  type = 'text',
+  value = '',
+  placeholder = 'Input value',
+  required = false,
+  onChange,
+  onBlur,
+  onFocus,
+  error,
+  helperText,
+  disabled
+}: IInputProps): JSX.Element {
   return (
     <TextField
       label={label}
