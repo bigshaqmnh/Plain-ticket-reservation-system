@@ -9,7 +9,7 @@ import LocationIcon from '@material-ui/icons/LocationOn';
 import ExpandLess from '@material-ui/icons/KeyboardArrowLeft';
 import ExpandMore from '@material-ui/icons/KeyboardArrowDown';
 
-import { IAirportData, IAirport, IState, IDispatch } from '../../../../interfaces';
+import { IAirportData, IAirport, IDispatch, IState } from '../../../../interfaces';
 
 import { setSelectedItem } from '../../actionCreators';
 
@@ -149,10 +149,10 @@ class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAuto
   }
 }
 
-const mapStateToProps = (state: IState) => ({
-  isLoading: state.airports.isFetching,
-  airports: state.airports.data,
-  selected: state.airports.selectedItem
+const mapStateToProps = ({ main }: IState) => ({
+  isLoading: main.airports.isFetching,
+  airports: main.airports.data,
+  selected: main.airports.selectedItem
 });
 
 const mapDispatchToProps = (dispatch: IDispatch) => ({

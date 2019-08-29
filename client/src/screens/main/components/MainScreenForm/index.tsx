@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withFormik } from 'formik';
 import { Moment } from 'moment';
 
-import { IAction, IAirport, IAirportData, IDispatch, IFlightFetchRequest, IState } from '../../../../interfaces';
+import { IAirport, IAirportData, IDispatch, IFlightFetchRequest, IState } from '../../../../interfaces';
 import { IFormProps, IFormValues, IValidationErrors } from './interfaces';
 
 import InnerForm from './InnerForm';
@@ -80,8 +80,8 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
   handleSubmit: (values: IFormValues, { props }) => {
     const { fetchForwardFlights, fetchBackwardFlights, changePage } = props;
     const { from, to, flyOut, flyBack, numberOfPassengers, twoWays } = values;
-    const {country: depCountry, city: depCity} = parseLocation(from);
-    const {country: arrCountry, city: arrCity} = parseLocation(to);
+    const { country: depCountry, city: depCity } = parseLocation(from);
+    const { country: arrCountry, city: arrCity } = parseLocation(to);
 
     const flyOutParams: IFlightFetchRequest = {
       depCountry,
@@ -125,8 +125,8 @@ const parseLocations = (airports: IAirportData) => {
   return parsed;
 };
 
-const mapStateToProps = (state: IState) => ({
-  locations: parseLocations(state.airports.data as IAirportData)
+const mapStateToProps = ({ main }: IState) => ({
+  locations: parseLocations(main.airports.data as IAirportData)
 });
 
 const mapDispatchToProps = (dispatch: IDispatch) => ({

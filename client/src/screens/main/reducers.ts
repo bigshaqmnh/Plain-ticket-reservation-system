@@ -1,6 +1,4 @@
-
-
-import { IAction, IInitialState } from '../../interfaces';
+import { IAction} from '../../interfaces';
 import {
   FETCH_AIRPORTS_FAILED, FETCH_AIRPORTS_REQUESTED, FETCH_AIRPORTS_SUCCEEDED,
   FETCH_BACKWARD_FLIGHTS_FAILED,
@@ -10,8 +8,9 @@ import {
   FETCH_FORWARD_FLIGHTS_REQUESTED,
   FETCH_FORWARD_FLIGHTS_SUCCEEDED, SET_SELECTED_ITEM
 } from '../../constants/actions/Main';
+import { IMainInitialState } from './interfaces';
 
-const initialState: IInitialState = {
+const initialState: IMainInitialState = {
   fetchParams: null,
   isFetching: true,
   data: {},
@@ -19,7 +18,7 @@ const initialState: IInitialState = {
   error: null
 };
 
-export const airports = (state: IInitialState = initialState, action: IAction) => {
+export const airports = (state: IMainInitialState = initialState, action: IAction) => {
   switch (action.type) {
     case FETCH_AIRPORTS_REQUESTED:
       return {
@@ -48,7 +47,7 @@ export const airports = (state: IInitialState = initialState, action: IAction) =
   }
 };
 
-export const flights = (state: IInitialState = initialState, action: IAction) => {
+export const flights = (state: IMainInitialState = initialState, action: IAction) => {
   switch (action.type) {
     case FETCH_FORWARD_FLIGHTS_REQUESTED:
       return {
