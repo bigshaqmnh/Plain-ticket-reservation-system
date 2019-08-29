@@ -1,43 +1,67 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { History } from 'history';
+import Typography from '@material-ui/core/Typography';
 
-import { IFlightState, IFlight, IState, IDispatch } from '../../interfaces';
+import { IFlightState, IFlight, IDispatch, IState } from '../../interfaces';
+
+import FlightCard from './components/FlightCard';
+import FlightChooseStepper from './components/FlightChooseStepper';
+
+import { setActiveStep } from './actionCreators';
+
+import flightData from './data';
 
 interface IFlightsFeedProps {
   readonly history: History;
   isLoading: boolean;
   flights: IFlightState;
+  activeStep: number;
+  setActiveStep: (step: number) => void;
   readonly dispatch: IDispatch;
 }
 
-function FlightsFeed(props: IFlightsFeedProps) {
-  const { isLoading, flights } = props;
+class FlightsFeed extends React.PureComponent<IFlightsFeedProps> {
+  public render() {
+    const { isLoading, flights, activeStep, setActiveStep } = this.props;
+    const twoWays: boolean = !isLoading && (!!flights.backward.length);
 
-  return !isLoading && <>
-    <h1>Flights Feed</h1>
-    <br/>
-    <h3>Forward flights:</h3>
-    <ol>
-      {flights.forward && flights.forward.map((flight: IFlight) =>
-        <li key={flight.id}>{`From ${flight.departureAirport.name}, at ${flight.departureTime.toString()} -> ` +
-        `To ${flight.arrivalAirport.name}, at ${flight.arrivalTime.toString()}`}</li>)
-      }
-    </ol>
-    <br/>
-    <h3>Backward flights:</h3>
-    <ol>
-      {flights.backward && flights.backward.map((flight: IFlight) =>
-        <li key={flight.id}>{`From ${flight.departureAirport.name}, at ${flight.departureTime.toString()} -> ` +
-        `To ${flight.arrivalAirport.name}, at ${flight.arrivalTime.toString()}`}</li>)
-      }
-    </ol>
-  </>;
+    return !isLoading &&
+      <>
+        <Typography align="center" variant="h2" gutterBottom>
+          Flights Feed
+        </Typography>
+        {twoWays &&
+        <FlightChooseStepper activeStep={activeStep} setActiveStep={setActiveStep}/>
+        }
+        <Typography variant="h3">
+          {twoWays ? 'Forward Flights' : 'Flights'}
+        </Typography>
+        {flights.forward && flights.forward.map((flight: IFlight) =>
+          <FlightCard key={flight.id} flightInfo={flight}/>)
+        }
+        {twoWays &&
+        <>
+          <Typography variant="h3">
+            Backward Flights
+          </Typography>
+          {flights.backward && flights.backward.map((flight: IFlight) =>
+            <FlightCard key={flight.id} flightInfo={flight}/>)
+          }}
+        </>
+        }
+      </>;
+  }
 }
 
-const mapStateToProps = (state: IState) => ({
-  isLoading: state.flights.isFetching,
-  flights: state.flights.data
+const mapStateToProps = ({ flightsFeed }: IState) => ({
+  isLoading: false,
+  flights: flightData,
+  activeStep: flightsFeed.activeStep
 });
 
-export default connect(mapStateToProps)(FlightsFeed);
+const mapDispatchToProps = (dispatch: IDispatch) => ({
+  setActiveStep: (step: number) => dispatch(setActiveStep(step))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FlightsFeed);
