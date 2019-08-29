@@ -1,4 +1,6 @@
 import { Moment } from 'moment';
+import { IMainState } from './screens/Main/interfaces';
+import { IFlightsFeedState } from './screens/FlightsFeed/interfaces';
 
 export interface IAirport {
   id: number;
@@ -55,17 +57,9 @@ export interface IAction {
   payload?: any;
 }
 
-export interface IInitialState {
-  fetchParams?: IFlightFetchRequest;
-  isFetching: boolean;
-  data: IAirportData | IFlightState;
-  selectedItem?: number;
-  error: Error;
-}
-
 export interface IState {
-  airports: IInitialState;
-  flights: IInitialState;
+  main: IMainState;
+  flightsFeed: IFlightsFeedState;
 }
 
 export type IDispatch = (actionCreator: IAction) => void;
