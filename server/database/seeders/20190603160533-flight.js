@@ -59,8 +59,8 @@ module.exports = {
         updatedAt: new Date()
       },
       {
-        departureTime: new Date(2019, 7, 12, 15, 17),
-        arrivalTime: new Date(2019, 7, 12, 20, 19),
+        departureTime: new Date(2019, 8, 12, 15, 17),
+        arrivalTime: new Date(2019, 8, 12, 20, 19),
         departureAirportId: 4,
         arrivalAirportId: 1,
         luggageOverweightCost: 28,
@@ -70,13 +70,24 @@ module.exports = {
         updatedAt: new Date()
       },
       {
-        departureTime: new Date(2019, 7, 12, 9, 24),
-        arrivalTime: new Date(2019, 7, 12, 16, 8),
+        departureTime: new Date(2019, 8, 12, 9, 24),
+        arrivalTime: new Date(2019, 8, 12, 16, 8),
         departureAirportId: 4,
         arrivalAirportId: 1,
         luggageOverweightCost: 34,
         isCancelled: false,
         airplaneId: 5,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        departureTime: new Date(2019, 8, 25, 9, 24),
+        arrivalTime: new Date(2019, 8, 25, 16, 8),
+        departureAirportId: 1,
+        arrivalAirportId: 4,
+        luggageOverweightCost: 38,
+        isCancelled: false,
+        airplaneId: 3,
         createdAt: new Date(),
         updatedAt: new Date()
       }

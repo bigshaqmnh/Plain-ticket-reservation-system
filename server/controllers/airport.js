@@ -1,6 +1,31 @@
 const airportService = require('../services/airport');
 
-const getAll = params => airportService.find(params);
+const groupByParam = {
+  country: airports => {
+    const groupedByCountries = {};
+
+    for (const airport of airports) {
+      if (Array.isArray(groupedByCountries[airport.country])) {
+        groupedByCountries[airport.country].push(airport);
+      } else {
+        groupedByCountries[airport.country] = [airport];
+      }
+    }
+
+    return groupedByCountries;
+  }
+};
+
+const getAll = async params => {
+  const airports = await airportService.find(params);
+  const { groupBy } = params;
+
+  if (!groupBy) {
+    return airports;
+  }
+
+  return groupByParam[groupBy](airports.data);
+};
 
 const getById = async airportId => {
   const airport = await airportService.findById(airportId);
