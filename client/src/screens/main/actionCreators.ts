@@ -9,16 +9,12 @@ import {
   FETCH_FORWARD_FLIGHTS_FAILED,
   FETCH_FORWARD_FLIGHTS_REQUESTED,
   FETCH_FORWARD_FLIGHTS_SUCCEEDED,
-  SET_SELECTED_ITEM
+  SET_SELECTED_AIRPORT,
+  SET_NEED_BACKWARD_TICKET
 } from '../../constants/actions/Main';
 
 export const fetchAirports = () => ({
   type: FETCH_AIRPORTS_REQUESTED
-});
-
-export const setSelectedItem = (item: number) => ({
-  type: SET_SELECTED_ITEM,
-  payload: item
 });
 
 export const fetchAirportsSuccess = (airports: IAirportData) => ({
@@ -59,4 +55,14 @@ export const fetchBackwardFlightsSuccess = (flights: IFlightState) => ({
 export const fetchBackwardFlightsFail = (error: Error) => ({
   type: FETCH_BACKWARD_FLIGHTS_FAILED,
   payload: error
+});
+
+export const setSelectedAirport = (item: number) => ({
+  type: SET_SELECTED_AIRPORT,
+  payload: item
+});
+
+export const setNeedBackwardTicket = (isNeeded: boolean) => ({
+  type: SET_NEED_BACKWARD_TICKET,
+  payload: isNeeded
 });

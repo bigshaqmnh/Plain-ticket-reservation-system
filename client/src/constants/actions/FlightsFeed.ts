@@ -1,1 +1,1 @@
-export const SET_ACTIVE_STEP = 'SET_ACTIVE_STEP';
+export const SET_CHOSEN_FLIGHTS = 'SET_CHOSEN_FLIGHTS';

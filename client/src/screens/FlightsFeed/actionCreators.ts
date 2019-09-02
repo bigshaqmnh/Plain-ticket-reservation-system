@@ -1,8 +1,8 @@
 import {
-  SET_ACTIVE_STEP
+  SET_CHOSEN_FLIGHTS
 } from '../../constants/actions/FlightsFeed';
 
-export const setActiveStep = (step: number) => ({
-  type: SET_ACTIVE_STEP,
-  payload: step
+export const setChosenFlights = (flightIds: number[]) => ({
+  type: SET_CHOSEN_FLIGHTS,
+  payload: flightIds
 });
