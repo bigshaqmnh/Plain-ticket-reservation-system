@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { History } from 'history';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
@@ -8,40 +7,71 @@ import ArrowForward from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackward from '@material-ui/icons/ArrowBackIos';
 import TicketIcon from '../../assets/img/flight-ticket.svg';
 
-import { IFlightState, IFlight, IDispatch, IState } from '../../interfaces';
+import { IDispatch, IFlight, IState } from '../../interfaces';
+import { IFlightsFeedProps, IFlightsFeedState } from './interfaces';
+
+import { setChosenFlights } from './actionCreators';
 
 import FlightCard from './components/FlightCard';
 import FlightChooseStepper from './components/FlightChooseStepper';
 
-import { setActiveStep } from './actionCreators';
-
-import flightData from './data';
+import navigateTo from '../../helpers/navigateTo';
 
 import './style.scss';
 
-interface IFlightsFeedProps {
-  readonly history: History;
-  isLoading: boolean;
-  flights: IFlightState;
-  activeStep: number;
-  setActiveStep: (step: number) => void;
-  readonly dispatch: IDispatch;
-}
-
 const steps = ['Select forward flight', 'Select backward flight'];
 
-class FlightsFeed extends React.PureComponent<IFlightsFeedProps> {
-  private handleNextStep = () =>
-    this.props.setActiveStep(this.props.activeStep + 1);
+class FlightsFeed extends React.PureComponent<IFlightsFeedProps, IFlightsFeedState> {
+  constructor(props: IFlightsFeedProps) {
+    super(props);
+    this.state = {
+      activeStep: 0,
+      chosenForwardFlight: null,
+      chosenBackwardFlight: null
+    };
+  }
+
+  private handleFlightChoose = (flightId: number) => {
+    if (this.state.activeStep) {
+      this.setState({
+        chosenBackwardFlight: flightId
+      });
+    } else {
+      this.setState({
+        chosenForwardFlight: flightId
+      });
+    }
+  };
+
+  private handleNextStep = () => {
+    const isFinalStep = !this.props.showBackwardFlights || this.state.activeStep === steps.length - 1;
+
+    if (isFinalStep) {
+      const { chosenForwardFlight, chosenBackwardFlight } = this.state;
+
+      this.props.setChosenFlights([chosenForwardFlight, chosenBackwardFlight]);
+
+      navigateTo('/configurator');
+    } else {
+      this.setState(({ activeStep: prevActiveStep }: IFlightsFeedState) => ({
+        activeStep: prevActiveStep + 1
+      }));
+    }
+  };
 
   private handleBackStep = () =>
-    this.props.setActiveStep(this.props.activeStep - 1);
+    this.setState(({ activeStep: prevActiveStep }: IFlightsFeedState) => ({
+      activeStep: prevActiveStep - 1
+    }));
 
   public render() {
-    const { isLoading, flights, activeStep } = this.props;
-    const renderStepper: boolean = !isLoading && (!!flights.backward.length);
-    const displayBackwardFlights = renderStepper && activeStep > 0 && activeStep < steps.length;
-    const displayedFlights = displayBackwardFlights ? flights.backward : flights.forward;
+    const { isLoading, flights, showBackwardFlights } = this.props;
+    const { activeStep, chosenForwardFlight, chosenBackwardFlight } = this.state;
+    const displayBackwardFlights: boolean = showBackwardFlights && activeStep > 0;
+    const displayedFlights: IFlight[] = displayBackwardFlights ? flights.backward : flights.forward;
+    const isNextStepDisabled: boolean = !chosenForwardFlight as boolean
+      || (!!activeStep && !chosenBackwardFlight as boolean);
+    const isFinalStep: boolean = !showBackwardFlights || activeStep === steps.length - 1;
 
     return !isLoading &&
       <>
@@ -52,28 +82,42 @@ class FlightsFeed extends React.PureComponent<IFlightsFeedProps> {
           </Typography>
           <img src={TicketIcon} alt=""/>
         </Box>
-        {renderStepper &&
+        {showBackwardFlights &&
         <FlightChooseStepper steps={steps} activeStep={activeStep}/>
         }
         <Typography align="center" variant="h3">
           {displayBackwardFlights ? 'Backward Flights' : 'Forward Flights'}
         </Typography>
         <div className="flights-feed">
-          {displayedFlights.map((flight: IFlight) =>
-            <FlightCard key={flight.id} flightInfo={flight}/>)
-          }
+          {displayedFlights.map((flight: IFlight) => {
+            const { id } = flight;
+            const isChosen: boolean = (id === chosenForwardFlight) || (id === chosenBackwardFlight);
+
+            return <FlightCard
+              key={id}
+              flightInfo={flight}
+              handleFlightChoose={this.handleFlightChoose}
+              isChosen={isChosen}
+            />;
+          })}
           {displayBackwardFlights &&
           <Button
             className="backward-btn"
-            disabled={!activeStep}
+            disabled={!activeStep as boolean}
             onClick={this.handleBackStep}
           >
             <ArrowBackward/>
             Back
           </Button>
           }
-          <Button className="forward-btn" variant="contained" color="primary" onClick={this.handleNextStep}>
-            {displayBackwardFlights ? 'Continue' : 'Next'}
+          <Button
+            className="forward-btn"
+            variant="contained"
+            color="primary"
+            onClick={this.handleNextStep}
+            disabled={isNextStepDisabled}
+          >
+            {isFinalStep ? 'Continue' : 'Next'}
             <ArrowForward/>
           </Button>
         </div>
@@ -81,14 +125,14 @@ class FlightsFeed extends React.PureComponent<IFlightsFeedProps> {
   }
 }
 
-const mapStateToProps = ({ flightsFeed }: IState) => ({
-  isLoading: false,
-  flights: flightData,
-  activeStep: flightsFeed.activeStep
+const mapStateToProps = ({ main }: IState) => ({
+  isLoading: main.flights.isFetching,
+  flights: main.flights.data,
+  showBackwardFlights: main.flights.needBackwardTicket
 });
 
 const mapDispatchToProps = (dispatch: IDispatch) => ({
-  setActiveStep: (step: number) => dispatch(setActiveStep(step))
+  setChosenFlights: (flightIds: number[]) => dispatch(setChosenFlights(flightIds))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FlightsFeed);
