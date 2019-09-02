@@ -6,15 +6,18 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { IFlight } from '../../../../interfaces';
 
+import FlightIcon from '../../../../assets/img/flight.png';
 
 import './style.scss';
 
 interface IFlightCardProps {
   flightInfo: IFlight;
+  isChosen: boolean;
+  handleFlightChoose: (id: number) => void;
 }
 
-const FlightCard = ({ flightInfo }: IFlightCardProps) => {
-  const { departureAirport, arrivalAirport, departureTime, arrivalTime, airplane } = flightInfo;
+const FlightCard = ({ flightInfo, isChosen, handleFlightChoose }: IFlightCardProps) => {
+  const { id, departureAirport, arrivalAirport, departureTime, arrivalTime, airplane } = flightInfo;
 
   return <Card className="flight-card">
     <CardContent className="content">
@@ -35,6 +38,7 @@ const FlightCard = ({ flightInfo }: IFlightCardProps) => {
             {`Airplane: ${airplane.name}`}
           </Typography>
         </div>
+        <img className="flight-icon" src={FlightIcon} alt=""/>
         <div>
           <Typography variant="h6" align="center" gutterBottom>
             To:
@@ -51,11 +55,15 @@ const FlightCard = ({ flightInfo }: IFlightCardProps) => {
       </div>
     </CardContent>
     <CardActions className="actions">
-      <Button size="large">Book</Button>
+      <Button
+        size="large"
+        onClick={() => handleFlightChoose(id)}
+        disabled={isChosen as boolean}
+      >
+        {isChosen ? 'Booked' : 'Book'}
+      </Button>
     </CardActions>
   </Card>;
-  ;
-  ;
 };
 
 export default FlightCard;
