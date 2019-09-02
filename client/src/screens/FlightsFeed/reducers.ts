@@ -1,19 +1,23 @@
 import { IAction } from '../../interfaces';
 import {
-  SET_ACTIVE_STEP
+  SET_CHOSEN_FLIGHTS
 } from '../../constants/actions/FlightsFeed';
 import { IFlightsFeedInitialState } from './interfaces';
 
 const initialState: IFlightsFeedInitialState = {
-  activeStep: 0
+  chosenForwardFlight: null,
+  chosenBackwardFlight: null
 };
 
-export const flightsFeed = (state: IFlightsFeedInitialState = initialState, action: IAction) => {
-  if (action.type === SET_ACTIVE_STEP) {
+const flightsFeed = (state: IFlightsFeedInitialState = initialState, action: IAction) => {
+  if (action.type === SET_CHOSEN_FLIGHTS) {
     return {
-      activeStep: action.payload
+      chosenForwardFlight: action.payload[0],
+      chosenBackwardFlight: action.payload[1]
     };
   } else {
     return state;
   }
 };
+
+export default flightsFeed;
