@@ -8,11 +8,12 @@ import { IFormProps, IFormValues, IValidationErrors } from './interfaces';
 
 import InnerForm from './InnerForm';
 
-import { fetchForwardFlights, fetchBackwardFlights } from '../../actionCreators';
+import { fetchForwardFlights, fetchBackwardFlights, setNeedBackwardTicket } from '../../actionCreators';
 
 import { mainScreenFormData } from '../../../../constants/formData';
 
 import parseLocation from '../../../../helpers/parseLocation';
+import navigateTo from '../../../../helpers/navigateTo';
 
 import './style.scss';
 
@@ -76,16 +77,16 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
   },
 
   handleSubmit: (values: IFormValues, { props }) => {
-    const { fetchForwardFlights, fetchBackwardFlights, changePage } = props;
+    const { fetchForwardFlights, fetchBackwardFlights, setNeedBackwardTicket } = props;
     const { from, to, flyOut, flyBack, numberOfPassengers, twoWays } = values;
-    const { country: depCountry, city: depCity } = parseLocation(from);
-    const { country: arrCountry, city: arrCity } = parseLocation(to);
+    const { country: fromCountry, city: fromCity } = parseLocation(from);
+    const { country: toCountry, city: toCity } = parseLocation(to);
 
     const flyOutParams: IFlightFetchRequest = {
-      depCountry,
-      depCity,
-      arrCountry,
-      arrCity,
+      depCountry: fromCountry,
+      depCity: fromCity,
+      arrCountry: toCountry,
+      arrCity: toCity,
       departureTime: flyOut.startOf('day').toISOString(),
       numberOfPassengers
     };
@@ -94,18 +95,19 @@ const MainScreenFormComponent = withFormik<IFormProps, IFormValues>({
 
     if (twoWays) {
       const flyBackParams: IFlightFetchRequest = {
-        depCountry,
-        depCity,
-        arrCountry,
-        arrCity,
+        depCountry: toCountry,
+        depCity: toCity,
+        arrCountry: fromCountry,
+        arrCity: fromCity,
         departureTime: flyBack.startOf('day').toISOString(),
         numberOfPassengers
       };
 
       fetchBackwardFlights(flyBackParams);
+      setNeedBackwardTicket(true);
     }
 
-    changePage();
+    navigateTo('/feed');
   }
 })(InnerForm);
 
@@ -128,8 +130,9 @@ const mapStateToProps = ({ main }: IState) => ({
 });
 
 const mapDispatchToProps = (dispatch: IDispatch) => ({
-  fetchForwardFlights: (params) => dispatch(fetchForwardFlights(params)),
-  fetchBackwardFlights: (params) => dispatch(fetchBackwardFlights(params))
+  fetchForwardFlights: (params: IFlightFetchRequest) => dispatch(fetchForwardFlights(params)),
+  fetchBackwardFlights: (params: IFlightFetchRequest) => dispatch(fetchBackwardFlights(params)),
+  setNeedBackwardTicket: (isNeeded: boolean) => dispatch(setNeedBackwardTicket(isNeeded))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreenFormComponent);

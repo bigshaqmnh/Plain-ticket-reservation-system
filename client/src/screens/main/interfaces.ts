@@ -4,7 +4,8 @@ export interface IMainInitialState {
   fetchParams?: IFlightFetchRequest;
   isFetching: boolean;
   data: IAirportData | IFlightState;
-  selectedItem?: number;
+  selectedAirport?: number;
+  needBackwardTicket: boolean;
   error: Error;
 }
 
