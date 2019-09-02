@@ -22,12 +22,10 @@ class MainScreen extends React.PureComponent<IMainScreenProps> {
     this.props.fetchAirports();
   }
 
-  private handlePageChange = () => this.props.history.replace('/feed');
-
   public render(): JSX.Element {
     return (
       <Grid container className="container">
-        <MainScreenFormComponent changePage={this.handlePageChange}/>
+        <MainScreenFormComponent/>
       </Grid>
     );
   }

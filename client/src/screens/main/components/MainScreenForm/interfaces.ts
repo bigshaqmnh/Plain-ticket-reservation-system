@@ -20,7 +20,7 @@ export interface IFormProps {
   twoWays?: boolean;
   fetchForwardFlights: (params: IFlightFetchRequest) => void;
   fetchBackwardFlights: (params: IFlightFetchRequest) => void;
-  changePage: () => void;
+  setNeedBackwardTicket: (isNeeded: boolean) => void;
   locations: string[];
 }
 
