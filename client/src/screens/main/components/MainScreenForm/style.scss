@@ -26,23 +26,23 @@
 
   .main-form-switch {
     .MuiSwitch-colorSecondary.Mui-checked {
-      color: $dark-violet;
+      color: $dark-purple;
     }
 
     .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
-      background: $violet;
+      background: $purple;
     }
   }
 
   .main-form-btn {
     height: 50px;
     width: 150px;
-    border: $dark-violet dashed;
+    border: $dark-purple dashed;
     font-size: 1.1em;
     font-weight: 600;
 
     &:hover {
-      background-color: $dark-violet;
+      background-color: $dark-purple;
     }
 
     &:disabled {

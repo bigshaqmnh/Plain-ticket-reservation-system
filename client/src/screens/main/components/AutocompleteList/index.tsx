@@ -9,9 +9,9 @@ import LocationIcon from '@material-ui/icons/LocationOn';
 import ExpandLess from '@material-ui/icons/KeyboardArrowLeft';
 import ExpandMore from '@material-ui/icons/KeyboardArrowDown';
 
-import { IAirportData, IAirport, IState, IDispatch } from '../../../../interfaces';
+import { IAirportData, IAirport, IDispatch, IState } from '../../../../interfaces';
 
-import { setSelectedItem } from '../../actionCreators';
+import { setSelectedAirport } from '../../actionCreators';
 
 import parseLocation from '../../../../helpers/parseLocation';
 
@@ -22,7 +22,7 @@ interface IAutocompleteListProps {
   inputValue: string;
   isShown: boolean;
   handleChange: (value: string) => void;
-  setSelectedItem: (item: number) => void;
+  setSelectedAirport: (item: number) => void;
 }
 
 interface IAutocompleteListState {
@@ -93,10 +93,10 @@ class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAuto
 
   private handleCityClick = (event, airport: IAirport) => {
     const location = `${airport.country}, ${airport.city}`;
-    const { setSelectedItem, handleChange } = this.props;
+    const { setSelectedAirport, handleChange } = this.props;
 
     handleChange(location);
-    setSelectedItem(airport.id);
+    setSelectedAirport(airport.id);
 
     this.setState({
       showAutocomplete: false,
@@ -149,14 +149,14 @@ class AutocompleteList extends React.PureComponent<IAutocompleteListProps, IAuto
   }
 }
 
-const mapStateToProps = (state: IState) => ({
-  isLoading: state.airports.isFetching,
-  airports: state.airports.data,
-  selected: state.airports.selectedItem
+const mapStateToProps = ({ main }: IState) => ({
+  isLoading: main.airports.isFetching,
+  airports: main.airports.data,
+  selected: main.airports.selectedAirport
 });
 
 const mapDispatchToProps = (dispatch: IDispatch) => ({
-  setSelectedItem: (item: number) => dispatch(setSelectedItem(item))
+  setSelectedAirport: (item: number) => dispatch(setSelectedAirport(item))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AutocompleteList);

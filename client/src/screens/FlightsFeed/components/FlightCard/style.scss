@@ -1,0 +1,49 @@
+@import "../../../../variables";
+
+.flight-card {
+  width: 70%;
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  border: $dark-purple 3px dashed;
+  box-sizing: border-box;
+  margin: 20px 0;
+  padding: 20px 50px;
+  position: relative;
+
+  .content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+
+    .flight-info {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      h6 {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .actions {
+    align-self: flex-end;
+
+    button {
+      font-weight: bold;
+      background-color: $transparent-gray;
+      border-radius: 20px;
+
+      &:hover {
+        background-color: $transparent-dark-gray;
+      }
+    }
+  }
+}

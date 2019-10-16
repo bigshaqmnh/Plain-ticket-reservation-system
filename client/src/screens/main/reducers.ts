@@ -1,35 +1,36 @@
+import { combineReducers } from 'redux';
 
-
-import { IAction, IInitialState } from '../../interfaces';
+import { IAction } from '../../interfaces';
 import {
-  FETCH_AIRPORTS_FAILED, FETCH_AIRPORTS_REQUESTED, FETCH_AIRPORTS_SUCCEEDED,
+  FETCH_AIRPORTS_FAILED,
+  FETCH_AIRPORTS_REQUESTED,
+  FETCH_AIRPORTS_SUCCEEDED,
   FETCH_BACKWARD_FLIGHTS_FAILED,
   FETCH_BACKWARD_FLIGHTS_REQUESTED,
   FETCH_BACKWARD_FLIGHTS_SUCCEEDED,
   FETCH_FORWARD_FLIGHTS_FAILED,
   FETCH_FORWARD_FLIGHTS_REQUESTED,
-  FETCH_FORWARD_FLIGHTS_SUCCEEDED, SET_SELECTED_ITEM
+  FETCH_FORWARD_FLIGHTS_SUCCEEDED,
+  SET_SELECTED_AIRPORT,
+  SET_NEED_BACKWARD_TICKET
 } from '../../constants/actions/Main';
+import { IMainInitialState } from './interfaces';
 
-const initialState: IInitialState = {
+const initialState: IMainInitialState = {
   fetchParams: null,
   isFetching: true,
   data: {},
-  selectedItem: null,
+  selectedAirport: null,
+  needBackwardTicket: false,
   error: null
 };
 
-export const airports = (state: IInitialState = initialState, action: IAction) => {
+const airports = (state: IMainInitialState = initialState, action: IAction) => {
   switch (action.type) {
     case FETCH_AIRPORTS_REQUESTED:
       return {
         ...state,
         isFetching: true
-      };
-    case SET_SELECTED_ITEM:
-      return {
-        ...state,
-        selectedItem: action.payload
       };
     case FETCH_AIRPORTS_SUCCEEDED:
       return {
@@ -43,12 +44,17 @@ export const airports = (state: IInitialState = initialState, action: IAction) =
         isFetching: false,
         error: action.payload
       };
+    case SET_SELECTED_AIRPORT:
+      return {
+        ...state,
+        selectedAirport: action.payload
+      };
     default:
       return state;
   }
 };
 
-export const flights = (state: IInitialState = initialState, action: IAction) => {
+const flights = (state: IMainInitialState = initialState, action: IAction) => {
   switch (action.type) {
     case FETCH_FORWARD_FLIGHTS_REQUESTED:
       return {
@@ -59,7 +65,7 @@ export const flights = (state: IInitialState = initialState, action: IAction) =>
     case FETCH_FORWARD_FLIGHTS_SUCCEEDED:
       return {
         ...state,
-        isFetching: false,
+        isFetching: state.needBackwardTicket ? !(!!state.data.backward) : false,
         data: { ...state.data, ...action.payload }
       };
     case FETCH_FORWARD_FLIGHTS_FAILED:
@@ -77,7 +83,7 @@ export const flights = (state: IInitialState = initialState, action: IAction) =>
     case FETCH_BACKWARD_FLIGHTS_SUCCEEDED:
       return {
         ...state,
-        isFetching: false,
+        isFetching: !(!!state.data.forward),
         data: { ...state.data, ...action.payload }
       };
     case FETCH_BACKWARD_FLIGHTS_FAILED:
@@ -86,7 +92,14 @@ export const flights = (state: IInitialState = initialState, action: IAction) =>
         isFetching: false,
         error: action.payload
       };
+    case SET_NEED_BACKWARD_TICKET:
+      return {
+        ...state,
+        needBackwardTicket: action.payload
+      };
     default:
       return state;
   }
 };
+
+export default combineReducers({ airports, flights });

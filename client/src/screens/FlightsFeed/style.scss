@@ -1,0 +1,44 @@
+@import '../../variables';
+
+.header {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: $purple;
+  margin-bottom: 20px;
+  color: $yellow;
+}
+
+.flights-feed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 170px;
+
+  .forward-btn, .backward-btn {
+    height: 60px;
+    position: fixed;
+    border-radius: 40px;
+    font-size: 1.1em;
+    font-weight: bold;
+    bottom: 10%;
+  }
+
+  .backward-btn {
+    left: 15%;
+    background-color: $transparent-gray;
+
+    &:hover {
+      background-color: $transparent-dark-gray;
+    }
+  }
+
+  .forward-btn {
+    right: 15%;
+
+    &:disabled {
+      background-color: $transparent-gray;
+    }
+  }
+}
