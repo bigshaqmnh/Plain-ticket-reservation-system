@@ -1,11 +1,15 @@
 import { Injectable, Injector } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+
+import { environment } from '../../environments/environment';
 import * as airports from '../../assets/responseMockups/airports.json';
 
+
+const { apiUrl }: { apiUrl: string } = environment;
 const urls = [
     {
-        url: 'https://jsonmockups.com/airports',
+        url: `${apiUrl}/airports`,
         json: airports
     }
 ];
