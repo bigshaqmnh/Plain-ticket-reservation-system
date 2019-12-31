@@ -1,16 +1,20 @@
-import { Injectable, Injector } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpEvent } from '@angular/common/http';
+import { HttpHandler } from '@angular/common/http';
+import { HttpInterceptor } from '@angular/common/http';
+import { HttpRequest } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Injector } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-import { environment } from '../../environments/environment';
 import * as airports from '../../assets/responseMockups/airports.json';
-
+import { environment } from '../../environments/environment';
 
 const { apiUrl }: { apiUrl: string } = environment;
 const urls = [
     {
+        json: airports,
         url: `${apiUrl}/airports`,
-        json: airports
     }
 ];
 

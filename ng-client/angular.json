@@ -74,15 +74,15 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "mock": {
-            "browserTarget": "demo:build:mock"
-          },
           "options": {
             "browserTarget": "ng-client:build"
           },
           "configurations": {
             "production": {
               "browserTarget": "ng-client:build:production"
+            },
+            "mock": {
+              "browserTarget": "ng-client:build:mock"
             }
           }
         },
