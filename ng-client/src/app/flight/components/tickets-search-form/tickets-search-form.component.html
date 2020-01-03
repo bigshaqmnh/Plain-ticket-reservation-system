@@ -1,0 +1,39 @@
+<label>
+    Departure Airport
+    <mat-form-field>
+        <input matInput
+            [formControl]="departureAirport"
+            [matAutocomplete]="departureAutocomplete"
+            data-autocomplete="departureAutocomplete"
+            (onChange)="onAirportInputChange($event, $event.target.value)"
+            placeholder="Departure Airport"
+            type="text"
+        >
+    </mat-form-field>
+</label>
+<label>
+    Arrival Airport
+    <mat-form-field>
+        <input matInput
+            [formControl]="arrivalAirport"
+            [matAutocomplete]="arrivalAutocomplete"
+            placeholder="Arrival Airport"
+            type="text"
+        >
+    </mat-form-field>
+</label>
+<mat-autocomplete
+    autoActiveFirstOption
+    #[autocompleteField]="matAutocomplete"
+>
+    <mat-option
+        *ngFor="let option of autocompleteOptions"
+        [value]="option"
+    >
+        {{ option }}
+    </mat-option>
+</mat-autocomplete>
+<button mat-button
+    (click)="onSearchClick()">
+    Search
+</button>

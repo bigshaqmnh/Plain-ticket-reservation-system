@@ -2,30 +2,38 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 
 import { TicketsSearchFormComponent } from './components/tickets-search-form/tickets-search-form.component';
+import { FlightRoutingModule } from './flight-routing.module';
 import { SearchPageComponent } from './pages/search/search.component';
-import { AirportService } from './shared/airport.service';
-import { TicketsRoutingModule } from './tickets-routing.module';
+import { FlightService } from './shared/flight.service';
 
 const materialUIComponents = [
+  MatAutocompleteModule,
+  MatButtonModule,
   MatFormFieldModule,
+  MatInputModule,
+  MatRadioModule,
 ];
 
 @NgModule({
   declarations: [
     SearchPageComponent,
-    TicketsRoutingModule,
     TicketsSearchFormComponent,
   ],
   imports: [
     FormsModule,
     ReactiveFormsModule,
+    FlightRoutingModule,
     ...materialUIComponents,
   ],
   providers: [
-    AirportService
+    FlightService
   ],
 })
-export class AppModule { }
+export class FlightModule { }

@@ -5,11 +5,13 @@ import { RouterModule } from '@angular/router';
 import { SearchPageComponent } from './pages/search/search.component';
 
 const routes: Routes = [
-  { path: '', component: SearchPageComponent },
+  { path: '', children: [
+    { path: '', component: SearchPageComponent },
+  ] },
 ];
 
 @NgModule({
   exports: [RouterModule],
   imports: [RouterModule.forChild(routes)],
 })
-export class TicketsRoutingModule { }
+export class FlightRoutingModule { }
