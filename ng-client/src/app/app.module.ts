@@ -7,20 +7,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { NotFoundComponent } from './not-found.component';
 
 @NgModule({
   bootstrap: [AppComponent],
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent, NotFoundComponent],
   imports: [
     AppRoutingModule,
     BrowserModule,
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule,
+    BrowserAnimationsModule
   ],
-  providers: [],
+  providers: []
 })
-export class AppModule { }
+export class AppModule {}
